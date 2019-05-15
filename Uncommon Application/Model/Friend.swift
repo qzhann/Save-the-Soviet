@@ -59,8 +59,13 @@ class Friend {
     var name: String
     var image: UIImage
     var description: String
-    var friendship = Friendship(progress: 0)
-    var powers: [Power] = []
+    var friendship = Friendship(progress: 6)
+    var powers: [Power] = [         // FIXME: Replace with real powers
+        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", type: .good),
+        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", type: .good, levelNeeded: nil, coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", type: .good)]),
+        
+        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", type: .bad)
+    ]
     var delegate: ChatResponsesDelegate!
     
     // When the chatting state has become active, he Friend should text all Message instances in unreadMessages
@@ -287,21 +292,38 @@ class Friend {
     * Initialize with progress.
  */
 struct Friendship {
-    
     var progress: Int {
         didSet {
             levelNumber = (progress / 10) + 1
-            currentUpperBound = upperBounds[levelNumber - 1]
+            currentUpperBound = upperBounds[levelNumber]
+            previousUpperBound = upperBounds[levelNumber - 1]
+            normalizedProgress = Float((progress - previousUpperBound) / (currentUpperBound - previousUpperBound))
         }
     }
+    
+    var normalizedProgress: Float = 0
+    
     var levelNumber: Int = 0
-    var currentUpperBound: Int = 0
-    var upperBounds = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
+    
+    var currentUpperBound: Int = 10
+    private var previousUpperBound: Int = 0
+    private var upperBounds = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
     
     /**
-     - parameter progress: Progress of the friendship. Whenever updated, automatically updates levelNumber and currentUpperBound.
+     Default initializer, typically used to create a Friendship instance for a new friend.
+     */
+    init() {
+        self.progress = 0
+    }
+    
+    /**
+     - parameter progress: Progress of the friendship.
      */
     init(progress: Int) {
         self.progress = progress
+        levelNumber = (progress / 10) + 1
+        currentUpperBound = upperBounds[levelNumber]
+        previousUpperBound = upperBounds[levelNumber - 1]
+        normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
     }
 }

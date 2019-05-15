@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserPowerTableViewCell: UITableViewCell {
+class PowerTableViewCell: UITableViewCell {
 
     @IBOutlet weak var powerImageView: UIImageView!
     @IBOutlet weak var powerNameLabel: UILabel!

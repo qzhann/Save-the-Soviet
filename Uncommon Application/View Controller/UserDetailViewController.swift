@@ -34,12 +34,11 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - Table View Data Source Methods
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return user.powers.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PowerCell", for: indexPath) as! UserPowerTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "PowerCell", for: indexPath) as! PowerTableViewCell
         let power = user.powers[indexPath.row]
         cell.updateWith(power: power)
         return cell
@@ -52,7 +51,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0   // Works magically when returning half the height of table view header...
+        return 0
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -80,9 +79,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         animateProgressViews()
     }
     
+    // MARK: -
+    
     func configureRoundCorners() {
-        // Configure Round Corners
-        
         // In user basic info background view
         userBasicInfoBackgroundView.layer.cornerRadius = 10
         userBasicInfoBackgroundView.clipsToBounds = true
@@ -110,7 +109,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userLevelProgressView.subviews[1].clipsToBounds = true
         userEnergyProgressView.subviews[1].layer.cornerRadius = 3
         userEnergyProgressView.subviews[1].clipsToBounds = true
-
     }
     
     func prepareUI() {
@@ -124,18 +122,11 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
         userLevelProgressView.progress = 0
         userEnergyProgressView.progress = 0
-        
-        let centerTransform = CGAffineTransform(translationX: 0, y: -162)
-        userBasicInfoBackgroundView.transform = centerTransform
-        userLevelBackgroundView.transform = centerTransform
-        userEnergyBackgroundView.transform = centerTransform
-        userPowerTableView.transform = centerTransform
-        
     }
     
     func animateProgressViews() {
-        // Animate the progress of progress view
-        UIView.animate(withDuration: 1.5, delay: 0, options: [.curveEaseInOut], animations: {
+        // Animate the progress of progress views
+        UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut, animations: {
             self.userLevelProgressView.setProgress(self.user.level.normalizedProgress, animated: true)
             self.userEnergyProgressView.setProgress(self.user.energy.normalizedProgress, animated: true)
         }, completion: nil)

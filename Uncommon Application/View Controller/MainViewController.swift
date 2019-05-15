@@ -8,7 +8,11 @@
 
 import UIKit
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate {
+protocol FriendImageViewTapDelegate: UIViewController {
+    func imageTapped(at indexPath: IndexPath)
+}
+
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate {
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -26,6 +30,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var user: User = User.testUser // FIXME: Need to be replaced with the actual user
     
+    // MARK: - Friend Image View Tap Delegate Method
+    
+    func imageTapped(at indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
+    }
     
     // MARK: - Table View Data Source Methods
     
@@ -38,10 +47,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Configure cell data and appearance
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
         let friend = user.friends[indexPath.row]
         cell.updateCell(with: friend)
         cell.selectionStyle = .none
+        
+        // Configure image view tap delegate
+        cell.imageViewTapDelegate = self
+        cell.indexPath = indexPath
         
         return cell
     }
@@ -140,6 +154,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         performSegue(withIdentifier: "ShowUserDetail", sender: nil)
     }
     
+    @IBAction func friendImageViewTapped(_ sender: UITapGestureRecognizer) {
+        performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
+    }
+
     
     // Handling the change in transparency of coin image view when the user touched shop button
     
@@ -151,7 +169,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UIView.animate(withDuration: 0.2) {
             self.coinImageView.alpha = 1
         }
-
     }
     
     @IBAction func shopButtonTouchedUpOutside(_ sender: UIButton) {
@@ -170,6 +187,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if segue.identifier == "ShowUserDetail" {
             let userDetailViewController = segue.destination as! UserDetailViewController
             userDetailViewController.transitioningDelegate = self
+        } else if segue.identifier == "ShowFriendDetail" {
+            let friendDetailViewController = segue.destination as! FriendDetailViewController
+            friendDetailViewController.transitioningDelegate = self
         }
     }
     
@@ -177,7 +197,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - View Controller Animated Transitioning Delegate Methods
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        guard presented is UserDetailViewController else { return nil }
         return PageSheetModalPresentationAnimationController()
     }
     

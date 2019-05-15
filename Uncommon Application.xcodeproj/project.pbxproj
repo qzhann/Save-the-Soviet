@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4922443777008B6DC8 /* MainViewController.swift */; };
 		42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */; };
-		423B5CCC2257FCF30080E5CA /* UserPowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B5CCB2257FCF30080E5CA /* UserPowerTableViewCell.swift */; };
+		423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */; };
 		42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42437C812250900D00ED18F4 /* UserDetailViewController.swift */; };
 		42668C5521ED37B10095BDFD /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42668C5421ED37B10095BDFD /* ChatTableViewCell.swift */; };
 		427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */; };
@@ -26,12 +26,14 @@
 		42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */; };
 		42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */; };
 		42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */; };
+		42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */; };
+		42FDD86F228AC2CE007BE38A /* FriendPowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		42366B4922443777008B6DC8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
-		423B5CCB2257FCF30080E5CA /* UserPowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPowerTableViewCell.swift; sourceTree = "<group>"; };
+		423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerTableViewCell.swift; sourceTree = "<group>"; };
 		42437C812250900D00ED18F4 /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		42668C5421ED37B10095BDFD /* ChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
 		427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalPresentationAnimationController.swift; sourceTree = "<group>"; };
@@ -50,6 +52,8 @@
 		42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
 		42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
 		42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultViewController.swift; sourceTree = "<group>"; };
+		42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailViewController.swift; sourceTree = "<group>"; };
+		42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPowerTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +113,9 @@
 				42366B4922443777008B6DC8 /* MainViewController.swift */,
 				42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */,
 				42437C812250900D00ED18F4 /* UserDetailViewController.swift */,
-				423B5CCB2257FCF30080E5CA /* UserPowerTableViewCell.swift */,
+				423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */,
+				42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */,
+				42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */,
 				428136172203E7B70046EF11 /* ChatViewController.swift */,
 				42668C5421ED37B10095BDFD /* ChatTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
@@ -226,18 +232,20 @@
 				42ECF9E921CB2FE0007AF7F9 /* Achievement&Power.swift in Sources */,
 				42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */,
 				427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */,
+				42FDD86F228AC2CE007BE38A /* FriendPowerTableViewCell.swift in Sources */,
 				42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */,
 				42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */,
 				42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
 				42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */,
+				42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */,
 				42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */,
 				42668C5521ED37B10095BDFD /* ChatTableViewCell.swift in Sources */,
 				42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */,
 				427848B0228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift in Sources */,
 				42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */,
 				42ECF9E721CB2FCA007AF7F9 /* Message.swift in Sources */,
-				423B5CCC2257FCF30080E5CA /* UserPowerTableViewCell.swift in Sources */,
+				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
 				42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,7 +394,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CJYVMFG9D9;
-				INFOPLIST_FILE = "Uncommon Application/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Uncommon Application/Bundle Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -405,7 +413,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CJYVMFG9D9;
-				INFOPLIST_FILE = "Uncommon Application/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Uncommon Application/Bundle Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -10,8 +10,13 @@ import UIKit
 
 class FriendTableViewCell: UITableViewCell {
     
+    weak var imageViewTapDelegate: FriendImageViewTapDelegate!
+    var indexPath: IndexPath!
+    
     @IBOutlet weak var friendImageView: UIImageView!
     @IBOutlet weak var friendImageBackgroundView: UIView!
+    @IBOutlet weak var friendImageViewForegroundButton: UIButton!
+    
     @IBOutlet weak var friendNameLabel: UILabel!
     @IBOutlet weak var newMessageIndicatorImageView: UIImageView!
     @IBOutlet weak var newMessageLabel: UILabel!
@@ -39,6 +44,10 @@ class FriendTableViewCell: UITableViewCell {
         friendImageView.layer.cornerRadius = friendImageView.frame.height / 2
         friendImageView.clipsToBounds = true
         
+        // Set the round corner for friendImageViewForegroundButton
+        friendImageViewForegroundButton.layer.cornerRadius = friendImageViewForegroundButton.frame.height / 2
+        friendImageViewForegroundButton.clipsToBounds = true
+        
         // Set the shadow for friend image background view
         friendImageBackgroundView.layer.masksToBounds = false;
         friendImageBackgroundView.layer.shadowColor = UIColor.black.cgColor
@@ -47,7 +56,11 @@ class FriendTableViewCell: UITableViewCell {
         friendImageBackgroundView.layer.shadowOffset = CGSize.zero
         friendImageBackgroundView.layer.shadowPath = UIBezierPath(roundedRect: friendImageView.bounds, cornerRadius: friendImageView.layer.cornerRadius).cgPath
         friendImageBackgroundView.backgroundColor = UIColor.clear
-        
     }
+    
+    @IBAction func friendImageViewForegroundButtonTapped(_ sender: UIButton) {
+        imageViewTapDelegate.imageTapped(at: indexPath)
+    }
+    
     
 }
