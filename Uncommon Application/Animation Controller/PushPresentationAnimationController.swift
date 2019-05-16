@@ -41,8 +41,12 @@ class PushPresentationAnimationController: NSObject, UIViewControllerAnimatedTra
         shadowAnimation.duration = duration
         destinationView.layer.add(shadowAnimation, forKey: shadowAnimation.keyPath)
         
-        // Animate the shift of both destinationView and sourceView using a ease bezier curve
-        let horizontalTranslationAnimator = UIViewPropertyAnimator(duration: duration, controlPoint1: CGPoint(x: 0.25, y: 0.1), controlPoint2: CGPoint(x: 0.25, y: 1)) {
+        // Animate the shift of both destinationView and sourceView using the system springTimingParameters
+        let springTimingProvider: UITimingCurveProvider = UISpringTimingParameters()
+        
+        let horizontalTranslationAnimator = UIViewPropertyAnimator(duration: duration, timingParameters: springTimingProvider)
+        
+        horizontalTranslationAnimator.addAnimations {
             destinationView.transform = .identity
             sourceView.transform = CGAffineTransform(translationX: -sourceView.frame.width / 3, y: 0)
         }
@@ -52,8 +56,6 @@ class PushPresentationAnimationController: NSObject, UIViewControllerAnimatedTra
             // Rmoeve sourceView from the container
             sourceView.transform = .identity
             sourceView.removeFromSuperview()
-            
-            // Inform the transition context to complete transition
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }
         
