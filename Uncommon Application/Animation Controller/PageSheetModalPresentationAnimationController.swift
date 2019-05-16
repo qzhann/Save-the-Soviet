@@ -10,6 +10,12 @@ import UIKit
 
 class PageSheetModalPresentationAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
     
+    var darkenEffect: CGFloat
+    
+    init(darkenBy darkenEffect: CGFloat) {
+        self.darkenEffect = darkenEffect
+    }
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.5
     }
@@ -39,7 +45,7 @@ class PageSheetModalPresentationAnimationController: NSObject, UIViewControllerA
         // Create a UIViewPropertyAnimator which animates the dark blur effect
         let darkBlurEffectAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeInOut) {
             darkBlurEffectView.effect = UIBlurEffect(style: .dark)
-            darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+            darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(self.darkenEffect)
         }
         
         // Animate the transition

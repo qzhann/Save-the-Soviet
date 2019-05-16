@@ -15,6 +15,8 @@
 		427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */; };
 		427848B0228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */; };
 		428136182203E7B70046EF11 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428136172203E7B70046EF11 /* ChatViewController.swift */; };
+		428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */; };
+		42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */; };
 		42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */; };
 		42ECF9D421CB2EC4007AF7F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D221CB2EC4007AF7F9 /* Main.storyboard */; };
 		42ECF9D621CB2ECB007AF7F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D521CB2ECB007AF7F9 /* Assets.xcassets */; };
@@ -39,6 +41,8 @@
 		427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalPresentationAnimationController.swift; sourceTree = "<group>"; };
 		427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalDismissalAnimationController.swift; sourceTree = "<group>"; };
 		428136172203E7B70046EF11 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushDismissalAnimationController.swift; sourceTree = "<group>"; };
+		42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPresentationAnimationController.swift; sourceTree = "<group>"; };
 		42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uncommon Application.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42ECF9D321CB2EC4007AF7F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -129,6 +133,8 @@
 			children = (
 				427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */,
 				427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */,
+				42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */,
+				428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */,
 			);
 			path = "Animation Controller";
 			sourceTree = "<group>";
@@ -236,6 +242,7 @@
 				42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */,
 				42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */,
 				42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */,
+				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
 				42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */,
 				42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */,
@@ -246,6 +253,7 @@
 				42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */,
 				42ECF9E721CB2FCA007AF7F9 /* Message.swift in Sources */,
 				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
+				428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */,
 				42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -33,7 +33,7 @@ class FriendTableViewCell: UITableViewCell {
         
         // Set new message indications. Empty unreadMessages means no new message.
         if friend.unreadMessages.isEmpty {
-            newMessageIndicatorImageView.image = UIImage(named: "NewMessage")
+            newMessageIndicatorImageView.image = UIImage(named: "NoNewMessage")
             newMessageLabel.text = "Tap to chat"
         } else {
             newMessageIndicatorImageView.image = UIImage(named: "NewMessage")

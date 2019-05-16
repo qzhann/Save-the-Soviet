@@ -14,14 +14,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var tableViewHeader: UIView!
     @IBOutlet weak var backButton: UIButton!
     
-    
     @IBOutlet weak var buttonsStackView: UIStackView!
     @IBOutlet weak var responseButton1: UIButton!
     @IBOutlet weak var responseButton2: UIButton!
     @IBOutlet weak var responseButton3: UIButton!
     
-    var friend: Friend = Friend.testFriend  // FIXME: Need to be replaced with the actual friend
-    
+    var friend: Friend!
     
     // MARK: - Table View Data Source Methods
     
@@ -95,11 +93,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         friend.delegate = self
         prepareUI()
-        
-        // Trigger the start of a chat using willText on the first message
-        friend.willText(message: 0)
-
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Trigger the start of a chat using willText on the first message
+        //friend.willText(message: 0)
+    }
+    
+    // MARK: - Instance Methods
     
     func prepareUI() {
         
@@ -121,10 +122,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
-    func configureRoundCorners() {
-        
-    }
-    
     func hideResponseButtons() {
         
         // Disable the back button when the friend is typing
@@ -138,9 +135,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 button?.alpha = 0
             }
         }
-        
-        
-        
     }
     
     func showResponseButtons() {
@@ -167,6 +161,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     }
     
+    // MARK: - IBAction
+    
     @IBAction func responseButtonTapped(_ sender: UIButton) {
         hideResponseButtons()
         
@@ -178,9 +174,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         default:
             friend.respondedWith(2)
         }
-        
     }
     
+    @IBAction func backButtonTapped(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
     
     
     

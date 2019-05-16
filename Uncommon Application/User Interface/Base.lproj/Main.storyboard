@@ -124,7 +124,7 @@
                                             <outletCollection property="gestureRecognizers" destination="QVy-IL-yV1" appends="YES" id="b3e-Jb-Cbm"/>
                                         </connections>
                                     </view>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="60" estimatedRowHeight="60" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="orQ-rH-Ogg">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="60" estimatedRowHeight="60" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="orQ-rH-Ogg">
                                         <rect key="frame" x="0.0" y="112.5" width="343" height="522.5"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <color key="separatorColor" red="0.85595126775315566" green="0.85595126775315566" blue="0.85595126775315566" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -155,13 +155,13 @@
                                                             </connections>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w6F-AH-BJc">
-                                                            <rect key="frame" x="73" y="9.5" width="50" height="25"/>
-                                                            <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="18"/>
+                                                            <rect key="frame" x="73" y="9.5" width="47.5" height="23.5"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="fCE-T8-fMq">
-                                                            <rect key="frame" x="71" y="34.5" width="97" height="20"/>
+                                                            <rect key="frame" x="71" y="33" width="97" height="20"/>
                                                             <subviews>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="NoNewMessage" translatesAutoresizingMaskIntoConstraints="NO" id="03e-hn-XuY">
                                                                     <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
@@ -281,6 +281,7 @@
                         <outlet property="userStatusBarView" destination="N4J-hR-oua" id="Cc0-iM-t9h"/>
                         <segue destination="KRU-W5-YgY" kind="presentation" identifier="ShowUserDetail" id="lmd-6a-jec"/>
                         <segue destination="V47-1l-NhL" kind="presentation" identifier="ShowFriendDetail" id="mNb-dE-nhU"/>
+                        <segue destination="0le-5q-sGi" kind="presentation" identifier="ShowChat" id="vjn-Gt-kpe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NRR-2p-cEs" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -437,6 +438,9 @@
                                     <constraint firstAttribute="width" secondItem="ZwB-cl-nxU" secondAttribute="height" multiplier="1:1" id="xoF-gk-6hy"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="BackButton"/>
+                                <connections>
+                                    <action selector="backButtonTapped:" destination="0le-5q-sGi" eventType="touchUpInside" id="cv7-cd-7ss"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

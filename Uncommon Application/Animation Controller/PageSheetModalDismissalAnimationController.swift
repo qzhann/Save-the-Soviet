@@ -10,6 +10,12 @@ import UIKit
 
 class PageSheetModalDismissalAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
     
+    var darkenEffect: CGFloat
+    
+    init(darkenBy darkenEffect: CGFloat) {
+        self.darkenEffect = darkenEffect
+    }
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.3
     }
@@ -21,7 +27,7 @@ class PageSheetModalDismissalAnimationController: NSObject, UIViewControllerAnim
         let blurEffect = UIBlurEffect(style: .dark)
         let darkBlurEffectView = UIVisualEffectView(effect: blurEffect)
         darkBlurEffectView.frame = destinationViewController.view.frame
-        darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(darkenEffect)
         destinationViewController.view.addSubview(darkBlurEffectView)
         
         // Insert destinationViewController's view to the container at the bottom

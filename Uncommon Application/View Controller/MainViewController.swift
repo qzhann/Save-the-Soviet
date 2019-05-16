@@ -30,9 +30,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     var user: User = User.testUser // FIXME: Need to be replaced with the actual user
     
+    var currentFriend: Friend!
+    
     // MARK: - Friend Image View Tap Delegate Method
     
     func imageTapped(at indexPath: IndexPath) {
+        currentFriend = user.friends[indexPath.row]
         performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
     }
     
@@ -51,7 +54,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
         let friend = user.friends[indexPath.row]
         cell.updateCell(with: friend)
-        cell.selectionStyle = .none
         
         // Configure image view tap delegate
         cell.imageViewTapDelegate = self
@@ -64,6 +66,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 65
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        currentFriend = user.friends[indexPath.row]
+        performSegue(withIdentifier: "ShowChat", sender: nil)
     }
     
     
@@ -154,11 +161,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         performSegue(withIdentifier: "ShowUserDetail", sender: nil)
     }
     
-    @IBAction func friendImageViewTapped(_ sender: UITapGestureRecognizer) {
-        performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
-    }
-
-    
     // Handling the change in transparency of coin image view when the user touched shop button
     
     @IBAction func shopButtonTouchedDown(_ sender: UIButton) {
@@ -190,6 +192,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "ShowFriendDetail" {
             let friendDetailViewController = segue.destination as! FriendDetailViewController
             friendDetailViewController.transitioningDelegate = self
+            friendDetailViewController.friend = currentFriend
+        } else if segue.identifier == "ShowChat" {
+            let chatViewController = segue.destination as! ChatViewController
+            chatViewController.transitioningDelegate = self
+            chatViewController.friend = currentFriend
+            
+            friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)
         }
     }
     
@@ -197,11 +206,25 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - View Controller Animated Transitioning Delegate Methods
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PageSheetModalPresentationAnimationController()
+        if presented is UserDetailViewController || presented is FriendDetailViewController {
+            return PageSheetModalPresentationAnimationController(darkenBy: 0.5)
+        } else if presented is ChatViewController {
+            return PushPresentationAnimationController()
+        } else {
+            return nil
+        }
+        
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PageSheetModalDismissalAnimationController()
+        if dismissed is UserDetailViewController || dismissed is FriendDetailViewController {
+            return PageSheetModalDismissalAnimationController(darkenBy: 0.5)
+        } else if dismissed is ChatViewController {
+            return PushDismissalAnimationController()
+        } else {
+            return nil
+        }
+        
     }
 
 }

@@ -66,7 +66,7 @@ class User {
     
     
     // FIXME: Test User
-    static var testUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: [Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend, Friend.testFriend])
+    static var testUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.testFriends)
 }
 
 /**

@@ -262,7 +262,14 @@ class Friend {
     // MARK: - Test Friend and Test Messages
     
     
-    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The sluttiest girl in the world.", allPossibleMessages: Friend.allTestMessages)
+    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", allPossibleMessages: Friend.allTestMessages)
+    
+    static var testFriends: [Friend] = [
+        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", allPossibleMessages: Friend.allTestMessages)
+    ]
     
     static var allTestMessages: [Message] = [
         Message(id: 0, content: "Hey Handsome", next: nil, responses: [Response(title: "Hey babe", next: 1), Response(title: "What's up", next: 1), Response(title: "Yo Bitch", next: 2)]),
