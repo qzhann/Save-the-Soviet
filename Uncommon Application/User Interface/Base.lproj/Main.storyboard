@@ -505,7 +505,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pfG-R4-OMY">
                                 <rect key="frame" x="19" y="141.5" width="337.5" height="60"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Dog" translatesAutoresizingMaskIntoConstraints="NO" id="0rC-Rf-Zdx">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Dog" translatesAutoresizingMaskIntoConstraints="NO" id="0rC-Rf-Zdx">
                                         <rect key="frame" x="8" y="4.5" width="51" height="51"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="0rC-Rf-Zdx" secondAttribute="height" multiplier="1:1" id="xQ0-I8-lqu"/>
@@ -1178,7 +1178,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wv1-aF-fQQ">
                                 <rect key="frame" x="19" y="141.5" width="337.5" height="60"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Dog" translatesAutoresizingMaskIntoConstraints="NO" id="v5D-3Y-ZDI">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Dog" translatesAutoresizingMaskIntoConstraints="NO" id="v5D-3Y-ZDI">
                                         <rect key="frame" x="8" y="4.5" width="51" height="51"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="v5D-3Y-ZDI" secondAttribute="height" multiplier="1:1" id="AfI-h2-KER"/>
