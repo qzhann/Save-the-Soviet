@@ -106,6 +106,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         // Update friend info
         friendNameLabel.text = friend.name
         friendDescriptionLabel.text = friend.description
+        friendImageView.image = friend.image
         
         // Update level and energy
         friendshipLevelLabel.text = "Friendship Lv \(friend.friendship.levelNumber)"
