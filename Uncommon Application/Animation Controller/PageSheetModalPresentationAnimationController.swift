@@ -43,7 +43,7 @@ class PageSheetModalPresentationAnimationController: NSObject, UIViewControllerA
         let duration = transitionDuration(using: transitionContext)
         
         // Create a UIViewPropertyAnimator which animates the dark blur effect
-        let darkBlurEffectAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeInOut) {
+        let darkBlurEffectAnimator = UIViewPropertyAnimator(duration: 0.28, curve: .easeIn) {
             darkBlurEffectView.effect = UIBlurEffect(style: .dark)
             darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(self.darkenEffect)
         }

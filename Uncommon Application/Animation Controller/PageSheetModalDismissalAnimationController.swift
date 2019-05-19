@@ -40,7 +40,7 @@ class PageSheetModalDismissalAnimationController: NSObject, UIViewControllerAnim
         let duration = transitionDuration(using: transitionContext)
         
         // Create a UIViewPropertyAnimator to animate the disappearance of the dark blur effect
-        let darkBlurEffectAnimator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
+        let darkBlurEffectAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeOut) {
             darkBlurEffectView.effect = nil
             darkBlurEffectView.backgroundColor = UIColor.black.withAlphaComponent(0)
         }
