@@ -19,7 +19,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var responseButton2: UIButton!
     @IBOutlet weak var responseButton3: UIButton!
     
-    var friend: Friend!
+    var friend: Friend = Friend.testFriend
     
     // MARK: - Table View Data Source Methods
     
@@ -32,12 +32,20 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatTableViewCell
         let message = friend.appearedMessages[indexPath.row]
-        cell.update(message: message, with: friend)
-        cell.selectionStyle = .none
         
-        return cell
+        if message.direction == .from {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
+            cell.configureUsing(message, with: friend)
+            cell.selectionStyle = .none
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
+            cell.configureUsing(message, with: friend)
+            cell.selectionStyle = .none
+            return cell
+        }
+        
     }
     
     // MARK: - Table View Delegate Methods
@@ -97,7 +105,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidAppear(_ animated: Bool) {
         // Trigger the start of a chat using willText on the first message
-        //friend.willText(message: 0)
+        friend.willText(message: 0)
     }
     
     // MARK: - Instance Methods

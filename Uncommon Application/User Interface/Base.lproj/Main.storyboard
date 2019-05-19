@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UVx-8N-OwA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0le-5q-sGi">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -310,7 +310,7 @@
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </view>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ChatCell" id="WwP-uS-Dbf" customClass="ChatTableViewCell" customModule="Uncommon_Application" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LeftChatCell" id="WwP-uS-Dbf" customClass="LeftChatTableViewCell" customModule="Uncommon_Application" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="73" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WwP-uS-Dbf" id="81F-XH-wA9">
@@ -334,34 +334,17 @@
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Hv-rr-R1X">
-                                                    <rect key="frame" x="303" y="5" width="62" height="34"/>
-                                                    <color key="backgroundColor" red="0.86313462259999996" green="0.86674273010000003" blue="0.87022477389999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yi6-1J-Xwk">
-                                                    <rect key="frame" x="313" y="15" width="42" height="14"/>
-                                                    <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="JOT-tr-3dr" secondAttribute="trailing" constant="20" id="22y-ba-dU8"/>
-                                                <constraint firstItem="9Hv-rr-R1X" firstAttribute="width" secondItem="Yi6-1J-Xwk" secondAttribute="width" constant="20" id="BfR-5I-ZV0"/>
                                                 <constraint firstItem="SqX-pR-zO2" firstAttribute="width" secondItem="JOT-tr-3dr" secondAttribute="width" constant="20" id="CUK-TQ-GXK"/>
-                                                <constraint firstAttribute="bottom" secondItem="Yi6-1J-Xwk" secondAttribute="bottom" constant="15" id="D71-WQ-OMK"/>
                                                 <constraint firstItem="SqX-pR-zO2" firstAttribute="centerY" secondItem="JOT-tr-3dr" secondAttribute="centerY" id="HQJ-bi-hfJ"/>
                                                 <constraint firstItem="JOT-tr-3dr" firstAttribute="leading" secondItem="h7g-Xm-FLk" secondAttribute="trailing" constant="15" id="M8x-YJ-UKP"/>
                                                 <constraint firstAttribute="bottom" secondItem="JOT-tr-3dr" secondAttribute="bottom" constant="15" id="Ohr-s7-Os0"/>
-                                                <constraint firstItem="Yi6-1J-Xwk" firstAttribute="top" secondItem="81F-XH-wA9" secondAttribute="top" constant="15" id="UEU-YK-y8w"/>
-                                                <constraint firstItem="9Hv-rr-R1X" firstAttribute="centerY" secondItem="Yi6-1J-Xwk" secondAttribute="centerY" id="aKo-fc-Ox3"/>
-                                                <constraint firstItem="9Hv-rr-R1X" firstAttribute="height" secondItem="Yi6-1J-Xwk" secondAttribute="height" constant="20" id="ccJ-JZ-4z9"/>
                                                 <constraint firstItem="h7g-Xm-FLk" firstAttribute="leading" secondItem="81F-XH-wA9" secondAttribute="leading" constant="5" id="fba-ZH-7iZ"/>
                                                 <constraint firstItem="JOT-tr-3dr" firstAttribute="top" secondItem="81F-XH-wA9" secondAttribute="top" constant="15" id="fdO-ac-Imr"/>
-                                                <constraint firstItem="9Hv-rr-R1X" firstAttribute="centerX" secondItem="Yi6-1J-Xwk" secondAttribute="centerX" id="iMN-OY-kWv"/>
                                                 <constraint firstAttribute="bottom" secondItem="h7g-Xm-FLk" secondAttribute="bottom" constant="5" id="oJa-ee-OEK"/>
                                                 <constraint firstItem="SqX-pR-zO2" firstAttribute="height" secondItem="JOT-tr-3dr" secondAttribute="height" constant="20" id="s4b-4a-aZY"/>
-                                                <constraint firstItem="Yi6-1J-Xwk" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="81F-XH-wA9" secondAttribute="leading" constant="20" id="v0y-9N-WFo"/>
-                                                <constraint firstAttribute="trailing" secondItem="Yi6-1J-Xwk" secondAttribute="trailing" constant="20" id="w9P-gf-3yS"/>
                                                 <constraint firstItem="SqX-pR-zO2" firstAttribute="centerX" secondItem="JOT-tr-3dr" secondAttribute="centerX" id="ySW-V0-PAc"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -369,8 +352,39 @@
                                             <outlet property="friendImageView" destination="h7g-Xm-FLk" id="gAr-Dp-ru0"/>
                                             <outlet property="leftMessageBackgroundView" destination="SqX-pR-zO2" id="oQp-RL-bt5"/>
                                             <outlet property="leftMessageLabel" destination="JOT-tr-3dr" id="eCK-bz-Y7p"/>
-                                            <outlet property="rightMessageBackgroundView" destination="9Hv-rr-R1X" id="PPS-8Y-CW4"/>
-                                            <outlet property="rightMessageLabel" destination="Yi6-1J-Xwk" id="UA3-jg-E9e"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RightChatCell" id="fsZ-wE-ct3" customClass="RightChatTableViewCell" customModule="Uncommon_Application" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="117" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fsZ-wE-ct3" id="Lx5-Cu-YIa">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pUf-9O-vO8">
+                                                    <rect key="frame" x="303" y="5" width="62" height="34"/>
+                                                    <color key="backgroundColor" red="0.86313462259999996" green="0.86674273010000003" blue="0.87022477389999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </view>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gbG-cy-wMO">
+                                                    <rect key="frame" x="313" y="15" width="42" height="14"/>
+                                                    <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="17"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="gbG-cy-wMO" secondAttribute="trailing" constant="20" id="JUJ-P3-e97"/>
+                                                <constraint firstItem="pUf-9O-vO8" firstAttribute="height" secondItem="gbG-cy-wMO" secondAttribute="height" constant="20" id="LsH-2T-ZFZ"/>
+                                                <constraint firstAttribute="bottom" secondItem="gbG-cy-wMO" secondAttribute="bottom" constant="15" id="Rug-uk-yGW"/>
+                                                <constraint firstItem="gbG-cy-wMO" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Lx5-Cu-YIa" secondAttribute="leading" constant="20" id="UZz-wH-8Tl"/>
+                                                <constraint firstItem="pUf-9O-vO8" firstAttribute="width" secondItem="gbG-cy-wMO" secondAttribute="width" constant="20" id="WfS-lp-XgC"/>
+                                                <constraint firstItem="pUf-9O-vO8" firstAttribute="centerY" secondItem="gbG-cy-wMO" secondAttribute="centerY" id="cDS-uY-fel"/>
+                                                <constraint firstItem="gbG-cy-wMO" firstAttribute="top" secondItem="Lx5-Cu-YIa" secondAttribute="top" constant="15" id="guo-le-kQE"/>
+                                                <constraint firstItem="pUf-9O-vO8" firstAttribute="centerX" secondItem="gbG-cy-wMO" secondAttribute="centerX" id="sOm-nr-BAr"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="rightMessageBackgroundView" destination="pUf-9O-vO8" id="5rY-Rf-4Sx"/>
+                                            <outlet property="rightMessageLabel" destination="gbG-cy-wMO" id="2tG-63-4IN"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
