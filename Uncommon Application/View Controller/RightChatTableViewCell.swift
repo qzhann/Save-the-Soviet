@@ -18,7 +18,7 @@ class RightChatTableViewCell: UITableViewCell {
      * message: Message instance, used to set message content of the ChatTableViewCell
      * friend: Friend instance, used to set the image of the ChatTableViewCell
      */
-    func configureUsing(_ message: Message, with friend: Friend) {
+    func configureUsing(_ message: ChatMessage, with friend: Friend) {
         
         // Configure round corners of the background views
         rightMessageBackgroundView.layer.cornerRadius = 22
@@ -28,7 +28,7 @@ class RightChatTableViewCell: UITableViewCell {
         rightMessageLabel.isHidden = true
         rightMessageBackgroundView.isHidden = true
         
-        rightMessageLabel.text = message.content
+        rightMessageLabel.text = message.text
         rightMessageLabel.isHidden = false
         rightMessageBackgroundView.isHidden = false
     }

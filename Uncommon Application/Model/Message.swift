@@ -1,5 +1,5 @@
 //
-//  ChatMessages.swift
+//  Message.swift
 //  Uncommon Application
 //
 //  Created by qizihan  on 12/20/18.
@@ -8,119 +8,179 @@
 
 import Foundation
 
-// FIXME: Update comments
 /**
- ### Instance Properties
-    * id: ID of a Message instance. Each ID is unique in allPossibleMessages array of a Friend instance. Functions should use this property to trigger corresponding special events.
-    * next: ID of the next message to display shortly after. If nil, Friend will call pausedSpeaking() method to pass responses.
-    * content: The content String of the Message.
-    * delay: Optional delay when displaying the message. Default to be content.count / 20 + 2
-    * direction: .to or .from. ChatViewController will use this property to decide which side the chat bubble should appear.
-    * responses: Default as nil. If a Message should trigger user responses, set responses to proper Response instances.
+ The data model held by a Friend in its chatHistory.
  */
-struct Message {
-    
-    enum MessageDirection {
-        case to
-        case from
+class ChatMessage: Equatable {
+    // MARK: Equatable protocol stub
+    static func ==(lhs: ChatMessage, rhs: ChatMessage) -> Bool{
+        return lhs.text == rhs.text && lhs.direction == rhs.direction
     }
     
-    var id: Int
-    var next: Int?
-    var content: String
-    var delay: Double {
-        return Double(content.count) / 20 + 2
-    }
     
+    // MARK: - Instance properties
+    var text: String
     var direction: MessageDirection
-    var responses: [Response]?
-    
-    // FIXME: Implementations of the 2 restrictions may need to change
-    var energyNeeded: Double?
-    var levelRestriction: Int?
+    enum MessageDirection {
+        /// ChatMessage sent by the User.
+        case outgoing
+        /// ChatMessage sent by a Friend.
+        case incoming
+    }
+    /// The time for a ChatMessage in the chatHistory to be displayed.
+    var delay: Double
     
     
     // MARK: - Initializers
-    
     /**
-     - parameters:
-        - id: The ID for each message of a Friend instance. ID is unique for all Message instances of a Friend
-        - next: The ID of the next message to display. If no message directly follows, set it to nil.
-        - responses: Optional array of Response instances corresponding to the message. If no response should be prompted to the user, set it to nil.
-        - content: Content String of the Message.
-     
-    - returns:
-        - A Message instance
+     Initializes a ChatMessage using text and direction. Calculates delay using the length of the text.
      */
-    init(id: Int, content: String, next: Int?, responses: [Response]?) {
-        self.id = id
-        self.next = next
-        self.direction = .from
-        self.content = content
-        self.responses = responses
-    }
-    
-    /**
-     Use this initializer to create a temporary "..." Message instance. Typically called by willText() method a Friend to display placeholder "..." message.
-     - Parameter content: The content string of the Message, typically "..."
-     */
-    init(_ content: String, direction: MessageDirection) {
-        self.id = -2
-        self.responses = nil
+    init(text: String, direction: MessageDirection) {
+        self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.content = content
-        self.next = nil
+        self.delay = 0.5 + Double(text.count) / 20
     }
     
-    // FIXME: Documentation
-    init(response: String) {
-        self.id = -1
-        self.responses = nil
-        self.direction = .to
-        self.content = response
-        self.next = nil
+    /**
+     Initializes a ChatMessage using text and direction. Calculates delay using the length of the text.
+     */
+    init(text: String, direction: MessageDirection, delay: Double) {
+        self.text = text.count <= 3 ? "  \(text)  " : text
+        self.direction = direction
+        self.delay = delay
     }
     
-    // FIXME: Documentation
-    init(lastResponse: String, next: Int) {
-        self.id = -1
-        self.responses = nil
-        self.direction = .to
-        self.content = lastResponse
-        self.next = next
-    }
-
+    // MARK: - Static properties
+    static let incomingThinkingMessage = ChatMessage(text: "...", direction: .incoming, delay: 0.5)
+    static let outgoingThinkingMessage = ChatMessage(text: "...", direction: .outgoing, delay: 0.5)
 }
 
-struct Response {
-    var title: String
-    var contents: [Message]
-    var next: Int
-    
-    // FIXME: Need an init statement which takes in strings and then automatically intializes these strings into title and content Messages with .to direction.
-    init(title: String, contents: [String], next: Int) {
-        self.title = title
-        
-        var finalContents: [Message] = []
-        
-        for content in contents {
-            if content == contents.last {
-                finalContents.append(Message(lastResponse: content, next: next))
-            } else {
-                finalContents.append(Message(response: content))
+// MARK: -
+// MARK: -
+
+
+/**
+ A struct that holds texts, optional OutgoingMessage array as responses, and optional ChatConsequence array as consequences, marked by a unique id for quick retrieval.
+ */
+struct IncomingMessage {
+    // MARK: Instance properties
+    /// A unique id which allows quick retrieval and quick initialization for OutgoingMessage. It is the same as the IncomingMessage's index in the allPossbileMessages array of a Friend.
+    var id: Int
+    /// An array of String that will be texted in sequence by a Friend when sending the IncomingMessage.
+    var texts: [String]
+    /// An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
+    var responses: [OutgoingMessage]?
+    /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
+    var consequences: [ChatConsequence]?
+    /// A get-only property that returns the corresponding ChatMessages using texts.
+    var chatMessages: [ChatMessage] {
+        get {
+            var currentMessages: [ChatMessage] = []
+            for text in texts {
+                currentMessages.append(ChatMessage(text: text, direction: .incoming))
             }
+            return currentMessages
         }
-        
-        self.contents = finalContents
-        self.next = next
-        
     }
     
-    // FIXME: Documentation
-    init(title: String, next: Int) {
-        self.title = title
-        self.contents = [Message(lastResponse: title, next: next)]
-        self.next = next
+    
+    // MARK: - Initializers
+    /**
+     Initializes an IncomingMessage.
+     - Parameters:
+        - id: The unique identifier for the IncomingMessage. This should always be the same as the IncomingMessage's index in allPossibleMessages.
+        - texts: A variadic parameter that takes in Strings to be texted in sequence by a Friend when sending the IncomingMessage.
+        - responses: An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
+        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
+     */
+    init(id: Int, texts: String..., responses: [OutgoingMessage]?, consequences: [ChatConsequence]? = nil) {
+        self.id = id
+        self.texts = texts
+        self.responses = responses
+        self.consequences = consequences
     }
 }
 
+// MARK: -
+// MARK: -
+
+/**
+ A struct that holds description, texts, optional Int as the Id for the response IncomingMessage, and optional ChatConsequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
+ */
+struct OutgoingMessage {
+    // MARK: Instance properties
+    /// The String displayed for each response choice.
+    var description: String
+    /// An array of String that will be texted in sequence by the User when sending the OutgoingMessage.
+    var texts: [String]
+    /// If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
+    var responseMessageId: Int?
+    /// If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
+    var levelRestriction: Int?
+    /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
+    var consequences: [ChatConsequence]?
+    /// A get-only property that returns the corresponding ChatMessages using texts.
+    var chatMessages: [ChatMessage] {
+        get {
+            var currentMessages: [ChatMessage] = []
+            for text in texts {
+                if text == texts.first {
+                    // The first ougoing ChatMessage does not delay
+                    currentMessages.append(ChatMessage(text: text, direction: .outgoing, delay: 0))
+                } else {
+                    currentMessages.append(ChatMessage(text: text, direction: .outgoing))
+                }
+            }
+            return currentMessages
+        }
+    }
+    
+    
+    // MARK: - Initializers
+    /**
+     Initializes an IncomingMessage whose description and texts are different.
+     - Parameters:
+        - description: The String displayed for each response choice.
+        - texts: A variadic parameter that takes in Strings to be texted in sequence by the User when sending the OutgoingMessage.
+        - responseMessageId: If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
+        - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
+        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
+     */
+    init(description: String, texts: String..., responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [ChatConsequence]? = nil) {
+        self.description = "(\(description))"
+        self.texts = texts
+        self.responseMessageId = responseMessageId
+        self.levelRestriction = levelRestriction
+        self.consequences = consequences
+    }
+    
+    /**
+     Initializes a single-text OutgoingMessage.
+     - Parameters:
+        - text: The only string that will be texted by the User when sending the OutgoingMessage.The OutgoingMessage's description is initialized using this parameter.
+        - responseMessageId: If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
+        - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
+        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
+     */
+    init(text: String, responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [ChatConsequence]? = nil) {
+        self.description = text
+        self.texts = [text]
+        self.responseMessageId = responseMessageId
+        self.levelRestriction = levelRestriction
+        self.consequences = consequences
+    }
+}
+
+// MARK: -
+// MARK: -
+
+/// Consequences of a IncomingMessage or an OutgoingMessage, represented with enums.
+enum ChatConsequence {
+    case makeNewFriend(Friend)
+    case changeLevelProgressBy(Int)
+    case changeEnergyProgressBy(Int)
+    case changeFriendshipProgressBy(Int)
+    case upgradeUserPower(Power)
+    case upgradeFriendPower(Power)
+    case makeAchievement(Achievement)
+}

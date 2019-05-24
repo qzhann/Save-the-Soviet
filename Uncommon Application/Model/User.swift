@@ -9,18 +9,6 @@
 import Foundation
 import UIKit
 
-/**
- ### Instance Properties
-    * name
-    * image
-    * level: Should use level.levelNumber to initialize Quiz of corresponding difficulty
-    * description: A description generated for the user based on the user's game state
-    * energy
-    * friends: Should be sorted in the order in which they are actively chatting
-    * achievements
-    * powers
- - Important: All Possible Message instances are encapsulated in each Friend instance the user can have.
- */
 class User {
     var name: String
     var image: UIImage
@@ -63,6 +51,9 @@ class User {
         self.image = image
         self.friends = friends
     }
+    
+    func makeNewFriend(friend: Friend) {}
+    // FIXME: Continue to write more user functions
     
     
     // FIXME: Test User
@@ -162,8 +153,4 @@ struct Energy {
         self.progress = progress
         normalizedProgress = Float(progress) / Float(maximum)
     }
-    
-    
-    
-    
 }

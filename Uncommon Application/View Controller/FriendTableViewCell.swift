@@ -32,7 +32,7 @@ class FriendTableViewCell: UITableViewCell {
         friendNameLabel.text = friend.name
         
         // Set new message indications. Empty unreadMessages means no new message.
-        if friend.unreadMessages.isEmpty {
+        if friend.chatHistory.isEmpty {
             newMessageIndicatorImageView.image = UIImage(named: "NoNewMessage")
             newMessageLabel.text = "Tap to chat"
         } else {
@@ -53,7 +53,7 @@ class FriendTableViewCell: UITableViewCell {
         friendImageBackgroundView.layer.shadowColor = UIColor.black.cgColor
         friendImageBackgroundView.layer.shadowOpacity = 0.4
         friendImageBackgroundView.layer.shadowRadius = 2
-        friendImageBackgroundView.layer.shadowOffset = CGSize.zero
+        friendImageBackgroundView.layer.shadowOffset = .zero
         friendImageBackgroundView.layer.shadowPath = UIBezierPath(roundedRect: friendImageView.bounds, cornerRadius: friendImageView.layer.cornerRadius).cgPath
         friendImageBackgroundView.backgroundColor = UIColor.clear
     }

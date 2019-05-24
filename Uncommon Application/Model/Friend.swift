@@ -9,296 +9,126 @@
 import Foundation
 import UIKit
 
-protocol ChatResponsesDelegate {
-    
-    /**
-     Called by Friend when the latest Message's next is nil.
-     - Parameter responses: Optional response array of the latest Message.
-     */
-    func promptUserWith(responses: [Response])
-    
-    /**
-     Called by Friend whenever a Message has been added to appearedMessages.
-     - Parameter row: the row at which the table view should insert the new row at.
-     */
-    func updateTableView(at row: Int, remove: Bool, with: UITableView.RowAnimation)
-    
-    // FIXME: Need documentation
-    func endChat()
-    
+/**
+ Adopted by ChatViewController to display chat history with a Friend.
+ */
+protocol ChatDisplayDelegate: AnyObject {
+    /// Called when Friend adds incoming ChatMessage to chatHistory.
+    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [ChatConsequence]?)
+    /// Called when Friend adds outgoing ChatMessage to chatHistory.
+    func didAddOutgoingMessageWith(responseId: Int?, consequences: [ChatConsequence]?)
 }
 
+// MARK: -
+// MARK: -
+
 /**
- ChatViewController will be passed a Friend class instance from MainViewController. We need not worry about passing Friend instance back because it is implemented as a class.
- 
- ### Instance Properties
-    * name
-    * image
-    * description: General description of the friend, shown when the user makes new friend and in the friend's description pop-up.
-    * friendship
-    * powers
-    * delegate: ChatResponseDelegate, by default is the ChatViewController, will be passed the optional Response array from the latest Message.
-    * isChatting: Automatically handles whether to use unreadMessages and call isTexting() or simply store it. Sets true when ChatViewController is appearing, and sets to false when ChatViewController segues to other view controllers.
-    * appearedMessages: Message instances that have been displayed
-    * unreadMessages: Message instances that are to be displayed with insertRow(:) method with animation when user enters chat with the friend. If not empty, MainViewController displays indications of new message with the friend. After user response, Message instances are first added here, then handled by willText() method to add to appearedMesssages.
-    * allPossibleMessages: All messages the friend can possibly send
- 
- ### Type Properties
-    * testFriend: A Friend instance used for testing purposes
- 
- ### Instance Methods
-    * willText(id: Int): Pass in the id of the Message you wish to start a conversation with, and the Friend will handle the rest automatically. Internally, calls sendMessage() and informs it that delay is needed.
-    * respondedWith(_ option: Int): Called by the ChatViewController that is displaying the chat contents of the Friend after the user chooses a response option from the UI. Calls willText(response: Response) on the corresponding Response of the last Message in appearedMessages.
- 
- ### Initializer
-    * Initialize with name, image, and description.
- 
- - Important: Responses to a message is NOT in allMessages. When user selects a response, the Friend instance should create a Message instance
+ A class which holds information about a friend and the chat history with that friend.
  */
 class Friend {
+    // MARK: Instance properties
     var name: String
     var image: UIImage
     var description: String
-    var friendship = Friendship(progress: 6)
-    var powers: [Power] = [         // FIXME: Replace with real powers
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", type: .good),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", type: .good, levelNeeded: nil, coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", type: .good)]),
-        
-        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", type: .bad)
-    ]
-    var delegate: ChatResponsesDelegate!
-    
-    // When the chatting state has become active, he Friend should text all Message instances in unreadMessages
-    var isChatting = true {
-        didSet {
-            if isChatting {
-                isTexting()
-            }
-        }
+    var friendship: Friendship
+    var powers: [Power]
+    /// The object responsible for displaying the chat history, typically the ChatViewController.
+    weak var chatDelegate: ChatDisplayDelegate?
+    /// chatHistory records all ChatMessage send to and from the Friend. If the chatDelegate did not finish the delayed display of the chatHistory upon dismissal, chatHistory will be copied over to update the chatDelegate when presenting it.
+    var chatHistory: [ChatMessage] = []
+    ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
+    var mostRecentResponse: MostRecentResponse = .none
+    enum MostRecentResponse {
+        /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses, otherwise this should end chat.
+        case outgoingMessages([OutgoingMessage]?)
+        /// User just responded to an IncomingMessage, before the ensuing IncomingMessage is sent.
+        case completed
+        /// No response is recorded, this triggers the beginning of a chat.
+        case none
     }
     
-    // When unreadMessages is changed, the user is texting something.
-    var unreadMessages: [Message] = [] {
-        didSet {
-            if isChatting {
-                isTexting()
-            }
-        }
-    }
+    /// The data store for all messages that can be sent to and from a Friend, accessed by the chat status control instance methods.
+    private var allPossibleMessages: [IncomingMessage]
     
-    // Before appearedMessages is changed, the user did text something.
-    var appearedMessages: [Message] = []
     
-    // FIXME: Should be initialized properly
-    private var allPossibleMessages: [Message] = Friend.allTestMessages
-    
-    var allPossibleResponses: [Response] = []
-    
-    // MARK: - Initializer
-    
+    // MARK: - Initializers
     /**
-     Initialize a basic friend instance.
-     - Parameters:
-        - name: Name of the friend
-        - image: Image of the friend
-        - description: General description of the friend, shown when the user makes new friend
+     Full initializer for a Friend.
      */
-    init(name: String, image: UIImage, description: String, allPossibleMessages: [Message]) {
+    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], allPossibleMessages: [IncomingMessage]) {
         self.name = name
         self.image = image
         self.description = description
+        self.friendship = friendship
+        self.powers = powers
         self.allPossibleMessages = allPossibleMessages
     }
     
+    
+    // MARK: - Chat Status Control Methods
     /**
-     Initializes a placeholder friend instace. Note that this is only useful for declaring instance properties for a view controller. Any property initialized using this initializer should be replaced by an actual Friend instance.
+     Helper method to retrieve an IncomingMessage from allPossibleMessages using id as array index.
+     - returns: Optional IncomingMessage whose index in allPossibleMessages is the parameter id, nil if id is an invalid index.
      */
-    
-    init() {
-        self.name = "TestFriend"
-        self.image = UIImage(named: "Lucia")!
-        self.description = "This is a friend description."
-    }
-    
-    // MARK: - Texting Status Control Methods
-    
-    /**
-     Adds Message instance to unreadMessages. Accesses each Message using id. We only need to pass in the id of the first message needed to start a conversation, and the rest of the conversation will be automatically handled. This method also handles the addition and removal of "..." Message before the friend texts the acutal Message.
-     - Parameter messages: ID of the next messages the Friend will text.
-     */
-    /**
-     Called after the user selects a Response from UI. Initializing new Message instances and add to appearedMessages. Also call willText() on the next Message the Friend should send.
-     */
-    func respondedWith(_ option: Int) {
-        // Fetch the corresponding response
-        if let response = appearedMessages.last?.responses?[option] {
-            // Initialize a Message instance using response and add call willText()
-            willText(response: response)
-        }
-    }
-    
-    func willText(message: Int) {
-        let currentMessage = getMessage(number: message)
-        
-        sendMessage(currentMessage, delay: true)
+    private func incomingMessageWithId(_ id: Int) -> IncomingMessage? {
+        guard id >= 0 && id < allPossibleMessages.count else { return nil }
+        return allPossibleMessages[id]
     }
     
     /**
-     Sends each Message instance of a Response's contents to the Friend by calling sendMessage(_:, delay:).
-     - Parameter response: the response whose content Message instances about to be sent by the user.
+     Sends IncomingMessage with the id as index in allPossibleMessages. Generates ChatMessages from the IncomingMessage and append to the chat history. Notifies chatDelegate of the addition. Records the IncomingMessage's responses as the mostRecentResponse.
      */
-    private func willText(response: Response) {
-        
-        // Send each Message in the response
-        for index in response.contents.indices {
-            let currentMessage = response.contents[index]
-            
-            switch index {
-            case 0:
-                sendMessage(currentMessage, delay: false)
-            default:
-                sendMessage(currentMessage, delay: true)
-            }
-            
-        }
+    func sendIncomingMessageWithId(_ id: Int) {
+        guard let incomingMessage = incomingMessageWithId(id) else { return }
+        chatHistory.append(contentsOf: incomingMessage.chatMessages)
+        chatDelegate?.didAddIncomingMessageWith(responses: incomingMessage.responses, consequences: incomingMessage.consequences)
+        mostRecentResponse = .outgoingMessages(incomingMessage.responses)
     }
 
     /**
-     Adds Message instances from unreadMessages to appearedMessages. Calls didText(). This is function serves as the buffer function useful for transitioning betweeen an active / inactive chat state of a Friend.
+     Sends OutgoingMessage chosen by the user. Generates ChatMessages from the OutgoingMessage and appends to chatHistory. Notifies chatDelegate of the addition. Records the mostRecentResponse as completed.
      */
-    private func isTexting() {
-        guard unreadMessages.isEmpty == false else { return }
-        let message = unreadMessages.removeFirst()
-        appearedMessages.append(message)
-        didText()
+    func respondedWith(_ outgoingMessage: OutgoingMessage) {
+        chatHistory.append(contentsOf: outgoingMessage.chatMessages)
+        
+        chatDelegate?.didAddOutgoingMessageWith(responseId: outgoingMessage.responseMessageId, consequences: outgoingMessage.consequences)
+        mostRecentResponse = .completed
     }
     
-    /**
-     Calls the delegate to update table view content for each new message in appearedMessages. Determines whether to prompt for user response, initiate special incidents, or end chat.
-     */
-    private func didText() {
-        // Guard there is a last message
-        guard let newMessage = appearedMessages.last else {return}
-        
-        // Calls the delegate to update the message using correct animation
-        if newMessage.direction == .from {
-            delegate.updateTableView(at: appearedMessages.count - 1, remove: false, with: .left)
-        } else {
-            delegate.updateTableView(at: appearedMessages.count - 1, remove: false, with: .right)
-        }
-        
-        // If there is a next Message, keep on texting
-        if let nextMessageID = newMessage.next {
-            willText(message: nextMessageID)
-        } else if let responses = newMessage.responses {
-        // If next is nil and responses is not nil, pass the Response data to the delegate
-            delegate.promptUserWith(responses: responses)
-        } else if newMessage.direction == .from {
-        // If the next and responses are all nil of a received Message, end the chat
-            delegate.endChat()
-        }
-        
-        // If next and responses are all nil of a Message that is of direction .to, then do nothing and continue chatting
-        
-    }
-    
-    /**
-     Called by willText(message: Int) and willText(response: Response), handles proper delay if asked to and handles the addtion and removal of the "..." typing indicator.
-     */
-    private func sendMessage(_ message: Message, delay: Bool) {
-        // FIXME: The entire "..." addtion and removal might very likely to cause problems in the future. COME BACK if there is problem.
-        
-        guard delay == true else {
-            unreadMessages.append(message)
-            return
-        }
-        
-        // Adds a "..." Message after a delay, before the friend texts the actual Message.
-        let addIndicatorTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { (timer) in
-            
-            // If the User is not in the Chat View Controller, then the addtion of "..." is not executed.
-            if self.isChatting == true {
-                // Adds "..." Message and then calls the delegate to update the table view
-                self.appearedMessages.append(Message("   ...   ", direction: message.direction))
-                self.delegate.updateTableView(at: self.appearedMessages.count - 1, remove: false, with: .fade)
-            }
-            
-        }
-        
-        // Saves energy usage
-        addIndicatorTimer.tolerance = 0.5
-        
-        // Removes the ... Message after a delay, and then adds the acutal Message to unreadMessages
-        let removeIndicatorTimer = Timer.scheduledTimer(withTimeInterval: message.delay, repeats: false) { (_) in
-            
-            // If the User is not in the Chat View Controller, then the removal of "..." is not executed.
-            if self.isChatting == true {
-                // Removes "..." from appearedMessages and then calls the delegate to update table view
-                self.appearedMessages.remove(at: self.appearedMessages.count - 1)
-                self.delegate.updateTableView(at: self.appearedMessages.count, remove: true, with: .fade)
-            }
-            
-            self.unreadMessages.append(message)
-        }
-        
-        // Saves energy usage
-        removeIndicatorTimer.tolerance = 0.5
-    }
-    
-    // MARK: - Helper Functions
-    
-    /**
-     - returns: Message with the specified id from allPossibleMessages of the Friend.
-     - Important: If id is smaller than 1000, will get the message using array index by looking up allPossibleMessages array. Otherwise return the id % 1000 to last Message.
-     */
-    private func getMessage(number id: Int) -> Message {
-        if id < 1000 {
-            return allPossibleMessages[id]
-        } else {
-            return allPossibleMessages[allPossibleMessages.count - 1 - (id % 1000)]
-        }
-    }
     
     // MARK: - Test Friend and Test Messages
-    
-    
-    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", allPossibleMessages: Friend.allTestMessages)
+    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages)
     
     static var testFriends: [Friend] = [
-        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", allPossibleMessages: Friend.allTestMessages)
+        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages)
     ]
     
-    static var allTestMessages: [Message] = [
-        Message(id: 0, content: "Hey Handsome", next: nil, responses: [Response(title: "Hey babe", next: 1), Response(title: "What's up", next: 1), Response(title: "Yo Bitch", next: 2)]),
-        Message(id: 1, content: "Do you want to get together?", next: nil, responses: [Response(title: "(Try to end chat)", next: 2), Response(title: "(Keep on flirting)", contents: ["Yea sure!", "Got any plans for tonight?"], next: 3), Response(title: "I'll consider that ;)", next: 4)]),
-        Message(id: 2, content: "Nvm.", next: 1000, responses: nil),
-        Message(id: 3, content: "Actually... I am going to a party tonight...", next: 4, responses: nil),
-        Message(id: 4, content: "If we have something good to do, I'm down for you ;D", next: nil, responses: [Response(title: "How about... a movie night?", next: 5), Response(title: "Wanna netflix and chill?", next: 5), Response(title: "Well, you can suck my dick ;D", next: 6)]),
-        
-        Message(id: 5, content: "Sure~", next: 1000, responses: nil),
-        Message(id: 6, content: "Fuck you pervert", next: nil, responses: [Response(title: "I love you.", next: 1000), Response(title: "I hate you!", next: 1000), Response(title: "I miss you.", next: 1000)]),
-        
-        Message(id: 1000, content: "Lucia has left chat.", next: nil, responses: nil),
+    static var allTestMessages: [IncomingMessage] = [
+        IncomingMessage(id: 0, texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1), OutgoingMessage(text: "Whats up", responseMessageId: 1), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
+        IncomingMessage(id: 1, texts: "I couldn't figure out the answer to the coding problem...", "Could you plz help me?", "Love to have you help me here.", "I'm for real.", "Not lying to you.", "yea for real...", responses: [OutgoingMessage(text: "Yea", responseMessageId: 3), OutgoingMessage(text: "Sure~", responseMessageId: 4), OutgoingMessage(text: "Sorry... Can't help you.", responseMessageId: 5)]),
+        IncomingMessage(id: 2, texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)]),
+        IncomingMessage(id: 4, texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        IncomingMessage(id: 4, texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        IncomingMessage(id: 5, texts: "Nvm.", responses: nil),
+        IncomingMessage(id: 6, texts: "???", responses: [OutgoingMessage(text: "????", responseMessageId: 5), OutgoingMessage(text: "?????", responseMessageId: 5), OutgoingMessage(text: "??????", responseMessageId: 5), OutgoingMessage(text: "???????", responseMessageId: 5)]),
+        IncomingMessage(id: 7, texts: "Yea sure!", responses: nil),
+        IncomingMessage(id: 8, texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        IncomingMessage(id: 9, texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        IncomingMessage(id: 10, texts: "It's okay.", "You don't have to apologize", responses: nil)
     ]
-    
 }
 
-// MARK: - Friendship struct
+// MARK: -
+// MARK: -
 
 /**
- ### Instance Properties
-    * progress: Progress of the friendship. Whenever updated, automatically updates levelNumber and currentUpperBound
-    * levelNumber: Level Number displayed on UI
-    * currentUpperBound: The maximum progress number to remain in the same levelNumber
-    * upperBounds: The source of update for currentUpperBound
- 
- ### Initializer
-    * Initialize with progress.
+ A struct to hold information about the Friendship with a Friend.
  */
 struct Friendship {
+    // MARK: Instance properties
     var progress: Int {
         didSet {
             levelNumber = (progress / 10) + 1
@@ -307,24 +137,15 @@ struct Friendship {
             normalizedProgress = Float((progress - previousUpperBound) / (currentUpperBound - previousUpperBound))
         }
     }
-    
     var normalizedProgress: Float = 0
-    
     var levelNumber: Int = 0
-    
     var currentUpperBound: Int = 10
     private var previousUpperBound: Int = 0
     private var upperBounds = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
     
+    // MARK: - Initializers
     /**
-     Default initializer, typically used to create a Friendship instance for a new friend.
-     */
-    init() {
-        self.progress = 0
-    }
-    
-    /**
-     - parameter progress: Progress of the friendship.
+     Initializes a Friendship using progress.
      */
     init(progress: Int) {
         self.progress = progress
