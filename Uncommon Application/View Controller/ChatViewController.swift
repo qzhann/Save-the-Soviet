@@ -141,7 +141,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             totalDelay += delay
             
             // Add each new message with correct delay
-            let messageAdditionTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
+            let messageAdditionTimer = Timer(timeInterval: totalDelay, repeats: false) { (_) in
                 // Update the data model
                 self.displayedChatHistory.append(message)
                 // Update chatTableView and scroll to show addition
@@ -151,6 +151,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             // Save energy
             messageAdditionTimer.tolerance = 0.5
+            RunLoop.current.add(messageAdditionTimer, forMode: .common)
         }
         
         // If there is no new message, return a delay of 0.5 to allow time for the responseTableView to appear, otherwise return the correct totalDelay.
@@ -193,6 +194,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             button?.isEnabled = false
             button?.alpha = 0
         }
+        buttonsStackView.isHidden = true
     }
     
     func hideResponseButtons() {
@@ -243,11 +245,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Set the chatDelegate for the Friend
         friend.chatDelegate = self
         
-        // FIXME: need to update this
-        
-        // update the chat history using Friend's chatHistory
-        displayedChatHistory = friend.chatHistory
-        
+        // update the chat history starting from the appropriate place
+        copyChatHistoryUntilChatMessage(count: friend.displayedMessageCount)
+
         // Resume chat status using Friend's mostRecentResponse
         switch friend.mostRecentResponse {
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
@@ -259,6 +259,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // If the Friend completed a response to an IncomingMessage, do nothing
         default:
             break
+        }
+    }
+    
+    func copyChatHistoryUntilChatMessage(count historyCount: Int) {
+        // copy over the chat hisotry and remove ones not yet displayed
+        displayedChatHistory = friend.chatHistory
+        for _ in 0 ..< friend.chatHistory.count - friend.displayedMessageCount {
+            displayedChatHistory.removeLast()
         }
     }
     
@@ -301,6 +309,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
+        friend.displayedMessageCount = displayedChatHistory.count
         dismiss(animated: true, completion: nil)
     }
     

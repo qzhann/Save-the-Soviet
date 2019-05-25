@@ -36,6 +36,8 @@ class Friend {
     weak var chatDelegate: ChatDisplayDelegate?
     /// chatHistory records all ChatMessage send to and from the Friend. If the chatDelegate did not finish the delayed display of the chatHistory upon dismissal, chatHistory will be copied over to update the chatDelegate when presenting it.
     var chatHistory: [ChatMessage] = []
+    /// This tracks the number of ChatMessages displayed by the chatDelegate. When the chatDelegate was dismissed, this resumes chat from the appropriate message.
+    var displayedMessageCount = 0
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
     var mostRecentResponse: MostRecentResponse = .none
     enum MostRecentResponse {
@@ -55,12 +57,13 @@ class Friend {
     /**
      Full initializer for a Friend.
      */
-    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], allPossibleMessages: [IncomingMessage]) {
+    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], displayedMessageCount: Int, allPossibleMessages: [IncomingMessage]) {
         self.name = name
         self.image = image
         self.description = description
         self.friendship = friendship
         self.powers = powers
+        self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
     }
     
@@ -97,13 +100,13 @@ class Friend {
     
     
     // MARK: - Test Friend and Test Messages
-    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages)
+    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     
     static var testFriends: [Friend] = [
-        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, allPossibleMessages: Friend.allTestMessages)
+        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     ]
     
     static var allTestMessages: [IncomingMessage] = [

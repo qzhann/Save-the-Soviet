@@ -11,10 +11,16 @@ import Foundation
 /**
  The data model held by a Friend in its chatHistory.
  */
-class ChatMessage: Equatable {
+class ChatMessage: Equatable, CustomStringConvertible {
     // MARK: Equatable protocol stub
     static func ==(lhs: ChatMessage, rhs: ChatMessage) -> Bool{
         return lhs.text == rhs.text && lhs.direction == rhs.direction
+    }
+    
+    // MARK: - CustomStringCovertible stub
+    var description: String {
+        let messageDirectionString = direction == .incoming ? "Incoming: " : "Outgoing: "
+        return messageDirectionString + text
     }
     
     
@@ -38,7 +44,7 @@ class ChatMessage: Equatable {
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.delay = 0.5 + Double(text.count) / 20
+        self.delay = 1 + Double(text.count) / 40
     }
     
     /**
