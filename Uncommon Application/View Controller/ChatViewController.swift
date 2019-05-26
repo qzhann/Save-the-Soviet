@@ -23,8 +23,18 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: - Instance properties
     unowned var friend: Friend!
+    /// The data source used to display the chat history.
     var displayedChatHistory: [ChatMessage] = []
+    /// This is updated each time a user is prompted for a response in order to correctly notify the Friend which OutgoingMessage is chosen.
     var mostRecentOutgoingResponses: [OutgoingMessage]?
+    /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
+    var thinkingStatus: ThinkingStatus = .completed
+    enum ThinkingStatus {
+        case incoming
+        case outgoing
+        case completed
+    }
+    
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
@@ -33,28 +43,58 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - Table View Data Source Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return displayedChatHistory.count
+        switch section {
+        case 0: // Chat Cells
+            return displayedChatHistory.count
+        case 1: // Thinking Cells
+            if thinkingStatus == .completed {
+                return 0
+            } else {
+                return 1
+            }
+        default:
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let message = displayedChatHistory[indexPath.row]
-        
-        if message.direction == .incoming {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
-            cell.configureUsing(message, with: friend)
-            cell.selectionStyle = .none
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
-            cell.configureUsing(message, with: friend)
-            cell.selectionStyle = .none
-            return cell
+        switch indexPath.section {
+        case 0: // Chat Cells
+            // Fetch the message to display
+            let message = displayedChatHistory[indexPath.row]
+            // Configure and return the cell
+            if message.direction == .incoming {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
+                cell.configureUsing(message, with: friend)
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
+                cell.configureUsing(message, with: friend)
+                cell.selectionStyle = .none
+                return cell
+            }
+        case 1: // Thinking Cells
+            if thinkingStatus == .incoming {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
+                cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
+                cell.selectionStyle = .none
+                return cell
+            } else if thinkingStatus == .outgoing {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
+                cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
+                cell.selectionStyle = .none
+                return cell
+            } else {
+                return UITableViewCell()
+            }
+        default:
+            return UITableViewCell()
         }
-        
     }
     
     // MARK: - Table View Delegate Methods
@@ -66,7 +106,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // Configures the header that gives extra space above the first message
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 35
+        return section == 0 ? 35 : 0
     }
     
     
@@ -89,7 +129,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Save energy
         promptUserTimer.tolerance = 0.5
-        
     }
     
     func didAddOutgoingMessageWith(responseId: Int?, consequences: [ChatConsequence]?) {
@@ -137,21 +176,53 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         for messageIndex in oldHistoryCount ..< newHistoryCount {
             // Get each new message and the delay
             let message = friend.chatHistory[messageIndex]
-            let delay = message.delay
-            totalDelay += delay
+            totalDelay += message.delay
             
-            // Add each new message with correct delay
-            let messageAdditionTimer = Timer(timeInterval: totalDelay, repeats: false) { (_) in
+            // Calculate the addition / removal time for thinking and message
+            let messageAdditionTime = totalDelay
+            let thinkingAdditonTime = messageAdditionTime - message.delay + 0.5
+            let thinkingRemovalTime = messageAdditionTime - 0.1
+            
+            let thinkingAdditionTimer = Timer(timeInterval: thinkingAdditonTime, repeats: false) { (_) in
+                // Do not add the thinking cell if the message if the first OutgoingMessage
+                guard message.delay != 0 else { return }
+                // Update the thinking status and insert the row for thinking cell
+                switch message.direction {
+                case .incoming:
+                    self.thinkingStatus = .incoming
+                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .left)
+                case .outgoing:
+                    self.thinkingStatus = .outgoing
+                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .right)
+                }
+                self.scrollChatTableViewToBottom()
+            }
+            
+            let messageAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (_) in
                 // Update the data model
                 self.displayedChatHistory.append(message)
                 // Update chatTableView and scroll to show addition
                 self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
-                self.chatTableView.scrollToRow(at: IndexPath(row: self.displayedChatHistory.count - 1, section: 0), at: .top, animated: true)
+                self.scrollChatTableViewToBottom()
+            }
+            
+            let thinkingRemovalTimer = Timer(timeInterval: thinkingRemovalTime, repeats: false) { (_) in
+                // Do not delete the thinking cell if the message if the first OutgoingMessage
+                guard message.delay != 0 else { return }
+                // Update the thinking status and delete the row for the thinking cell
+                self.thinkingStatus = .completed
+                self.chatTableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
             }
             
             // Save energy
+            thinkingAdditionTimer.tolerance = 0.5
             messageAdditionTimer.tolerance = 0.5
+            thinkingRemovalTimer.tolerance = 0.5
+            
+            // Manually add the timers for common RunLoop mode
+            RunLoop.current.add(thinkingAdditionTimer, forMode: .common)
             RunLoop.current.add(messageAdditionTimer, forMode: .common)
+            RunLoop.current.add(thinkingRemovalTimer, forMode: .common)
         }
         
         // If there is no new message, return a delay of 0.5 to allow time for the responseTableView to appear, otherwise return the correct totalDelay.
@@ -164,11 +235,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         prepareUI()
         resumeChat()
-    }
-    
-    // Scroll ChatTableView to bottom every time the view appears
-    override func viewDidAppear(_ animated: Bool) {
-        scrollChatTableViewToBottom()
     }
     
     
@@ -184,7 +250,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         backButtonBackgroundView.layer.shadowColor = UIColor.black.cgColor
         backButtonBackgroundView.layer.shadowOpacity = 0.5
         backButtonBackgroundView.layer.shadowOffset = .zero
-        backButtonBackgroundView.layer.shadowRadius = 2
+        backButtonBackgroundView.layer.shadowRadius = 1
         backButtonBackgroundView.layer.shadowPath = UIBezierPath(roundedRect: backButtonBackgroundView.bounds, cornerRadius: backButtonBackgroundView.layer.cornerRadius).cgPath
         
         // Round corner for response buttons, and hide buttons
@@ -260,6 +326,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         default:
             break
         }
+        
+        // Scroll ChatTableView to bottom
+        scrollChatTableViewToBottom()
     }
     
     func copyChatHistoryUntilChatMessage(count historyCount: Int) {
@@ -288,7 +357,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func scrollChatTableViewToBottom() {
-        if displayedChatHistory.isEmpty == false {
+        if thinkingStatus != .completed {
+            chatTableView.scrollToRow(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
+        } else if displayedChatHistory.isEmpty == false {
             chatTableView.scrollToRow(at: IndexPath(row: displayedChatHistory.count - 1, section: 0), at: .top, animated: true)
         }
     }

@@ -44,7 +44,7 @@ class ChatMessage: Equatable, CustomStringConvertible {
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.delay = 1 + Double(text.count) / 40
+        self.delay = 1.5 + Double(text.count) / 20
     }
     
     /**
@@ -57,8 +57,8 @@ class ChatMessage: Equatable, CustomStringConvertible {
     }
     
     // MARK: - Static properties
-    static let incomingThinkingMessage = ChatMessage(text: "...", direction: .incoming, delay: 0.5)
-    static let outgoingThinkingMessage = ChatMessage(text: "...", direction: .outgoing, delay: 0.5)
+    static let incomingThinkingMessage = ChatMessage(text: "...", direction: .incoming, delay: 0)
+    static let outgoingThinkingMessage = ChatMessage(text: "...", direction: .outgoing, delay: 0)
 }
 
 // MARK: -

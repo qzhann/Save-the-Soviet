@@ -19,7 +19,7 @@ class LeftChatTableViewCell: UITableViewCell {
         * message: Message instance, used to set message content of the ChatTableViewCell
         * friend: Friend instance, used to set the image of the ChatTableViewCell
      */
-    func configureUsing(_ message: ChatMessage, with friend: Friend) {
+    func configureUsing(_ message: ChatMessage, with friend: Friend?) {
         
         // Configure round corners of the background views and friend image
         friendImageView.layer.cornerRadius = friendImageView.bounds.height / 2
@@ -32,9 +32,15 @@ class LeftChatTableViewCell: UITableViewCell {
         leftMessageLabel.isHidden = true
         leftMessageBackgroundView.isHidden = true
         
-        // Set friend image view to display friend's image
-        friendImageView.image = friend.image
-        
+        // Configure friendImageView
+        if let friend = friend {
+            // Set friend image view to display friend's image
+            friendImageView.image = friend.image
+        } else {
+            // Or hide the image view if friend is nil
+            friendImageView.isHidden = true
+        }
+
         leftMessageLabel.text = message.text
         leftMessageLabel.isHidden = false
         leftMessageBackgroundView.isHidden = false
