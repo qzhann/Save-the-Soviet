@@ -8,6 +8,17 @@
 
 import Foundation
 
+
+enum MessageDirection {
+    /// ChatMessage sent by the User.
+    case outgoing
+    /// ChatMessage sent by a Friend.
+    case incoming
+}
+
+// MARK: -
+// MARK: -
+
 /**
  The data model held by a Friend in its chatHistory.
  */
@@ -27,12 +38,6 @@ class ChatMessage: Equatable, CustomStringConvertible {
     // MARK: - Instance properties
     var text: String
     var direction: MessageDirection
-    enum MessageDirection {
-        /// ChatMessage sent by the User.
-        case outgoing
-        /// ChatMessage sent by a Friend.
-        case incoming
-    }
     /// The time for a ChatMessage in the chatHistory to be displayed.
     var delay: Double
     
