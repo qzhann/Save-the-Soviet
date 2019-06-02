@@ -173,7 +173,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 for consequence in consequences {
                     switch consequence {
                     case .endChatFrom(let direction):
-                        self.endChatFrom(direction)
+                        self.endChatFrom(direction, withDelay: 0)
                     default:
                         break
                     }
@@ -260,14 +260,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         return totalDelay == 0 ? 0.5 : totalDelay + 0.3
     }
     
-    func endChatFrom(_ direction: MessageDirection) {
+    func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.5) {
         var animation = UITableView.RowAnimation.automatic
         if direction == .incoming {
             animation = .left
         } else {
             animation = .right
         }
-        let endChatTime = 0.5
         
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
             self.chatEndingStatus = .endedFrom(direction)
