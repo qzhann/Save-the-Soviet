@@ -180,6 +180,18 @@ struct OutgoingMessage {
         self.levelRestriction = levelRestriction
         self.consequences = consequences
     }
+    
+    /**
+     Initializes a chat action which triggers some ChatConsequences but does not send messages
+     */
+    init(description: String, consequences: [ChatConsequence], levelRestriction: Int? = nil) {
+        self.description = description
+        self.texts = []
+        self.responseMessageId = nil
+        self.levelRestriction = levelRestriction
+        self.consequences = consequences
+    }
+
 }
 
 // MARK: -
@@ -187,6 +199,7 @@ struct OutgoingMessage {
 
 /// Consequences of a IncomingMessage or an OutgoingMessage, represented with enums.
 enum ChatConsequence {
+    case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
     case changeLevelProgressBy(Int)
     case changeEnergyProgressBy(Int)

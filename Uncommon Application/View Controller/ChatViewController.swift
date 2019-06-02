@@ -149,7 +149,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             if let responses = responses {
                 self.promptUserWith(responses: responses)
             } else {
-                self.endChatUsing(.incoming)
+                self.endChatFrom(.incoming)
             }
             /*
              if let consequences = consequences {
@@ -168,16 +168,22 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Handle responses and consequences
         let addResponseTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
+            // Note that we don't want to automatically end chat. This is handled as a consequence
+            if let consequences = consequences {
+                for consequence in consequences {
+                    switch consequence {
+                    case .endChatFrom(let direction):
+                        self.endChatFrom(direction)
+                    default:
+                        break
+                    }
+                }
+            }
+            
             if let responseId = responseId {
                 self.friend.sendIncomingMessageWithId(responseId)
-            } else {
-                self.endChatUsing(.outgoing)
             }
-            /*
-             if let consequences = consequences {
-             // FIXME: Do something according to the consequences given
-             }
-             */
+            
         }
         // Save energy
         addResponseTimer.tolerance = 0.5
@@ -205,10 +211,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             // Calculate the addition / removal time for thinking and message
             let messageAdditionTime = totalDelay
-            let thinkingAdditonTime = messageAdditionTime - message.delay + 0.5
+            let thinkingAdditionTime = messageAdditionTime - message.delay + 0.5
             let thinkingRemovalTime = messageAdditionTime - 0.1
             
-            let thinkingAdditionTimer = Timer(timeInterval: thinkingAdditonTime, repeats: false) { (_) in
+            let thinkingAdditionTimer = Timer(timeInterval: thinkingAdditionTime, repeats: false) { (_) in
                 // Do not add the thinking cell if the message if the first OutgoingMessage
                 guard message.delay != 0 else { return }
                 // Update the thinking status and insert the row for thinking cell
@@ -254,7 +260,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         return totalDelay == 0 ? 0.5 : totalDelay + 0.3
     }
     
-    func endChatUsing(_ direction: MessageDirection) {
+    func endChatFrom(_ direction: MessageDirection) {
         var animation = UITableView.RowAnimation.automatic
         if direction == .incoming {
             animation = .left
@@ -266,7 +272,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
             self.chatEndingStatus = .endedFrom(direction)
             self.friend.chatEndingStatus = .endedFrom(direction)
-            self.friend.mostRecentResponse = .completed
+            self.friend.responseStatus = .completed
             self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 2)], with: animation)
             self.scrollChatTableViewToBottom()
         }
@@ -367,19 +373,20 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         chatEndingStatus = friend.chatEndingStatus
 
         // Resume chat status using Friend's mostRecentResponse
-        switch friend.mostRecentResponse {
+        switch friend.responseStatus {
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
-        case .outgoingMessages(let outgoingMessages):
+        case .willPromptUserWith(let outgoingMessages):
             didAddIncomingMessageWith(responses: outgoingMessages, consequences: nil)
         // If the Friend had no record of most recent response, begin a chat.
-        case .none:
+        case .noRecord:
             friend.sendIncomingMessageWithId(0)
-        // If the Friend completed a response to an IncomingMessage, do nothing
-        default:
+        // If the Friend has completed the chat, do nothing
+        case .completed:
             break
         }
         
         // Scroll ChatTableView to bottom
+        minimizeResponseTableViewHeight()
         scrollChatTableViewToBottom()
     }
     

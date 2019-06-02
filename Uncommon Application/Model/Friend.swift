@@ -48,14 +48,14 @@ class Friend {
     /// This tracks the number of ChatMessages displayed by the chatDelegate. When the chatDelegate was dismissed, this resumes chat from the appropriate message.
     var displayedMessageCount = 0
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
-    var mostRecentResponse: MostRecentResponse = .none
-    enum MostRecentResponse {
+    var responseStatus: ResponseStatus = .noRecord
+    enum ResponseStatus {
         /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses, otherwise this should end chat.
-        case outgoingMessages([OutgoingMessage]?)
-        /// User just responded to an IncomingMessage, before the ensuing IncomingMessage is sent.
+        case willPromptUserWith([OutgoingMessage]?)
+        /// User completed a whole set of responses in a chat
         case completed
         /// No response is recorded, this triggers the beginning of a chat.
-        case none
+        case noRecord
     }
     /// This tracks whether the chat has ended, useful for resuming chat display in the chatDelegate.
     var chatEndingStatus: ChatEndingStatus = .notEnded
@@ -96,7 +96,7 @@ class Friend {
         guard let incomingMessage = incomingMessageWithId(id) else { return }
         chatHistory.append(contentsOf: incomingMessage.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: incomingMessage.responses, consequences: incomingMessage.consequences)
-        mostRecentResponse = .outgoingMessages(incomingMessage.responses)
+        responseStatus = .willPromptUserWith(incomingMessage.responses)
     }
 
     /**
@@ -104,9 +104,8 @@ class Friend {
      */
     func respondedWith(_ outgoingMessage: OutgoingMessage) {
         chatHistory.append(contentsOf: outgoingMessage.chatMessages)
-        
         chatDelegate?.didAddOutgoingMessageWith(responseId: outgoingMessage.responseMessageId, consequences: outgoingMessage.consequences)
-        mostRecentResponse = .completed
+        responseStatus = .completed
     }
     
     
@@ -131,7 +130,7 @@ class Friend {
         IncomingMessage(id: 7, texts: "Yea sure!", responses: nil),
         IncomingMessage(id: 8, texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         IncomingMessage(id: 9, texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        IncomingMessage(id: 10, texts: "It's okay.", "You don't have to apologize", responses: nil)
+        IncomingMessage(id: 10, texts: "It's okay.", "You don't have to apologize", responses: [OutgoingMessage(description: "(End Chat)", consequences: [.endChatFrom(.outgoing)]), OutgoingMessage(description: "(End Chat)", consequences: [.endChatFrom(.outgoing)]), OutgoingMessage(description: "(End Chat)", consequences: [.endChatFrom(.outgoing)])])
     ]
 }
 
