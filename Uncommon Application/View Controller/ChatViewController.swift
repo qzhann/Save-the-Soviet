@@ -15,18 +15,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var tableViewHeader: UIView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var backButtonBackgroundView: UIView!
-    
-    @IBOutlet weak var buttonsStackView: UIStackView!
-    @IBOutlet weak var responseButton1: UIButton!
-    @IBOutlet weak var responseButton2: UIButton!
-    @IBOutlet weak var responseButton3: UIButton!
+    @IBOutlet weak var responseContainerView: UIView!
     
     // MARK: - Instance properties
     unowned var friend: Friend!
     /// The data source used to display the chat history.
     var displayedChatHistory: [ChatMessage] = []
-    /// This is updated each time a user is prompted for a response in order to correctly notify the Friend which OutgoingMessage is chosen.
-    var mostRecentOutgoingResponses: [OutgoingMessage]?
     /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
     var thinkingStatus: ThinkingStatus = .completed
     enum ThinkingStatus {
@@ -36,6 +30,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     /// This tracks whether the chat has ended, also serving the data source for the end chat cell section.
     var chatEndingStatus: ChatEndingStatus = .notEnded
+    /// The TableViewController responsible for handling the display and selection of response choices
+    unowned var responseTableViewController: ResponseTableViewController!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
@@ -195,7 +191,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let newHistoryCount = friend.chatHistory.count
         var totalDelay: Double = 0
         
-        minimizeResponseTableViewHeight()
+        //minimizeResponseContainerViewHeight()
         
         for messageIndex in oldHistoryCount ..< newHistoryCount {
             // Get each new message and the delay
@@ -307,60 +303,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         backButtonBackgroundView.layer.shadowRadius = 1
         backButtonBackgroundView.layer.shadowPath = UIBezierPath(roundedRect: backButtonBackgroundView.bounds, cornerRadius: backButtonBackgroundView.layer.cornerRadius).cgPath
         
-        // Round corner for response buttons, and hide buttons
-        let buttons = [responseButton1, responseButton2, responseButton3]
-        for button in buttons {
-            button?.layer.cornerRadius = 10
-            button?.isEnabled = false
-            button?.alpha = 0
-        }
-        buttonsStackView.isHidden = true
+        responseContainerView.isHidden = true
+        responseContainerView.alpha = 0
     }
     
-    func hideResponseButtons() {
-        // Hide each response button
-        let buttons = [responseButton1, responseButton2, responseButton3]
-        UIView.animate(withDuration: 0.5, animations: {
-            for button in buttons {
-                button?.isEnabled = false
-                button?.alpha = 0
-            }
-        }) { (_) in
-            // Hide the entire button stack so that the stackView is not blocking user interaction with ChatTableView
-            self.buttonsStackView.isHidden = true
-        }
-    }
-    
-    func showResponseButtons() {
-        // Show the button stack
-        self.buttonsStackView.isHidden = false
-        
-        // Show each response button
-        let buttons = [responseButton1, responseButton2, responseButton3]
-        UIView.animate(withDuration: 0.5) {
-            for button in buttons {
-                button?.isEnabled = true
-                button?.alpha = 1
-            }
-        }
-        // Make table view scroll and inset correctly to avoid buttons blocking content
-        maximizeResponseTableViewHeight()
-
-    }
-    
-    func promptUserWith(responses: [OutgoingMessage]) {
-        // Set titles correctly on each response button
-        let buttons = [responseButton1, responseButton2, responseButton3]
-        for index in buttons.indices {
-            buttons[index]?.setTitle(responses[index].description, for: .normal)
-        }
-        
-        // Keep track of the array of OutgoingMessage and show the response buttons
-        mostRecentOutgoingResponses = responses
-        showResponseButtons()
-    }
-    
-    // FIXME: ChatViewController should set friend.mostRecentResponse to completed when calling endChat()
     func resumeChat() {
         // Set the chatDelegate for the Friend
         friend.chatDelegate = self
@@ -370,7 +316,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // update the chatEndingStatus
         chatEndingStatus = friend.chatEndingStatus
-
+        
         // Resume chat status using Friend's mostRecentResponse
         switch friend.responseStatus {
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
@@ -385,7 +331,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         // Scroll ChatTableView to bottom
-        minimizeResponseTableViewHeight()
+        minimizeResponseContainerViewHeight()
         scrollChatTableViewToBottom()
     }
     
@@ -397,19 +343,64 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func minimizeResponseTableViewHeight() {
-        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
+    func promptUserWith(responses: [OutgoingMessage]) {
+        // Keep track of the array of OutgoingMessage and show the response container view
+        responseTableViewController.responseChoices = responses
+        showResponseContainerView()
+    }
+    
+    func userRespondedWith(_ outgoingMessage: OutgoingMessage) {
+        hideResponseContainerView()
+        friend.respondedWith(outgoingMessage)
+    }
+    
+    func showResponseContainerView() {
+        responseContainerView.isHidden = false
+        
         UIView.animate(withDuration: 0.5) {
-            self.chatTableView.contentInset = contentInsets
+            self.responseContainerView.alpha = 1
         }
+        
+        // Make table view scroll and inset correctly to avoid buttons blocking content
+        maximizeResponseContainerViewHeight()
+        
+    }
+    
+    func hideResponseContainerView() {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.responseContainerView.alpha = 0
+            let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
+            self.chatTableView.contentInset = contentInsets
+        }) { (_) in
+            self.responseContainerView.isHidden = true
+            self.minimizeResponseContainerViewHeight()
+        }
+    }
+    
+    func maximizeResponseContainerViewHeight() {
+        let responseTableViewFooterHeight = 30
+        let responseCellHeight = 70
+        let height = CGFloat(responseTableViewController.responseChoices.count * responseCellHeight + responseTableViewFooterHeight)
+        
+        // Configure the height anchor of the responseContainerView
+        responseContainerView.frame = CGRect(x: 0, y: self.view.bounds.height - height, width: self.view.frame.width, height: height)
+        
+        // Inset chatTableView
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: height, right: 0)
+        chatTableView.contentInset = contentInsets
         
         scrollChatTableViewToBottom()
     }
     
-    func maximizeResponseTableViewHeight() {
-        let buttonsStackHeight = responseButton1.frame.height * 3 + 36
-        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: buttonsStackHeight, right: 0)
-        chatTableView.contentInset = contentInsets
+    func minimizeResponseContainerViewHeight() {
+        // Configure the bounds of the responseContainerView
+        responseContainerView.bounds = CGRect(x: 0, y: 0, width: 0, height: 0)
+        
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
+        
+        UIView.animate(withDuration: 0.1) {
+            self.chatTableView.contentInset = contentInsets
+        }
         
         scrollChatTableViewToBottom()
     }
@@ -433,32 +424,23 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: - IB Actions
     
-    @IBAction func responseButtonTapped(_ sender: UIButton) {
-        hideResponseButtons()
-        
-        switch sender {
-        case responseButton1:
-            friend.respondedWith(mostRecentOutgoingResponses![0])
-        case responseButton2:
-            friend.respondedWith(mostRecentOutgoingResponses![1])
-        default:
-            friend.respondedWith(mostRecentOutgoingResponses![2])
-        }
-    }
-    
     @IBAction func backButtonTapped(_ sender: UIButton) {
         friend.displayedMessageCount = displayedChatHistory.count
         dismiss(animated: true, completion: nil)
     }
-    
-    /*
+
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+        if segue.identifier == "EmbedResponseTableViewController" {
+            let responseTableViewController = segue.destination as! ResponseTableViewController
+            responseTableViewController.chatViewController = self
+            self.responseTableViewController = responseTableViewController
+        }
     }
-    */
 
 }

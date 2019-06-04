@@ -18,6 +18,8 @@
 		428136182203E7B70046EF11 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428136172203E7B70046EF11 /* ChatViewController.swift */; };
 		428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */; };
 		42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */; };
+		42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */; };
+		42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */; };
 		42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */; };
 		42ECF9D421CB2EC4007AF7F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D221CB2EC4007AF7F9 /* Main.storyboard */; };
 		42ECF9D621CB2ECB007AF7F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D521CB2ECB007AF7F9 /* Assets.xcassets */; };
@@ -45,6 +47,8 @@
 		428136172203E7B70046EF11 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushDismissalAnimationController.swift; sourceTree = "<group>"; };
 		42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPresentationAnimationController.swift; sourceTree = "<group>"; };
+		42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewController.swift; sourceTree = "<group>"; };
+		42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewCell.swift; sourceTree = "<group>"; };
 		42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uncommon Application.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42ECF9D321CB2EC4007AF7F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -125,6 +129,8 @@
 				428136172203E7B70046EF11 /* ChatViewController.swift */,
 				42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */,
 				42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */,
+				42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */,
+				42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
 				42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */,
 			);
@@ -248,6 +254,7 @@
 				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
 				42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */,
+				42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */,
 				42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */,
 				42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */,
 				42668C5521ED37B10095BDFD /* LeftChatTableViewCell.swift in Sources */,
@@ -256,6 +263,7 @@
 				42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */,
 				42ECF9E721CB2FCA007AF7F9 /* Message.swift in Sources */,
 				42060E6A22917F63002E1C64 /* RightChatTableViewCell.swift in Sources */,
+				42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */,
 				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
 				428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */,
 				42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */,
