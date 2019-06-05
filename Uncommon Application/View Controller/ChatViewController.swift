@@ -9,6 +9,19 @@
 import UIKit
 
 struct ChatController {
+    unowned var friend: Friend!
+    /// The data source used to display the chat history.
+    var displayedChatHistory: [ChatMessage] = []
+    /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
+    var thinkingStatus: ThinkingStatus = .completed
+    enum ThinkingStatus {
+        case incoming
+        case outgoing
+        case completed
+    }
+    /// This tracks whether the chat has ended, also serving the data source for the end chat cell section.
+    var chatEndingStatus: ChatEndingStatus = .notEnded
+    
     var didMaximizeResponseContainerViewHeight = false {
         didSet {
             contentOffsetCount = 0
@@ -35,18 +48,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var responseContainerView: UIView!
     
     // MARK: - Instance properties
-    unowned var friend: Friend = Friend.testFriend
-    /// The data source used to display the chat history.
-    var displayedChatHistory: [ChatMessage] = []
-    /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
-    var thinkingStatus: ThinkingStatus = .completed
-    enum ThinkingStatus {
-        case incoming
-        case outgoing
-        case completed
-    }
-    /// This tracks whether the chat has ended, also serving the data source for the end chat cell section.
-    var chatEndingStatus: ChatEndingStatus = .notEnded
+    
     /// The TableViewController responsible for handling the display and selection of response choices
     unowned var responseTableViewController: ResponseTableViewController!
     
@@ -105,15 +107,15 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0: // Chat Cells
-            return displayedChatHistory.count
+            return chatController.displayedChatHistory.count
         case 1: // Thinking Cells
-            if thinkingStatus == .completed {
+            if chatController.thinkingStatus == .completed {
                 return 0
             } else {
                 return 1
             }
         case 2: // End Chat Cells
-            switch chatEndingStatus {
+            switch chatController.chatEndingStatus {
             case .endedFrom(_):
                 return 1
             default:
@@ -128,26 +130,26 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         switch indexPath.section {
         case 0: // Chat Cells
             // Fetch the message to display
-            let message = displayedChatHistory[indexPath.row]
+            let message = chatController.displayedChatHistory[indexPath.row]
             // Configure and return the cell
             if message.direction == .incoming {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
-                cell.configureUsing(message, with: friend)
+                cell.configureUsing(message, with: chatController.friend)
                 cell.selectionStyle = .none
                 return cell
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
-                cell.configureUsing(message, with: friend)
+                cell.configureUsing(message, with: chatController.friend)
                 cell.selectionStyle = .none
                 return cell
             }
         case 1: // Thinking Cells
-            if thinkingStatus == .incoming {
+            if chatController.thinkingStatus == .incoming {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
                 cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
                 cell.selectionStyle = .none
                 return cell
-            } else if thinkingStatus == .outgoing {
+            } else if chatController.thinkingStatus == .outgoing {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
                 cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
                 cell.selectionStyle = .none
@@ -156,18 +158,18 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 return UITableViewCell()
             }
         case 2: // End Chat Cells
-            switch chatEndingStatus {
+            switch chatController.chatEndingStatus {
             case .endedFrom(let direction):
                 if direction == .incoming {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
-                    let endChatMessage = ChatMessage(text: "\(friend.name) has left chat.", direction: direction)
-                    cell.configureUsing(endChatMessage, with: friend)
+                    let endChatMessage = ChatMessage(text: "\(chatController.friend.name) has left chat.", direction: direction)
+                    cell.configureUsing(endChatMessage, with: chatController.friend)
                     cell.selectionStyle = .none
                     return cell
                 } else if direction == .outgoing {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
                     let endChatMessage = ChatMessage(text: "You have left chat.", direction: direction)
-                    cell.configureUsing(endChatMessage, with: friend)
+                    cell.configureUsing(endChatMessage, with: chatController.friend)
                     cell.selectionStyle = .none
                     return cell
                 } else {
@@ -236,7 +238,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             if let responseId = responseId {
-                self.friend.sendIncomingMessageWithId(responseId)
+                self.chatController.friend.sendIncomingMessageWithId(responseId)
             }
             
         }
@@ -246,15 +248,15 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Chat Display Delegate Helper Methods
     func updateChatWithDelay() -> Double {
-        let oldHistoryCount = displayedChatHistory.count
-        let newHistoryCount = friend.chatHistory.count
+        let oldHistoryCount = chatController.displayedChatHistory.count
+        let newHistoryCount = chatController.friend.chatHistory.count
         var totalDelay: Double = 0
         
         //minimizeResponseContainerViewHeight()
         
         for messageIndex in oldHistoryCount ..< newHistoryCount {
             // Get each new message and the delay
-            let message = friend.chatHistory[messageIndex]
+            let message = chatController.friend.chatHistory[messageIndex]
             var animation = UITableView.RowAnimation.automatic
             if message.direction == .incoming {
                 animation = .left
@@ -275,10 +277,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // Update the thinking status and insert the row for thinking cell
                 switch message.direction {
                 case .incoming:
-                    self.thinkingStatus = .incoming
+                    self.chatController.thinkingStatus = .incoming
                     self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .left)
                 case .outgoing:
-                    self.thinkingStatus = .outgoing
+                    self.chatController.thinkingStatus = .outgoing
                     self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .right)
                 }
                 self.scrollChatTableViewToBottom()
@@ -286,7 +288,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let messageAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (_) in
                 // Update the data model
-                self.displayedChatHistory.append(message)
+                self.chatController.displayedChatHistory.append(message)
                 // Update chatTableView and scroll to show addition
                 self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
                 self.scrollChatTableViewToBottom()
@@ -296,7 +298,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // Do not delete the thinking cell if the message if the first OutgoingMessage
                 guard message.delay != 0 else { return }
                 // Update the thinking status and delete the row for the thinking cell
-                self.thinkingStatus = .completed
+                self.chatController.thinkingStatus = .completed
                 self.chatTableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
             }
             
@@ -324,9 +326,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
-            self.chatEndingStatus = .endedFrom(direction)
-            self.friend.chatEndingStatus = .endedFrom(direction)
-            self.friend.responseStatus = .completed
+            self.chatController.chatEndingStatus = .endedFrom(direction)
+            self.chatController.friend.chatEndingStatus = .endedFrom(direction)
+            self.chatController.friend.responseStatus = .completed
             self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 2)], with: animation)
             self.scrollChatTableViewToBottom()
         }
@@ -360,22 +362,22 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func resumeChat() {
         // Set the chatDelegate for the Friend
-        friend.chatDelegate = self
+        chatController.friend.chatDelegate = self
         
         // update the chat history starting from the appropriate place
-        copyChatHistoryUntilChatMessage(count: friend.displayedMessageCount)
+        copyChatHistoryUntilChatMessage(count: chatController.friend.displayedMessageCount)
         
         // update the chatEndingStatus
-        chatEndingStatus = friend.chatEndingStatus
+        chatController.chatEndingStatus = chatController.friend.chatEndingStatus
         
         // Resume chat status using Friend's mostRecentResponse
-        switch friend.responseStatus {
+        switch chatController.friend.responseStatus {
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
         case .willPromptUserWith(let outgoingMessages):
             didAddIncomingMessageWith(responses: outgoingMessages, consequences: nil)
         // If the Friend had no record of most recent response, begin a chat.
         case .noRecord:
-            friend.sendIncomingMessageWithId(0)
+            chatController.friend.sendIncomingMessageWithId(0)
         // If the Friend has completed the chat, do nothing
         case .completed:
             break
@@ -388,9 +390,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func copyChatHistoryUntilChatMessage(count historyCount: Int) {
         // copy over the chat hisotry and remove ones not yet displayed
-        displayedChatHistory = friend.chatHistory
-        for _ in 0 ..< friend.chatHistory.count - friend.displayedMessageCount {
-            displayedChatHistory.removeLast()
+        chatController.displayedChatHistory = chatController.friend.chatHistory
+        for _ in 0 ..< chatController.friend.chatHistory.count - chatController.friend.displayedMessageCount {
+            chatController.displayedChatHistory.removeLast()
         }
     }
     
@@ -402,7 +404,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func userRespondedWith(_ outgoingMessage: OutgoingMessage) {
         hideResponseContainerView()
-        friend.respondedWith(outgoingMessage)
+        chatController.friend.respondedWith(outgoingMessage)
     }
     
     func showResponseContainerView() {
@@ -461,7 +463,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func scrollChatTableViewToBottom() {
         
-        switch chatEndingStatus {
+        switch chatController.chatEndingStatus {
         case .endedFrom(_):
             chatTableView.scrollToRow(at: IndexPath(row: 0, section: 2), at: .top, animated: true)
             return
@@ -469,17 +471,17 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             break
         }
         
-        if thinkingStatus != .completed {
+        if chatController.thinkingStatus != .completed {
             chatTableView.scrollToRow(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
-        } else if displayedChatHistory.isEmpty == false {
-            chatTableView.scrollToRow(at: IndexPath(row: displayedChatHistory.count - 1, section: 0), at: .top, animated: true)
+        } else if chatController.displayedChatHistory.isEmpty == false {
+            chatTableView.scrollToRow(at: IndexPath(row: chatController.displayedChatHistory.count - 1, section: 0), at: .top, animated: true)
         }
     }
     
     // MARK: - IB Actions
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        friend.displayedMessageCount = displayedChatHistory.count
+        chatController.friend.displayedMessageCount = chatController.displayedChatHistory.count
         dismiss(animated: true, completion: nil)
     }
 
