@@ -65,7 +65,7 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return 0
+        return 16
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

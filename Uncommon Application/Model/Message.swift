@@ -49,7 +49,7 @@ class ChatMessage: Equatable, CustomStringConvertible {
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.delay = 1.5 + Double(text.count) / 20
+        self.delay = 1.2 + Double(text.count) / 20
     }
     
     /**

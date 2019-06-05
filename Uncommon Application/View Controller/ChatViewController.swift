@@ -8,6 +8,23 @@
 
 import UIKit
 
+struct ChatController {
+    var didMaximizeResponseContainerViewHeight = false {
+        didSet {
+            contentOffsetCount = 0
+        }
+    }
+    var verticalContentOffset: CGFloat = -20 {
+        didSet {
+            if contentOffsetCount != 0 {
+                self.verticalContentOffset = oldValue
+            }
+            contentOffsetCount += 1
+        }
+    }
+    private var contentOffsetCount = 0
+}
+
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate {
     // MARK: IB Outlets
     
@@ -18,7 +35,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var responseContainerView: UIView!
     
     // MARK: - Instance properties
-    unowned var friend: Friend!
+    unowned var friend: Friend = Friend.testFriend
     /// The data source used to display the chat history.
     var displayedChatHistory: [ChatMessage] = []
     /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
@@ -33,8 +50,50 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     /// The TableViewController responsible for handling the display and selection of response choices
     unowned var responseTableViewController: ResponseTableViewController!
     
+    var chatController = ChatController()
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
+    }
+    
+    let hairlineView = UIView()
+    
+    
+    // MARK: - View Controller Methods
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        prepareUI()
+        resumeChat()
+
+        hairlineView.backgroundColor = UIColor.black.withAlphaComponent(0.1)
+        hairlineView.alpha = 0
+        self.view.addSubview(hairlineView)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        hairlineView.removeFromSuperview()
+    }
+    
+    
+    // MARK: - Scroll View delegate
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if chatController.didMaximizeResponseContainerViewHeight == true {
+            var alpha = (chatController.verticalContentOffset - scrollView.contentOffset.y) / 8
+            if alpha > 1 {
+                alpha = 1
+            } else if alpha < 0 {
+                alpha = 0
+            }
+            hairlineView.alpha = alpha
+        } else {
+            hairlineView.alpha = 0
+        }
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        chatController.verticalContentOffset = scrollView.contentOffset.y
     }
     
     // MARK: - Table View Data Source Methods
@@ -244,7 +303,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             // Save energy
             thinkingAdditionTimer.tolerance = 0.5
             messageAdditionTimer.tolerance = 0.5
-            thinkingRemovalTimer.tolerance = 0.5
+            thinkingRemovalTimer.tolerance = 0.3
             
             // Manually add the timers for common RunLoop mode
             RunLoop.current.add(thinkingAdditionTimer, forMode: .common)
@@ -277,14 +336,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Manually add the timers for common RunLoop mode
         RunLoop.current.add(endChatTimer, forMode: .common)
-    }
-    
-
-    // MARK: - View Controller Methods
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        prepareUI()
-        resumeChat()
     }
     
     
@@ -384,12 +435,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Configure the height anchor of the responseContainerView
         responseContainerView.frame = CGRect(x: 0, y: self.view.bounds.height - height, width: self.view.frame.width, height: height)
+        hairlineView.frame = CGRect(x: 0, y: responseContainerView.frame.minY, width: responseContainerView.frame.width, height: 0.7)
         
         // Inset chatTableView
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: height, right: 0)
         chatTableView.contentInset = contentInsets
         
         scrollChatTableViewToBottom()
+        chatController.didMaximizeResponseContainerViewHeight = true
     }
     
     func minimizeResponseContainerViewHeight() {
@@ -401,6 +454,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         UIView.animate(withDuration: 0.1) {
             self.chatTableView.contentInset = contentInsets
         }
+        chatController.didMaximizeResponseContainerViewHeight = false
         
         scrollChatTableViewToBottom()
     }
