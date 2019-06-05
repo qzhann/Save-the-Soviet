@@ -196,7 +196,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "ShowChat" {
             let chatViewController = segue.destination as! ChatViewController
             chatViewController.transitioningDelegate = self
-            chatViewController.chatController.friend = currentFriend
+            chatViewController.friend = currentFriend
             
             friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)
         }
