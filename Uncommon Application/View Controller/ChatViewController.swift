@@ -148,14 +148,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         case 1: // Thinking Cells
             if chatController.thinkingStatus == .incoming {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
-                cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
+                let cell = tableView.dequeueReusableCell(withIdentifier: "LeftThinkingCell", for: indexPath) as! LeftThinkingChatTableViewCell
                 cell.selectionStyle = .none
+                cell.thinkingImage.startAnimating()
                 return cell
             } else if chatController.thinkingStatus == .outgoing {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
-                cell.configureUsing(ChatMessage.incomingThinkingMessage, with: nil)
+                let cell = tableView.dequeueReusableCell(withIdentifier: "RightThinkingCell", for: indexPath) as! RightThinkingChatTableViewCell
                 cell.selectionStyle = .none
+                cell.thinkingImage.startAnimating()
                 return cell
             } else {
                 return UITableViewCell()
@@ -207,6 +207,15 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        switch indexPath.section {
+        case 1:
+            return 44
+        default:
+            return UITableView.automaticDimension
+        }
     }
     
     
@@ -292,10 +301,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 switch message.direction {
                 case .incoming:
                     self.chatController.thinkingStatus = .incoming
-                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .left)
+                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .top)
                 case .outgoing:
                     self.chatController.thinkingStatus = .outgoing
-                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .right)
+                    self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .top)
                 }
                 self.scrollChatTableViewToBottom()
             }

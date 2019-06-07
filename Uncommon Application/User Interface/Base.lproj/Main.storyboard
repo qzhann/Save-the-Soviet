@@ -397,6 +397,54 @@
                                             <outlet property="rightMessageLabel" destination="gbG-cy-wMO" id="2tG-63-4IN"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LeftThinkingCell" id="O4u-Jt-p5a" customClass="LeftThinkingChatTableViewCell" customModule="Uncommon_Application" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="143.33333333333334" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="O4u-Jt-p5a" id="Q9V-Nz-ds2">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Thinking1" translatesAutoresizingMaskIntoConstraints="NO" id="fSm-9x-GRP">
+                                                    <rect key="frame" x="40" y="17" width="40" height="10"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="10" id="OW5-Be-Ner"/>
+                                                        <constraint firstAttribute="width" constant="40" id="WTz-9F-SQ6"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="fSm-9x-GRP" firstAttribute="centerY" secondItem="Q9V-Nz-ds2" secondAttribute="centerY" id="QIX-oS-J3H"/>
+                                                <constraint firstItem="fSm-9x-GRP" firstAttribute="leading" secondItem="Q9V-Nz-ds2" secondAttribute="leading" constant="40" id="Rp2-8n-2pj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="thinkingImage" destination="fSm-9x-GRP" id="3a4-1s-aOp"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleAspectFit" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RightThinkingCell" id="iZt-WR-7LL" customClass="RightThinkingChatTableViewCell" customModule="Uncommon_Application" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="187.33333333333334" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iZt-WR-7LL" id="gkQ-WG-thj">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Thinking1" translatesAutoresizingMaskIntoConstraints="NO" id="Z0p-0h-wB6">
+                                                    <rect key="frame" x="312" y="17" width="40" height="10"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="40" id="91u-Hl-P28"/>
+                                                        <constraint firstAttribute="height" constant="10" id="xnW-fE-dqN"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Z0p-0h-wB6" secondAttribute="trailing" constant="8" id="7J6-mj-VY6"/>
+                                                <constraint firstItem="Z0p-0h-wB6" firstAttribute="centerY" secondItem="gkQ-WG-thj" secondAttribute="centerY" id="znT-dl-wIa"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="thinkingImage" destination="Z0p-0h-wB6" id="GXn-Ir-Nf3"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="0le-5q-sGi" id="ra0-v4-GXe"/>
@@ -457,7 +505,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cPu-KV-0jr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1957.5999999999999" y="117.39130434782609"/>
+            <point key="canvasLocation" x="1957.5999999999999" y="116.74876847290641"/>
         </scene>
         <!--Response Table View Controller-->
         <scene sceneID="Lgj-2u-nyG">
@@ -1433,5 +1481,6 @@
         <image name="Dog" width="60" height="60"/>
         <image name="Energy" width="31" height="25"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
+        <image name="Thinking1" width="40" height="10"/>
     </resources>
 </document>
