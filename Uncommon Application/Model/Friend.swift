@@ -19,6 +19,10 @@ protocol ChatDisplayDelegate: AnyObject {
     func didAddOutgoingMessageWith(responseId: Int?, consequences: [ChatConsequence]?)
 }
 
+protocol FriendStatusDisplayDelegate: AnyObject {
+    func updateStatusFor(_ friend: Friend)
+}
+
 // MARK: -
 // MARK: -
 
@@ -43,10 +47,15 @@ class Friend {
     var powers: [Power]
     /// The object responsible for displaying the chat history, typically the ChatViewController.
     weak var chatDelegate: ChatDisplayDelegate?
+    weak var statusDisplayDelegate: FriendStatusDisplayDelegate?
     /// chatHistory records all ChatMessage send to and from the Friend. If the chatDelegate did not finish the delayed display of the chatHistory upon dismissal, chatHistory will be copied over to update the chatDelegate when presenting it.
     var chatHistory: [ChatMessage] = []
     /// This tracks the number of ChatMessages displayed by the chatDelegate. When the chatDelegate was dismissed, this resumes chat from the appropriate message.
     var displayedMessageCount = 0
+    
+    var hasNewMessage = false
+    
+    var isChatting = false
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
     var responseStatus: ResponseStatus = .noRecord
     enum ResponseStatus {
@@ -62,7 +71,6 @@ class Friend {
     
     /// The data store for all messages that can be sent to and from a Friend, accessed by the chat status control instance methods.
     private var allPossibleMessages: [IncomingMessage]
-    
     
     // MARK: - Initializers
     /**
@@ -80,6 +88,7 @@ class Friend {
     
     
     // MARK: - Chat Status Control Methods
+    
     /**
      Helper method to retrieve an IncomingMessage from allPossibleMessages using id as array index.
      - returns: Optional IncomingMessage whose index in allPossibleMessages is the parameter id, nil if id is an invalid index.
@@ -107,6 +116,45 @@ class Friend {
         chatDelegate?.didAddOutgoingMessageWith(responseId: outgoingMessage.responseMessageId, consequences: outgoingMessage.consequences)
         responseStatus = .completed
     }
+    
+    
+    // MARK: - Instance methods
+    
+    func updateChatHistoryInBackground() {
+        var messageAdditionTime: Double = 0
+        
+        // Every time we update chat history in background, we start with a state of no new message
+        hasNewMessage = false
+        statusDisplayDelegate?.updateStatusFor(self)
+        
+        hasNewMessage = chatHistory.count - displayedMessageCount != 0
+        
+        for messageIndex in displayedMessageCount ..< chatHistory.count {
+            let message = chatHistory[messageIndex]
+            guard message.direction == .incoming else { continue }
+            
+            messageAdditionTime += message.delay
+            let messageBackgroundAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (timer) in
+                guard self.isChatting == false else {
+                    timer.invalidate()
+                    return
+                }
+                
+                self.displayedMessageCount += 1
+                self.statusDisplayDelegate?.updateStatusFor(self)
+            }
+            
+            messageBackgroundAdditionTimer.tolerance = 0.5
+            RunLoop.current.add(messageBackgroundAdditionTimer, forMode: .common)
+        }
+    }
+    
+    func willDismissChatDelegateWithChatHistoryCount(_ count: Int) {
+        displayedMessageCount = count
+        isChatting = false
+        updateChatHistoryInBackground()
+    }
+    
     
     
     // MARK: - Test Friend and Test Messages

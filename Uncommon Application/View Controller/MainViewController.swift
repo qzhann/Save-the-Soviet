@@ -12,7 +12,8 @@ protocol FriendImageViewTapDelegate: UIViewController {
     func imageTapped(at indexPath: IndexPath)
 }
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate {
+    
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -39,6 +40,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
     }
     
+    // MARK: - Friend status display delegate
+    
+    func updateStatusFor(_ friend: Friend) {
+        let friendIndex = user.friends.firstIndex { $0 === friend }
+        friendTableView.reloadRows(at: [IndexPath(row: friendIndex!, section: 0)], with: .none)
+    }
+    
+    
     // MARK: - Table View Data Source Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -53,6 +62,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Configure cell data and appearance
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
         let friend = user.friends[indexPath.row]
+        friend.statusDisplayDelegate = self
         cell.updateCell(with: friend)
         
         // Configure image view tap delegate
@@ -196,6 +206,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "ShowChat" {
             let chatViewController = segue.destination as! ChatViewController
             chatViewController.transitioningDelegate = self
+            currentFriend.isChatting = true
             chatViewController.friend = currentFriend
             
             friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)

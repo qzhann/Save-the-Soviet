@@ -16,6 +16,7 @@ protocol ResponseDelegate: AnyObject {
 class ResponseTableViewController: UITableViewController, ResponseDelegate {
     
     unowned var chatViewController: ChatViewController!
+    var footerHeight: CGFloat!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +66,7 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return 16
+        return 0
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -77,11 +78,17 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     }
     
     override func tableView(_ tableView: UITableView, estimatedHeightForFooterInSection section: Int) -> CGFloat {
-        return 30
+        return 40
     }
     
     override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 30
+        return 40
+    }
+    
+    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        if let footerView = view as? UITableViewHeaderFooterView {
+            footerView.contentView.backgroundColor = .white
+        }
     }
     
     

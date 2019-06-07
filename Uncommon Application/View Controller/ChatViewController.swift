@@ -41,6 +41,7 @@ struct ChatController {
 }
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate {
+    
     // MARK: IB Outlets
     
     @IBOutlet weak var chatTableView: UITableView!
@@ -186,19 +187,31 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     // MARK: - Table View Delegate Methods
-    
     // Configures the header that gives extra space above the first message
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return tableViewHeader
+        if section == 0 {
+            return UITableViewHeaderFooterView()
+        } else {
+            return nil
+        }
     }
     
     // Configures the header that gives extra space above the first message
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return section == 0 ? 35 : 0
+        if section == 0 {
+            return 70
+        } else {
+            return CGFloat.leastNormalMagnitude
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     
     
     // MARK: - Chat Display Delegate Methods
+    
     func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [ChatConsequence]?) {
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
@@ -249,12 +262,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     // MARK: Chat Display Delegate Helper Methods
+    
     func updateChatWithDelay() -> Double {
         let oldHistoryCount = chatController.displayedChatHistory.count
         let newHistoryCount = friend.chatHistory.count
         var totalDelay: Double = 0
-        
-        //minimizeResponseContainerViewHeight()
         
         for messageIndex in oldHistoryCount ..< newHistoryCount {
             // Get each new message and the delay
@@ -270,12 +282,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             // Calculate the addition / removal time for thinking and message
             let messageAdditionTime = totalDelay
-            let thinkingAdditionTime = messageAdditionTime - message.delay + 0.5
-            let thinkingRemovalTime = messageAdditionTime - 0.1
+            let thinkingAdditionTime = messageAdditionTime - message.delay + 0.6
             
             let thinkingAdditionTimer = Timer(timeInterval: thinkingAdditionTime, repeats: false) { (_) in
                 // Do not add the thinking cell if the message if the first OutgoingMessage
                 guard message.delay != 0 else { return }
+                
                 // Update the thinking status and insert the row for thinking cell
                 switch message.direction {
                 case .incoming:
@@ -289,34 +301,37 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
             
             let messageAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (_) in
-                // Update the data model
-                self.chatController.displayedChatHistory.append(message)
-                // Update chatTableView and scroll to show addition
-                self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
-                self.scrollChatTableViewToBottom()
-            }
-            
-            let thinkingRemovalTimer = Timer(timeInterval: thinkingRemovalTime, repeats: false) { (_) in
-                // Do not delete the thinking cell if the message if the first OutgoingMessage
-                guard message.delay != 0 else { return }
-                // Update the thinking status and delete the row for the thinking cell
-                self.chatController.thinkingStatus = .completed
-                self.chatTableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                
+                // If the thinking cell was not added
+                if self.chatController.thinkingStatus == .completed {
+                    self.chatController.displayedChatHistory.append(message)
+                    self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
+                    self.scrollChatTableViewToBottom()
+                } else {
+                    self.chatTableView.performBatchUpdates({
+                        self.chatController.thinkingStatus = .completed
+                        self.chatTableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                        self.chatController.displayedChatHistory.append(message)
+                        self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
+                    }) { (_) in
+                        self.view.layoutIfNeeded()
+                        self.chatTableView.layoutIfNeeded()
+                        self.scrollChatTableViewToBottom()
+                    }
+                }
             }
             
             // Save energy
             thinkingAdditionTimer.tolerance = 0.5
             messageAdditionTimer.tolerance = 0.5
-            thinkingRemovalTimer.tolerance = 0.3
             
             // Manually add the timers for common RunLoop mode
             RunLoop.current.add(thinkingAdditionTimer, forMode: .common)
             RunLoop.current.add(messageAdditionTimer, forMode: .common)
-            RunLoop.current.add(thinkingRemovalTimer, forMode: .common)
         }
         
         // If there is no new message, return a delay of 0.5 to allow time for the responseTableView to appear, otherwise return the correct totalDelay.
-        return totalDelay == 0 ? 0.5 : totalDelay + 0.3
+        return totalDelay == 0 ? 0.5 : totalDelay
     }
     
     func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.5) {
@@ -393,6 +408,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func copyChatHistoryUntilChatMessage(count historyCount: Int) {
         // copy over the chat hisotry and remove ones not yet displayed
         chatController.displayedChatHistory = friend.chatHistory
+        guard friend.chatHistory.count - friend.displayedMessageCount > 0 else { return }
         for _ in 0 ..< friend.chatHistory.count - friend.displayedMessageCount {
             chatController.displayedChatHistory.removeLast()
         }
@@ -414,7 +430,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         UIView.animate(withDuration: 0.5) {
             self.responseContainerView.alpha = 1
-            self.hairlineView.alpha = 1
+            self.hairlineView.isHidden = false
         }
         
         // Make table view scroll and inset correctly to avoid buttons blocking content
@@ -425,7 +441,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func hideResponseContainerView() {
         UIView.animate(withDuration: 0.5, animations: {
             self.responseContainerView.alpha = 0
-            self.hairlineView.alpha = 0
+            self.hairlineView.isHidden = true
             let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
             self.chatTableView.contentInset = contentInsets
         }) { (_) in
@@ -435,7 +451,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func maximizeResponseContainerViewHeight() {
-        let responseTableViewFooterHeight = 30
+        let responseTableViewFooterHeight = 40
         let responseCellHeight = 70
         let height = CGFloat(responseTableViewController.responseChoices.count * responseCellHeight + responseTableViewFooterHeight)
         
@@ -462,7 +478,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         chatController.didMaximizeResponseContainerViewHeight = false
         
-        scrollChatTableViewToBottom()
     }
     
     func scrollChatTableViewToBottom() {
@@ -485,7 +500,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - IB Actions
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
-        friend.displayedMessageCount = chatController.displayedChatHistory.count
+        friend.willDismissChatDelegateWithChatHistoryCount(chatController.displayedChatHistory.count)
         dismiss(animated: true, completion: nil)
     }
 

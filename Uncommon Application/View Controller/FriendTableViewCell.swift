@@ -20,6 +20,7 @@ class FriendTableViewCell: UITableViewCell {
     @IBOutlet weak var friendNameLabel: UILabel!
     @IBOutlet weak var newMessageIndicatorImageView: UIImageView!
     @IBOutlet weak var newMessageLabel: UILabel!
+    @IBOutlet weak var newMessageIndicatorBadge: UIView!
     
     
     /**
@@ -32,21 +33,23 @@ class FriendTableViewCell: UITableViewCell {
         friendNameLabel.text = friend.name
         
         // Set new message indications. Empty unreadMessages means no new message.
-        if friend.chatHistory.isEmpty {
-            newMessageIndicatorImageView.image = UIImage(named: "NoNewMessage")
-            newMessageLabel.text = "Tap to chat"
-        } else {
+        if friend.hasNewMessage {
             newMessageIndicatorImageView.image = UIImage(named: "NewMessage")
             newMessageLabel.text = "New message"
+            newMessageIndicatorBadge.isHidden = false
+        } else {
+            newMessageIndicatorImageView.image = UIImage(named: "NoNewMessage")
+            newMessageLabel.text = "Tap to chat"
+            newMessageIndicatorBadge.isHidden = true
         }
         
-        // Set the round corner for the friendImageView
+        // Set the round corners
         friendImageView.layer.cornerRadius = friendImageView.frame.height / 2
         friendImageView.clipsToBounds = true
-        
-        // Set the round corner for friendImageViewForegroundButton
         friendImageViewForegroundButton.layer.cornerRadius = friendImageViewForegroundButton.frame.height / 2
         friendImageViewForegroundButton.clipsToBounds = true
+        newMessageIndicatorBadge.layer.cornerRadius = newMessageIndicatorBadge.bounds.height / 2
+        newMessageIndicatorBadge.clipsToBounds = true
         
         // Set the shadow for friend image background view
         friendImageBackgroundView.layer.masksToBounds = false;
