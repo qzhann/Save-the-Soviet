@@ -14,7 +14,6 @@ protocol FriendImageViewTapDelegate: UIViewController {
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate {
     
-    
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var levelNumberLabel: UILabel!
@@ -42,9 +41,36 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - Friend status display delegate
     
-    func updateStatusFor(_ friend: Friend) {
-        let friendIndex = user.friends.firstIndex { $0 === friend }
-        friendTableView.reloadRows(at: [IndexPath(row: friendIndex!, section: 0)], with: .none)
+    func updateNewMessageStatusFor(_ friend: Friend) {
+        let friendIndex = user.friends.firstIndex { $0 === friend }!
+        friendTableView.reloadRows(at: [IndexPath(row: friendIndex, section: 0)], with: .none)
+    }
+    
+    func moveCellToTopFor(_ friend: Friend) {
+        let friendIndex = user.friends.firstIndex { $0 === friend }!
+        friendTableView.beginUpdates()
+        let friend = user.friends.remove(at: friendIndex)
+        user.friends.insert(friend, at: 0)
+        friendTableView.moveRow(at: IndexPath(row: friendIndex, section: 0), to: IndexPath(row: 0, section: 0))
+        friendTableView.endUpdates()
+    }
+    
+    
+    // MARK: - View Controller Methods
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        updateUserInfo()
+    }
+    
+    // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
+    override func viewDidLayoutSubviews() {
+        prepareUI()
+    }
+    
+    // Animate the progressViews once the views have occured
+    override func viewDidAppear(_ animated: Bool) {
+        animateProgressViews()
     }
     
     
@@ -84,23 +110,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     
-    // MARK: - View Controller Methods
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        updateUserInfo()
-    }
-    
-    // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
-    override func viewDidLayoutSubviews() {
-        prepareUI()
-        
-    }
-    
-    // Animate the progressViews once the views have occured
-    override func viewDidAppear(_ animated: Bool) {
-        animateProgressViews()
-    }
+    // MARK: - Instance methods
     
     func prepareUI() {
         

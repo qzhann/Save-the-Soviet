@@ -20,7 +20,8 @@ protocol ChatDisplayDelegate: AnyObject {
 }
 
 protocol FriendStatusDisplayDelegate: AnyObject {
-    func updateStatusFor(_ friend: Friend)
+    func updateNewMessageStatusFor(_ friend: Friend)
+    func moveCellToTopFor(_ friend: Friend)
 }
 
 // MARK: -
@@ -125,7 +126,7 @@ class Friend {
         
         // Every time we update chat history in background, we start with a state of no new message
         hasNewMessage = false
-        statusDisplayDelegate?.updateStatusFor(self)
+        statusDisplayDelegate?.updateNewMessageStatusFor(self)
         
         hasNewMessage = chatHistory.count - displayedMessageCount != 0
         
@@ -141,7 +142,8 @@ class Friend {
                 }
                 
                 self.displayedMessageCount += 1
-                self.statusDisplayDelegate?.updateStatusFor(self)
+                self.statusDisplayDelegate?.updateNewMessageStatusFor(self)
+                self.statusDisplayDelegate?.moveCellToTopFor(self)
             }
             
             messageBackgroundAdditionTimer.tolerance = 0.5
