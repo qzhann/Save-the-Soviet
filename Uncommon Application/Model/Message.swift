@@ -75,8 +75,6 @@ class ChatMessage: Equatable, CustomStringConvertible {
  */
 struct IncomingMessage {
     // MARK: Instance properties
-    /// A unique id which allows quick retrieval and quick initialization for OutgoingMessage. It is the same as the IncomingMessage's index in the allPossbileMessages array of a Friend.
-    var id: Int
     /// An array of String that will be texted in sequence by a Friend when sending the IncomingMessage.
     var texts: [String]
     /// An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
@@ -104,8 +102,7 @@ struct IncomingMessage {
         - responses: An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
-    init(id: Int, texts: String..., responses: [OutgoingMessage]?, consequences: [ChatConsequence]? = nil) {
-        self.id = id
+    init(texts: String..., responses: [OutgoingMessage]?, consequences: [ChatConsequence]? = nil) {
         self.texts = texts
         self.responses = responses
         self.consequences = consequences

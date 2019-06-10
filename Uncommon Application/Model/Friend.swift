@@ -71,13 +71,13 @@ class Friend {
     var chatEndingStatus: ChatEndingStatus = .notEnded
     
     /// The data store for all messages that can be sent to and from a Friend, accessed by the chat status control instance methods.
-    private var allPossibleMessages: [IncomingMessage]
+    private var allPossibleMessages: [Int: IncomingMessage]
     
     // MARK: - Initializers
     /**
      Full initializer for a Friend.
      */
-    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], displayedMessageCount: Int, allPossibleMessages: [IncomingMessage]) {
+    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage]) {
         self.name = name
         self.image = image
         self.description = description
@@ -169,18 +169,18 @@ class Friend {
         Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     ]
     
-    static var allTestMessages: [IncomingMessage] = [
-        IncomingMessage(id: 0, texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1), OutgoingMessage(text: "Whats up", responseMessageId: 1), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
-        IncomingMessage(id: 1, texts: "I couldn't figure out the answer to the coding problem...", "Could you plz help me?", "Love to have you help me here.", "I'm for real.", "Not lying to you.", "yea for real...", responses: [OutgoingMessage(text: "Yea", responseMessageId: 3), OutgoingMessage(text: "Sure~", responseMessageId: 4), OutgoingMessage(text: "Sorry... Can't help you.", responseMessageId: 5)]),
-        IncomingMessage(id: 2, texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)]),
-        IncomingMessage(id: 3, texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        IncomingMessage(id: 4, texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        IncomingMessage(id: 5, texts: "Nvm.", responses: nil),
-        IncomingMessage(id: 6, texts: "???", responses: [OutgoingMessage(text: "????", responseMessageId: 5), OutgoingMessage(text: "?????", responseMessageId: 5), OutgoingMessage(text: "??????", responseMessageId: 5), OutgoingMessage(text: "???????", responseMessageId: 5)]),
-        IncomingMessage(id: 7, texts: "Yea sure!", responses: nil),
-        IncomingMessage(id: 8, texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        IncomingMessage(id: 9, texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        IncomingMessage(id: 10, texts: "It's okay.", "You don't have to apologize", responses: [OutgoingMessage(description: "(End Chat)", consequences: [.endChatFrom(.outgoing)])])
+    static var allTestMessages: [Int: IncomingMessage] = [
+        0: IncomingMessage(texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1), OutgoingMessage(text: "Whats up", responseMessageId: 1), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
+        1: IncomingMessage(texts: "I couldn't figure out the answer to the coding problem...", "Could you plz help me?", "Love to have you help me here.", "I'm for real.", "Not lying to you.", "yea for real...", responses: [OutgoingMessage(text: "Yea", responseMessageId: 3), OutgoingMessage(text: "Sure~", responseMessageId: 4), OutgoingMessage(text: "Sorry... Can't help you.", responseMessageId: 5)]),
+        2: IncomingMessage(texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)]),
+        3: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        4: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        5: IncomingMessage(texts: "Nvm.", responses: nil),
+        6: IncomingMessage(texts: "???", responses: [OutgoingMessage(text: "????", responseMessageId: 5), OutgoingMessage(text: "?????", responseMessageId: 5), OutgoingMessage(text: "??????", responseMessageId: 5), OutgoingMessage(text: "???????", responseMessageId: 5)]),
+        7: IncomingMessage(texts: "Yea sure!", responses: nil),
+        8: IncomingMessage(texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        9: IncomingMessage(texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
+        10: IncomingMessage(texts: "It's okay.", "You don't have to apologize", responses: [OutgoingMessage(description: "(End Chat)", consequences: [.endChatFrom(.outgoing)])])
     ]
 }
 
