@@ -8,12 +8,15 @@
 
 import UIKit
 
-class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate {
     
-    var user: User = User.testUser  // FIXME: Needs to be replaced by real user
+    unowned var user = User.currentUser
+    weak var selectedPower: Power?
+    var selectedIndexPath: IndexPath?
     
     @IBOutlet weak var backgroundView: UIView!
     
+    @IBOutlet weak var userCoinsLabel: UILabel!
     @IBOutlet weak var userBasicInfoBackgroundView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
@@ -45,6 +48,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     // MARK: - Table View Delegate Methods
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         tableViewHeader.frame = CGRect(x: 0, y: 0, width: userBasicInfoBackgroundView.frame.width, height: 10)
         return tableViewHeader
@@ -56,6 +60,17 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        let power = user.powers[indexPath.row]
+        return power.hasUpgrade
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
+        selectedPower = user.powers[indexPath.row]
+        performSegue(withIdentifier: "ShowConfirmation", sender: nil)
     }
     
     
@@ -70,13 +85,19 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         configureRoundCorners()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let selectedIndexPath = selectedIndexPath {
+            userPowerTableView.deselectRow(at: selectedIndexPath, animated: true)
+        }
+    }
+    
     // Overriding view did appear correctly configures round corners and animates the progress of progress views
     override func viewDidAppear(_ animated: Bool) {
         
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
-        
         animateProgressViews()
+        updateUI()
     }
     
     // MARK: -
@@ -115,6 +136,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         // Update User Info
         userNameLabel.text = user.name
         userDescriptionLabel.text = user.description
+        userCoinsLabel.text = "\(user.coins) still left in your pocket."
         
         // Update level and energy
         userLevelLabel.text = "Level \(user.level.levelNumber)"
@@ -122,6 +144,14 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
         userLevelProgressView.progress = 0
         userEnergyProgressView.progress = 0
+    }
+    
+    func updateUI() {
+        if let selectedIndexPath = selectedIndexPath, user.powers[selectedIndexPath.row].didUpgrade == true {
+            user.powers[selectedIndexPath.row].didUpgrade = false
+            userPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
+        }
+        userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
     func animateProgressViews() {
@@ -137,16 +167,34 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    // MARK: - Transitioning Delegate Methods
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    // MARK: - View controller transitioning delegate
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented is ConfirmationViewController {
+            return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
+        } else {
+            return nil
+        }
     }
-    */
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if dismissed is ConfirmationViewController {
+            return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
+        } else {
+            return nil
+        }
+    }
+    
+    
+    // MARK: - Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowConfirmation" {
+            let confirmationViewController = segue.destination as! ConfirmationViewController
+            confirmationViewController.transitioningDelegate = self
+            confirmationViewController.consequence = .upgradeFriendPower(selectedPower!)
+            confirmationViewController.user = user
+        }
+    }
 
 }

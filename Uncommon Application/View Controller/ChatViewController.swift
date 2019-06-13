@@ -221,7 +221,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: - Chat Display Delegate Methods
     
-    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [ChatConsequence]?) {
+    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [Consequence]?) {
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         
@@ -243,7 +243,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         promptUserTimer.tolerance = 0.5
     }
     
-    func didAddOutgoingMessageWith(responseId: Int?, consequences: [ChatConsequence]?) {
+    func didAddOutgoingMessageWith(responseId: Int?, consequences: [Consequence]?) {
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         

@@ -14,9 +14,9 @@ import UIKit
  */
 protocol ChatDisplayDelegate: AnyObject {
     /// Called when Friend adds incoming ChatMessage to chatHistory.
-    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [ChatConsequence]?)
+    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [Consequence]?)
     /// Called when Friend adds outgoing ChatMessage to chatHistory.
-    func didAddOutgoingMessageWith(responseId: Int?, consequences: [ChatConsequence]?)
+    func didAddOutgoingMessageWith(responseId: Int?, consequences: [Consequence]?)
 }
 
 protocol FriendStatusDisplayDelegate: AnyObject {
@@ -163,10 +163,30 @@ class Friend {
     static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     
     static var testFriends: [Friend] = [
-        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
+        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6),
+            powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+                     Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
+                     Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
+            ],
+            displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6),
+               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
+                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
+            ],
+               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6),
+               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
+                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
+            ],
+               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
+        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6),
+               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
+                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
+            ],
+               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     ]
     
     static var allTestMessages: [Int: IncomingMessage] = [

@@ -17,15 +17,16 @@ class User {
     var energy: Energy = Energy(progress: 15)    // FIXME: Replace with default initializer
     
     var description: String
+    var coins: Int
     
     var friends: [Friend] = []
 
     var achievements: [Achievement] = []
     var powers: [Power] = [         // FIXME: Replace with real powers
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", type: .good),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", type: .good, levelNeeded: nil, coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", type: .good)]),
+        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.")]),
         
-        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", type: .bad)
+        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
     ]
     
     static var allPossibleFriends: [Friend] = [Friend.testFriend]
@@ -40,24 +41,31 @@ class User {
         self.name = name
         self.description = description
         self.image = image
+        self.coins = 100
     }
     
     /**
      Initialize with name, description, image, and friends.
      */
-    init(name: String, description: String, image: UIImage, friends: [Friend]) {
+    init(name: String, description: String, image: UIImage, friends: [Friend], money: Int) {
         self.name = name
         self.description = description
         self.image = image
         self.friends = friends
+        self.coins = money
     }
     
     func makeNewFriend(friend: Friend) {}
     // FIXME: Continue to write more user functions
     
+    func upgradePower(_ power: Power) {
+        coins -= power.coinsNeeded
+        power.upgrade()
+    }
+    
     
     // FIXME: Test User
-    static var testUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.testFriends)
+    static var currentUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.testFriends, money: 100)
 }
 
 /**

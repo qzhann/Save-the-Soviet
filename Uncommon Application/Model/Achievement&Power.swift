@@ -23,56 +23,61 @@ struct Achievement {
     var AllAchievements: [Achievement] = [] // Need to implement!
 }
 
+// MARK: -
+
 class Power {
     
-    // FIXME: We may not need a powerType
-    enum PowerType {
-        case good
-        case bad
-    }
-    
-// Instance properties
+    // MARK: Instance properties
     
     var name: String
     var image: UIImage
     var description: String
+    var coinsNeeded: Int
     var levelNeeded: Int?
-    var coinsNeeded: Int?
-    var type: PowerType
-    var upgrades: [Power] = []
-    
-    /**
-     Initializes a basic power. Typically used as power that does not involve upgrading.
-     */
-    init(name: String, image: UIImage, description: String, type: PowerType) {
-        self.name = name
-        self.image = image
-        self.description = description
-        self.type = type
+    private var upgrades: [Power] = []
+    var hasUpgrade: Bool {
+        return !upgrades.isEmpty
     }
+    var didUpgrade = false
+
     
+    // MARK: - Initializers
     /**
      Initializes a fully functional power. Power instances initialized using this initializer should support upgrading.
      - Important: The max power in the series of power upgrades should have a nil value for coinsNeeded, while any other power in the upgrade series should have a non-nil value for coinsNeeded.
      */
-    convenience init(name: String, image: UIImage, description: String, type: PowerType, levelNeeded: Int?, coinsNeeded: Int?, upgrades: [Power]) {
-        self.init(name: name, image: image, description: description, type: type)
-        self.levelNeeded = levelNeeded
+    init(name: String, image: UIImage, description: String, coinsNeeded: Int = 0, levelNeeded: Int? = nil, upgrades: [Power] = []) {
+        self.name = name
+        self.image = image
+        self.description = description
         self.coinsNeeded = coinsNeeded
+        self.levelNeeded = levelNeeded
         self.upgrades = upgrades
     }
     
-// Instance methods
-
     
-// Type methods
-    var allPowers: [Power] = []
-    
-// Type properties
-    static var testPowers: [Power] = [
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", type: .good),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", type: .good, levelNeeded: nil, coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", type: .good)]),
+    // MARK: - Instance methods
+    func upgrade() {
+        guard upgrades.isEmpty == false else { return }
+        var newUpgrades = self.upgrades
+        let nextLevel = newUpgrades.removeFirst()
         
-        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", type: .bad)
+        self.name = nextLevel.name
+        self.image = nextLevel.image
+        self.description = nextLevel.description
+        self.coinsNeeded = nextLevel.coinsNeeded
+        self.levelNeeded = nextLevel.levelNeeded
+        self.upgrades = newUpgrades
+        self.didUpgrade = true
+    }
+
+    // Type properties
+    static var testPowers: [Power] = [
+        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
+        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
+        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
     ]
 }
+
+
+// FIXME: Note that levelNeeded is not yet handled by the UI or the logic yet.

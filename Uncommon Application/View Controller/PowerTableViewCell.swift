@@ -26,7 +26,7 @@ class PowerTableViewCell: UITableViewCell {
         // Reset the layout of coins needed label
         coinsNeededLabel.transform = CGAffineTransform.identity
         
-        if power.upgrades.isEmpty {
+        if power.hasUpgrade == false {
             // If no more available upgrades for the power, it is the max
             coinImageView.isHidden = true
             coinsNeededLabel.text = "MAX"
@@ -36,9 +36,7 @@ class PowerTableViewCell: UITableViewCell {
             coinsNeededLabel.transform = CGAffineTransform(translationX: 5, y: 0)
         } else {
             // If upgrades are available, show how much coins is needed for an upgrade
-            if let coinsNeeded = power.coinsNeeded {
-                coinsNeededLabel.text = "\(coinsNeeded)"
-            }
+            coinsNeededLabel.text = "\(power.coinsNeeded)"
             
         }
     }

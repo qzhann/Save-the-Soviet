@@ -9,7 +9,7 @@
 import UIKit
 
 protocol FriendImageViewTapDelegate: UIViewController {
-    func imageTapped(at indexPath: IndexPath)
+    func imageTapped(for friend: Friend)
 }
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate {
@@ -28,14 +28,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var coinImageView: UIImageView!
     @IBOutlet weak var shopButton: UIButton!
     
-    var user: User = User.testUser // FIXME: Need to be replaced with the actual user
+    unowned var user: User = User.currentUser // FIXME: Need to be replaced with the actual user
     
     var currentFriend: Friend!
     
     // MARK: - Friend Image View Tap Delegate Method
     
-    func imageTapped(at indexPath: IndexPath) {
-        currentFriend = user.friends[indexPath.row]
+    func imageTapped(for friend: Friend) {
+        currentFriend = friend
         performSegue(withIdentifier: "ShowFriendDetail", sender: nil)
     }
     
@@ -53,6 +53,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         user.friends.insert(friend, at: 0)
         friendTableView.moveRow(at: IndexPath(row: friendIndex, section: 0), to: IndexPath(row: 0, section: 0))
         friendTableView.endUpdates()
+        
+        // FIXME:
+        for friend in user.friends {
+            print(friend.name)
+        }
     }
     
     
@@ -93,7 +98,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Configure image view tap delegate
         cell.imageViewTapDelegate = self
-        cell.indexPath = indexPath
         
         return cell
     }
@@ -224,28 +228,26 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     
-    // MARK: - View Controller Animated Transitioning Delegate Methods
+    // MARK: - View Controller Transitioning Delegate Methods
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if presented is UserDetailViewController || presented is FriendDetailViewController {
-            return PageSheetModalPresentationAnimationController(darkenBy: 0.5)
+            return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
         } else if presented is ChatViewController {
             return PushPresentationAnimationController()
         } else {
             return nil
         }
-        
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if dismissed is UserDetailViewController || dismissed is FriendDetailViewController {
-            return PageSheetModalDismissalAnimationController(darkenBy: 0.5)
+            return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         } else if dismissed is ChatViewController {
             return PushDismissalAnimationController()
         } else {
             return nil
         }
-        
     }
 
 }

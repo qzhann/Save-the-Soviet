@@ -71,7 +71,7 @@ class ChatMessage: Equatable, CustomStringConvertible {
 
 
 /**
- A struct that holds texts, optional OutgoingMessage array as responses, and optional ChatConsequence array as consequences, marked by a unique id for quick retrieval.
+ A struct that holds texts, optional OutgoingMessage array as responses, and optional Consequence array as consequences, marked by a unique id for quick retrieval.
  */
 struct IncomingMessage {
     // MARK: Instance properties
@@ -80,7 +80,7 @@ struct IncomingMessage {
     /// An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
     var responses: [OutgoingMessage]?
     /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-    var consequences: [ChatConsequence]?
+    var consequences: [Consequence]?
     /// A get-only property that returns the corresponding ChatMessages using texts.
     var chatMessages: [ChatMessage] {
         get {
@@ -102,7 +102,7 @@ struct IncomingMessage {
         - responses: An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
-    init(texts: String..., responses: [OutgoingMessage]?, consequences: [ChatConsequence]? = nil) {
+    init(texts: String..., responses: [OutgoingMessage]?, consequences: [Consequence]? = nil) {
         self.texts = texts
         self.responses = responses
         self.consequences = consequences
@@ -113,7 +113,7 @@ struct IncomingMessage {
 // MARK: -
 
 /**
- A struct that holds description, texts, optional Int as the Id for the response IncomingMessage, and optional ChatConsequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
+ A struct that holds description, texts, optional Int as the Id for the response IncomingMessage, and optional Consequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
  */
 struct OutgoingMessage {
     // MARK: Instance properties
@@ -126,7 +126,7 @@ struct OutgoingMessage {
     /// If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
     var levelRestriction: Int?
     /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-    var consequences: [ChatConsequence]?
+    var consequences: [Consequence]?
     /// A get-only property that returns the corresponding ChatMessages using texts.
     var chatMessages: [ChatMessage] {
         get {
@@ -154,7 +154,7 @@ struct OutgoingMessage {
         - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
-    init(description: String, texts: String..., responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [ChatConsequence]? = nil) {
+    init(description: String, texts: String..., responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [Consequence]? = nil) {
         self.description = "(\(description))"
         self.texts = texts
         self.responseMessageId = responseMessageId
@@ -170,7 +170,7 @@ struct OutgoingMessage {
         - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
-    init(text: String, responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [ChatConsequence]? = nil) {
+    init(text: String, responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [Consequence]? = nil) {
         self.description = text
         self.texts = [text]
         self.responseMessageId = responseMessageId
@@ -181,7 +181,7 @@ struct OutgoingMessage {
     /**
      Initializes a chat action which triggers some ChatConsequences but does not send messages
      */
-    init(description: String, consequences: [ChatConsequence], levelRestriction: Int? = nil) {
+    init(description: String, consequences: [Consequence], levelRestriction: Int? = nil) {
         self.description = description
         self.texts = []
         self.responseMessageId = nil
@@ -195,7 +195,7 @@ struct OutgoingMessage {
 // MARK: -
 
 /// Consequences of a IncomingMessage or an OutgoingMessage, represented with enums.
-enum ChatConsequence {
+enum Consequence {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
     case changeLevelProgressBy(Int)

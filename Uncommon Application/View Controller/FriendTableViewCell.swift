@@ -11,7 +11,7 @@ import UIKit
 class FriendTableViewCell: UITableViewCell {
     
     weak var imageViewTapDelegate: FriendImageViewTapDelegate!
-    var indexPath: IndexPath!
+    unowned var friend: Friend!
     
     @IBOutlet weak var friendImageView: UIImageView!
     @IBOutlet weak var friendImageBackgroundView: UIView!
@@ -27,6 +27,7 @@ class FriendTableViewCell: UITableViewCell {
      - Parameter friend: Friend instance used to set the image, the name, and the new message indications
      */
     func updateCell(with friend: Friend) {
+        self.friend = friend
         
         // Set image and name label
         friendImageView.image = friend.image
@@ -62,7 +63,7 @@ class FriendTableViewCell: UITableViewCell {
     }
     
     @IBAction func friendImageViewForegroundButtonTapped(_ sender: UIButton) {
-        imageViewTapDelegate.imageTapped(at: indexPath)
+        imageViewTapDelegate.imageTapped(for: friend)
     }
     
     
