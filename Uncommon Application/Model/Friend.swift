@@ -39,7 +39,8 @@ enum ChatEndingStatus {
 /**
  A class which holds information about a friend and the chat history with that friend.
  */
-class Friend {
+class Friend: Equatable {
+    
     // MARK: Instance properties
     var name: String
     var image: UIImage
@@ -85,6 +86,12 @@ class Friend {
         self.powers = powers
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
+    }
+    
+    
+    // MARK: - Equatable
+    static func == (lhs: Friend, rhs: Friend) -> Bool {
+        return lhs.name == rhs.name && lhs.description == rhs.description
     }
     
     

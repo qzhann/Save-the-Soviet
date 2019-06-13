@@ -28,9 +28,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var coinImageView: UIImageView!
     @IBOutlet weak var shopButton: UIButton!
     
-    unowned var user: User = User.currentUser // FIXME: Need to be replaced with the actual user
-    
+    unowned var user: User = User.currentUser
     var currentFriend: Friend!
+    var deletedIndexPath: IndexPath?
     
     // MARK: - Friend Image View Tap Delegate Method
     
@@ -53,11 +53,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         user.friends.insert(friend, at: 0)
         friendTableView.moveRow(at: IndexPath(row: friendIndex, section: 0), to: IndexPath(row: 0, section: 0))
         friendTableView.endUpdates()
-        
-        // FIXME:
-        for friend in user.friends {
-            print(friend.name)
-        }
     }
     
     
@@ -254,7 +249,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - Unwind segue
     
     @IBAction func unwindToMainViewController(unwindSegue: UIStoryboardSegue) {
-        friendTableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.friendTableView.deleteRows(at: [self.deletedIndexPath!], with: .top)
+        }
     }
 
 }

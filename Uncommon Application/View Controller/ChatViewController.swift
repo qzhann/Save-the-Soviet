@@ -42,24 +42,25 @@ struct ChatController {
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate {
     
-    // MARK: IB Outlets
+    // MARK: Instance properties
+    unowned var user = User.currentUser
+    unowned var friend: Friend!
+    var chatController = ChatController()
+    /// The TableViewController responsible for handling the display and selection of response choices
+    unowned var responseTableViewController: ResponseTableViewController!
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default
+    }
+    var consequenceController: ConsequenceController!
+    
+    
+    // MARK: - IB Outlets
     
     @IBOutlet weak var chatTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var backButtonBackgroundView: UIView!
     @IBOutlet weak var responseContainerView: UIView!
-    
-    // MARK: - Instance properties
-    
-    unowned var friend: Friend!
-    var chatController = ChatController()
-    /// The TableViewController responsible for handling the display and selection of response choices
-    unowned var responseTableViewController: ResponseTableViewController!
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
-    }
     
     let hairlineView = UIView()
     
@@ -68,6 +69,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        consequenceController = ConsequenceController(for: user, viewController: self)
         prepareUI()
         resumeChat()
 
@@ -232,11 +234,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             } else {
                 self.endChatFrom(.incoming)
             }
-            /*
-             if let consequences = consequences {
-             // FIXME: Do something according to the consequences given
-             }
-             */
+            
+            self.handleConsequences(consequences)
         }
         
         // Save energy
@@ -250,16 +249,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Handle responses and consequences
         let addResponseTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
             // Note that we don't want to automatically end chat. This is handled as a consequence
-            if let consequences = consequences {
-                for consequence in consequences {
-                    switch consequence {
-                    case .endChatFrom(let direction):
-                        self.endChatFrom(direction, withDelay: 0)
-                    default:
-                        break
-                    }
-                }
-            }
+            
+            self.handleConsequences(consequences)
             
             if let responseId = responseId {
                 self.friend.sendIncomingMessageWithId(responseId)
@@ -270,8 +261,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         addResponseTimer.tolerance = 0.5
     }
     
-    // MARK: Chat Display Delegate Helper Methods
-    
+    // MARK: Chat helper methods
+
     func updateChatWithDelay() -> Double {
         let oldHistoryCount = chatController.displayedChatHistory.count
         let newHistoryCount = friend.chatHistory.count
@@ -366,8 +357,17 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         RunLoop.current.add(endChatTimer, forMode: .common)
     }
     
+    func handleConsequences(_ consequences: [Consequence]?) {
+        guard let consequences = consequences else { return }
+        for consequence in consequences {
+            if consequenceController.canHandle(consequence) {
+                consequenceController.handle(consequence)
+            }
+        }
+    }
     
     // MARK: - Instance Methods
+    
     func prepareUI() {
         // Hide scroll indicator for table view
         chatTableView.showsVerticalScrollIndicator = false

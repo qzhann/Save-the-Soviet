@@ -6,7 +6,7 @@
 //  Copyright © 2019 qzhann. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct ConsequenceController {
     
@@ -14,23 +14,28 @@ struct ConsequenceController {
     
     unowned let user: User
     unowned var confirmationController: ConfirmationViewController?
+    unowned var viewController: UIViewController?
     
     
     // MARK: - Initializers
+    
+    init (for user: User, viewController: UIViewController) {
+        self.user = user
+        self.viewController = viewController
+    }
     
     init(for user: User, confirmationViewController: ConfirmationViewController? = nil) {
         self.user = user
         self.confirmationController = confirmationViewController
     }
     
+    
     func canHandle(_ consequence: Consequence) -> Bool {
         switch consequence {
         case .upgradePower(let power):
             return user.coins >= power.coinsNeeded
-        case .deleteFriend(_):
-            return true
         default:
-            return false
+            return true
         }
     }
     
@@ -41,8 +46,14 @@ struct ConsequenceController {
             user.upgradePower(power)
             confirmationController?.dismiss(animated: true, completion: nil)
         case .deleteFriend(let friend):
-            user.friends.removeAll { $0 === friend }
-            confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: nil)
+            let row = user.friends.firstIndex(of: friend)!
+            user.friends.remove(at: row)
+            let indexPath = IndexPath(row: row, section: 0)
+            confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
+        case .endChatFrom(let direction):
+            if let chatViewController = viewController as? ChatViewController {
+                chatViewController.endChatFrom(direction, withDelay: 0)
+            }
         default:
             break
         }
