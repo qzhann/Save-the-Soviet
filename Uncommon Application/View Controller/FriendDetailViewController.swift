@@ -71,7 +71,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedIndexPath = indexPath
         selectedPower = friend.powers[indexPath.row]
-        performSegue(withIdentifier: "ShowConfirmation", sender: nil)
+        performSegue(withIdentifier: "UpgradePowerConfirmation", sender: nil)
     }
     
     
@@ -157,10 +157,12 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         }, completion: nil)
     }
     
-    @IBAction func friendDetailViewControllerBackgroundTapped(_ sender: UITapGestureRecognizer) {
+    
+    // MARK: - IB actions
+    
+    @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
     }
-    
     
     // MARK: - View controller transitioning delegate
     
@@ -185,10 +187,15 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowConfirmation" {
+        if segue.identifier == "UpgradePowerConfirmation" {
             let confirmationViewController = segue.destination as! ConfirmationViewController
             confirmationViewController.transitioningDelegate = self
-            confirmationViewController.consequence = .upgradeFriendPower(selectedPower!)
+            confirmationViewController.consequence = .upgradePower(selectedPower!)
+            confirmationViewController.user = user
+        } else if segue.identifier == "DeleteFriendConfirmation" {
+            let confirmationViewController = segue.destination as! ConfirmationViewController
+            confirmationViewController.transitioningDelegate = self
+            confirmationViewController.consequence = .deleteFriend(friend)
             confirmationViewController.user = user
         }
     }

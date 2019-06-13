@@ -21,7 +21,7 @@ class ConfirmationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: user)
+        consequenceController = ConsequenceController(for: user, confirmationViewController: self)
     }
     
     override func viewDidLayoutSubviews() {
@@ -41,7 +41,7 @@ class ConfirmationViewController: UIViewController {
         
         // Set texts
         switch consequence {
-        case .upgradeUserPower(let power), .upgradeFriendPower(let power):
+        case .upgradePower(let power):
             if consequenceController.canHandle(consequence) {
                 textLabel.text = "Upgrade for \(power.coinsNeeded) coins?"
                 confirmButton.setTitle("OK", for: .normal)
@@ -51,6 +51,10 @@ class ConfirmationViewController: UIViewController {
                 confirmButton.setTitle("OK...", for: .normal)
                 cancelButton.setTitle("Cancel", for: .normal)
             }
+        case .deleteFriend(let friend):
+            textLabel.text = "Delete \(friend.name) ?"
+            confirmButton.setTitle("Yes", for: .normal)
+            cancelButton.setTitle("Maybe not.", for: .normal)
         default:
             break
         }
@@ -62,7 +66,6 @@ class ConfirmationViewController: UIViewController {
     
     @IBAction func confirmButtonTapped(_ sender: UIButton) {
         consequenceController.handle(consequence)
-        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func cancelButtonTapped(_ sender: UIButton) {
@@ -72,8 +75,11 @@ class ConfirmationViewController: UIViewController {
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
     }
-    /*
+    
+    
     // MARK: - Navigation
+    
+    /*
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

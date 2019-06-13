@@ -241,13 +241,20 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if dismissed is UserDetailViewController || dismissed is FriendDetailViewController {
+        if dismissed is UserDetailViewController || dismissed is FriendDetailViewController || dismissed is ConfirmationViewController {
             return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         } else if dismissed is ChatViewController {
             return PushDismissalAnimationController()
         } else {
             return nil
         }
+    }
+    
+    
+    // MARK: - Unwind segue
+    
+    @IBAction func unwindToMainViewController(unwindSegue: UIStoryboardSegue) {
+        friendTableView.reloadData()
     }
 
 }

@@ -30,7 +30,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ujI-CR-igl">
                                 <rect key="frame" x="47" y="332.66666666666669" width="281" height="146.66666666666669"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="text label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U17-bF-aRP">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="text label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U17-bF-aRP">
                                         <rect key="frame" x="28" y="25" width="225" height="23.333333333333329"/>
                                         <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
                                         <nil key="textColor"/>
@@ -90,9 +90,11 @@
                         <outlet property="confirmButton" destination="X9Z-DB-cFL" id="fNL-78-e0q"/>
                         <outlet property="roundedBackgroundView" destination="ujI-CR-igl" id="F6o-IZ-vwh"/>
                         <outlet property="textLabel" destination="U17-bF-aRP" id="cm7-KR-mey"/>
+                        <segue destination="vYe-kM-FwP" kind="unwind" identifier="UnwindToMain" unwindAction="unwindToMainViewControllerWithUnwindSegue:" id="KsO-FE-css"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vpt-Kn-pmq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="vYe-kM-FwP" userLabel="Exit" sceneMemberID="exit"/>
                 <tapGestureRecognizer id="und-vX-gbl">
                     <connections>
                         <action selector="backgroundTapped:" destination="dtG-v6-iBK" id="Cyi-wz-Nwd"/>
@@ -942,13 +944,13 @@
                         <outlet property="userLevelProgressView" destination="tok-OK-blH" id="oEP-ZK-umG"/>
                         <outlet property="userNameLabel" destination="qVO-3T-cr5" id="Y5j-d0-vJy"/>
                         <outlet property="userPowerTableView" destination="2B4-ez-bsh" id="xYb-Sd-Iuu"/>
-                        <segue destination="dtG-v6-iBK" kind="show" identifier="ShowConfirmation" id="MOI-z0-leT"/>
+                        <segue destination="dtG-v6-iBK" kind="show" identifier="UpgradePowerConfirmation" id="MOI-z0-leT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JPb-ZD-yDZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="aTh-eJ-9Fe">
                     <connections>
-                        <action selector="userDetailViewControllerBackgroundTapped:" destination="KRU-W5-YgY" id="C5H-uA-m2W"/>
+                        <action selector="backgroundTapped:" destination="KRU-W5-YgY" id="0O2-H6-n6c"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -1543,6 +1545,9 @@
                                 <state key="normal" title="Delete Friend">
                                     <color key="titleColor" red="0.71078187227249146" green="0.2010287344455719" blue="0.13195127248764038" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <segue destination="dtG-v6-iBK" kind="show" identifier="DeleteFriendConfirmation" id="D5C-dI-ZN5"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1588,13 +1593,13 @@
                         <outlet property="friendshipLevelProgressView" destination="jNP-h1-Su0" id="YRb-YC-wo8"/>
                         <outlet property="tableViewHeader" destination="Gym-SR-8iW" id="rLL-rc-fMd"/>
                         <outlet property="userCoinsLabel" destination="Cki-Ci-mVg" id="Uej-e8-x2D"/>
-                        <segue destination="dtG-v6-iBK" kind="show" identifier="ShowConfirmation" id="VMY-bb-P8k"/>
+                        <segue destination="dtG-v6-iBK" kind="show" identifier="UpgradePowerConfirmation" id="VMY-bb-P8k"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WTx-9C-Cn7" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tapGestureRecognizer id="xdT-iZ-b2E">
                     <connections>
-                        <action selector="friendDetailViewControllerBackgroundTapped:" destination="V47-1l-NhL" id="3rf-i2-D5x"/>
+                        <action selector="backgroundTapped:" destination="V47-1l-NhL" id="AAp-IX-Y1A"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -1613,6 +1618,6 @@
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="MOI-z0-leT"/>
+        <segue reference="D5C-dI-ZN5"/>
     </inferredMetricsTieBreakers>
 </document>

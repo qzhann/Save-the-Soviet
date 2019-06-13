@@ -70,7 +70,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedIndexPath = indexPath
         selectedPower = user.powers[indexPath.row]
-        performSegue(withIdentifier: "ShowConfirmation", sender: nil)
+        performSegue(withIdentifier: "UpgradePowerConfirmation", sender: nil)
     }
     
     
@@ -162,7 +162,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         }, completion: nil)
     }
     
-    @IBAction func userDetailViewControllerBackgroundTapped(_ sender: UITapGestureRecognizer) {
+    @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
     }
     
@@ -189,10 +189,10 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowConfirmation" {
+        if segue.identifier == "UpgradePowerConfirmation" {
             let confirmationViewController = segue.destination as! ConfirmationViewController
             confirmationViewController.transitioningDelegate = self
-            confirmationViewController.consequence = .upgradeFriendPower(selectedPower!)
+            confirmationViewController.consequence = .upgradePower(selectedPower!)
             confirmationViewController.user = user
         }
     }

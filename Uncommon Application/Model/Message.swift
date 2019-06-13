@@ -192,16 +192,15 @@ struct OutgoingMessage {
 }
 
 // MARK: -
-// MARK: -
 
 /// Consequences of a IncomingMessage or an OutgoingMessage, represented with enums.
 enum Consequence {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
+    case deleteFriend(Friend)
     case changeLevelProgressBy(Int)
     case changeEnergyProgressBy(Int)
     case changeFriendshipProgressBy(Int)
-    case upgradeUserPower(Power)
-    case upgradeFriendPower(Power)
+    case upgradePower(Power)
     case makeAchievement(Achievement)
 }
