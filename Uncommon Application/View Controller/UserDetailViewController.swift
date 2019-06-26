@@ -147,8 +147,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func updateUI() {
-        if let selectedIndexPath = selectedIndexPath, user.powers[selectedIndexPath.row].didUpgrade == true {
-            user.powers[selectedIndexPath.row].didUpgrade = false
+        if let selectedIndexPath = selectedIndexPath {
             userPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."

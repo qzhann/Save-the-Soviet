@@ -165,21 +165,16 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 2: // End Chat Cells
             switch chatController.chatEndingStatus {
             case .endedFrom(let direction):
-                if direction == .incoming {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "LeftChatCell", for: indexPath) as! LeftChatTableViewCell
-                    let endChatMessage = ChatMessage(text: "\(friend.name) has left chat.", direction: direction)
-                    cell.configureUsing(endChatMessage, with: friend)
-                    cell.selectionStyle = .none
-                    return cell
-                } else if direction == .outgoing {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "RightChatCell", for: indexPath) as! RightChatTableViewCell
-                    let endChatMessage = ChatMessage(text: "You have left chat.", direction: direction)
-                    cell.configureUsing(endChatMessage, with: friend)
-                    cell.selectionStyle = .none
-                    return cell
-                } else {
-                    return UITableViewCell()
+                let cell = tableView.dequeueReusableCell(withIdentifier: "EndChatCell", for: indexPath) as! EndChatTableViewCell
+                cell.selectionStyle = .none
+                switch direction {
+                case .incoming:
+                    cell.configureUsing(text: "\(friend.name) has left chat.")
+                case .outgoing:
+                    cell.configureUsing(text: "You have left chat.")
                 }
+                
+                return cell
             default:
                 return UITableViewCell()
             }
@@ -214,6 +209,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 1:
+            return 44
+        case 2:
             return 44
         default:
             return UITableView.automaticDimension
@@ -335,18 +332,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.5) {
-        var animation = UITableView.RowAnimation.automatic
-        if direction == .incoming {
-            animation = .left
-        } else {
-            animation = .right
-        }
         
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
             self.chatController.chatEndingStatus = .endedFrom(direction)
             self.friend.chatEndingStatus = .endedFrom(direction)
             self.friend.responseStatus = .completed
-            self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 2)], with: animation)
+            self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 2)], with: .top)
             self.scrollChatTableViewToBottom()
         }
         
@@ -525,6 +516,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             responseTableViewController.chatViewController = self
             self.responseTableViewController = responseTableViewController
         }
+    }
+    
+    /// present the user with some choices after a quiz is done
+    @IBAction func unwindToChatViewController(unwindSegue: UIStoryboardSegue) {
+        didAddIncomingMessageWith(responses: [OutgoingMessage(text: "How did I do?", responseMessageId: 5)], consequences: nil)
     }
 
 }

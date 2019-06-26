@@ -13,6 +13,7 @@
 		423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */; };
 		42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42437C812250900D00ED18F4 /* UserDetailViewController.swift */; };
 		4243AD8A22B235CE00B93B8F /* ConsequenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4243AD8922B235CE00B93B8F /* ConsequenceController.swift */; };
+		42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */; };
 		4260A66622B0DA9D006BFBDE /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */; };
 		42668C5521ED37B10095BDFD /* LeftChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */; };
 		427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */; };
@@ -46,6 +47,7 @@
 		423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerTableViewCell.swift; sourceTree = "<group>"; };
 		42437C812250900D00ED18F4 /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		4243AD8922B235CE00B93B8F /* ConsequenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsequenceController.swift; sourceTree = "<group>"; };
+		42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndChatTableViewCell.swift; sourceTree = "<group>"; };
 		4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
 		42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftChatTableViewCell.swift; sourceTree = "<group>"; };
 		427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalPresentationAnimationController.swift; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 				42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */,
 				42D492FC22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift */,
 				42A9841922AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift */,
+				42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */,
 				42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */,
 				42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
@@ -271,6 +274,7 @@
 				42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */,
 				42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */,
 				42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */,
+				42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */,
 				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
 				42D492FD22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift in Sources */,

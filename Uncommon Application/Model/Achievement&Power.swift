@@ -25,6 +25,8 @@ struct Achievement {
 
 // MARK: -
 
+
+// FIXME: A power should contain some consequences which will be handled by the user when the power is loaded / updated
 class Power {
     
     // MARK: Instance properties
@@ -38,21 +40,25 @@ class Power {
     var hasUpgrade: Bool {
         return !upgrades.isEmpty
     }
-    var didUpgrade = false
-
+    var type: PowerType
+    var strength: Double
+    var effectInterval: Double?
     
     // MARK: - Initializers
     /**
      Initializes a fully functional power. Power instances initialized using this initializer should support upgrading.
      - Important: The max power in the series of power upgrades should have a nil value for coinsNeeded, while any other power in the upgrade series should have a non-nil value for coinsNeeded.
      */
-    init(name: String, image: UIImage, description: String, coinsNeeded: Int = 0, levelNeeded: Int? = nil, upgrades: [Power] = []) {
+    init(name: String, image: UIImage, description: String, coinsNeeded: Int = 0, levelNeeded: Int? = nil, affecting type: PowerType, strength: Double, every interval: Double? = nil, upgrades: [Power] = []) {
         self.name = name
         self.image = image
         self.description = description
         self.coinsNeeded = coinsNeeded
         self.levelNeeded = levelNeeded
         self.upgrades = upgrades
+        self.type = type
+        self.strength = strength
+        self.effectInterval = interval
     }
     
     
@@ -68,15 +74,29 @@ class Power {
         self.coinsNeeded = nextLevel.coinsNeeded
         self.levelNeeded = nextLevel.levelNeeded
         self.upgrades = newUpgrades
-        self.didUpgrade = true
     }
 
     // Type properties
     static var testPowers: [Power] = [
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
-        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
+        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", affecting: .energy, strength: 5, every: 5.minute),
+        Power(name: "Lucky Dog", image: UIImage(named: "LevelPowerLevel3")!, description: "Level progress +10 every 2 minutes.", coinsNeeded: 30, affecting: .level, strength: 10, every: 2.minute, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +10 every 10 seconds.", affecting: .level, strength: 10, every: 10.second)]),
+        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", affecting: .other, strength: 0)
     ]
+}
+
+enum PowerType {
+    case level, energy, other
+}
+
+
+/// Facilitates initialization for power's effect interval
+extension Double {
+    var second: Double {
+        return self
+    }
+    var minute: Double {
+        return self * second
+    }
 }
 
 

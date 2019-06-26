@@ -11,28 +11,36 @@ import UIKit
 
 class User {
     var name: String
+    var description: String
     var image: UIImage
     
     var level = Level(progress: 240)  // FIXME: Replace with default initializer
     var energy: Energy = Energy(progress: 15)    // FIXME: Replace with default initializer
     
-    var description: String
+    
     var coins: Int
+    var quizLevel: Int = 0
     
     var friends: [Friend] = []
 
-    var achievements: [Achievement] = []
-    var powers: [Power] = [         // FIXME: Replace with real powers
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.")]),
-        
-        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
-    ]
+    var powers: [Power] = Power.testPowers
     
-    static var allPossibleFriends: [Friend] = [Friend.testFriend]
-    static var allPossibleAchievements: [Achievement] = []
+    static var allPossibleFriends: [Friend] = Friend.allPossibleFriends
     static var allPossiblePowers: [Power] = []      // FIXME: Replace with real powers
-    static var allPossibleQuizQuestions: [QuizQuestion] = []
+    static var allPossibleQuizQuestions: [Int: [QuizQuestion]] = QuizQuestion.allPossibleQuizQuestions
+    
+    init(name: String, description: String, image: UIImage, level: Level, energy: Energy, coins: Int, quizLevel: Int, friends: [Friend], powers: [Power]) {
+        self.name = name
+        self.description = description
+        self.image = image
+        self.level = level
+        self.energy = energy
+        self.coins = coins
+        self.quizLevel = quizLevel
+        self.friends = friends
+        self.powers = powers
+        // FIXME: Handle all the powers
+    }
     
     /**
      Initialize with name, description, and image.
@@ -47,12 +55,20 @@ class User {
     /**
      Initialize with name, description, image, and friends.
      */
-    init(name: String, description: String, image: UIImage, friends: [Friend], money: Int) {
+    init(name: String, description: String, image: UIImage, friends: [Friend], coins: Int) {
         self.name = name
         self.description = description
         self.image = image
         self.friends = friends
-        self.coins = money
+        self.coins = coins
+    }
+    
+    func changeLevelProgressBy(_ progress: Int) {
+        level.progress += progress
+    }
+    
+    func changeEnergyProgressBy(_ progress: Int) {
+        energy.progress += progress
     }
     
     func makeNewFriend(friend: Friend) {}
@@ -63,9 +79,13 @@ class User {
         power.upgrade()
     }
     
+    func handlePower(_ power: Power) {
+        
+    }
+    
     
     // FIXME: Test User
-    static var currentUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.testFriends, money: 100)
+    static var currentUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.allPossibleFriends, coins: 100)
 }
 
 /**
@@ -85,7 +105,7 @@ struct Level {
             levelNumber = (progress / 100) + 1
             currentUpperBound = upperBounds[levelNumber]
             previousUpperBound = upperBounds[levelNumber - 1]
-            normalizedProgress = Float((progress - previousUpperBound) / (currentUpperBound - previousUpperBound))
+            normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
         }
     }
     
@@ -121,7 +141,7 @@ struct Level {
     * progress: Progress of energy in Int. Whenever updated, automatically updates the normalized progress.
     * maximum: The current upperbound for energy.
     * currentReplenishRate: The current rate of replenishing for energy.
-    * remainingTime: Time remaining until the energy is full.
+    * time: Time remaining until the energy is full.
  
  ### Initializers:
     * Initialze using progress in Int.

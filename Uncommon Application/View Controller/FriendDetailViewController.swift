@@ -143,8 +143,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func updateUI() {
-        if let selectedIndexPath = selectedIndexPath, friend.powers[selectedIndexPath.row].didUpgrade == true {
-            friend.powers[selectedIndexPath.row].didUpgrade = false
+        if let selectedIndexPath = selectedIndexPath {
             friendPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."

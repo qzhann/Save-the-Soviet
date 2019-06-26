@@ -10,6 +10,7 @@ import UIKit
 
 class QuizViewController: UIViewController {
     
+    @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var curvedEdgeBackgroundView: UIView!
     
     @IBOutlet weak var questionCategoryLabel: UILabel!
@@ -28,8 +29,11 @@ class QuizViewController: UIViewController {
     // Need to be passed by segue
     var quizLevel: Int = 0
     var totalGrade: Int = 0
-    
+    var timer = Timer()
     var quiz = Quiz()
+    var hasTimer = false
+    var seconds = 5
+    var user = User.currentUser
     
     // The index of the button corresponding to the right answer of currentQuestion
     var correctButton = UIButton()
@@ -56,9 +60,6 @@ class QuizViewController: UIViewController {
         
         // updateUI with animation
         updateUI()
-        
-        
-        
     }
     
     func configureRoundCorners() {
@@ -70,7 +71,7 @@ class QuizViewController: UIViewController {
         // Answer button semi-circle corners
         let answerButtons = [answerButton1, answerButton2, answerButton3, answerButton4]
         for button in answerButtons {
-            button?.layer.cornerRadius = (button?.frame.height)! / 2
+            button?.layer.cornerRadius = 10
             button?.clipsToBounds = true
         }
         
@@ -98,8 +99,9 @@ class QuizViewController: UIViewController {
             imageView?.isHidden = true
         }
         
-        // Hide question label
+        // Hide question label and timer
         questionLabel.alpha = 0.0
+        timerLabel.alpha = 0.0
     }
     
     func updateUI() {
@@ -128,12 +130,14 @@ class QuizViewController: UIViewController {
             
         }
         
-        // Animate UI
         animateLabelsAndButtons()
-        
     }
     
     func nextQuestion() {
+        timer.invalidate()
+        seconds = 5
+        hasTimer = false
+        
         if quiz.currentQuestion != nil {
             updateUI()
         } else {
@@ -184,12 +188,63 @@ class QuizViewController: UIViewController {
                 button?.isHidden = false
                 button?.alpha = 1.0
             }
+            
+            
         }) { (_) in
             for button in answerButtons {
                 button?.isEnabled = true
             }
+            self.seconds = self.quiz.currentQuestion!.time
+            self.timerLabel.text = "\(self.seconds)"
+            self.runTimer()
+            
+            UIView.animate(withDuration: 0.3, delay: 0.8, options: [], animations: {
+                self.timerLabel.alpha = 1
+            }, completion: nil)
         }
-
+    }
+    
+    func runTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
+            self.updateTimer()
+        }
+    }
+    
+    func updateTimer() {
+        if seconds == -1 {
+            stopTimer()
+            return
+        }
+        
+        UIView.animate(withDuration: 0.15, animations: {
+            self.timerLabel.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+        }) { (_) in
+            UIView.animate(withDuration: 0.15, animations: {
+                self.timerLabel.transform = .identity
+            }, completion: { (_) in
+                
+            })
+        }
+        timerLabel.text = "\(seconds)"
+        seconds -= 1
+    }
+    
+    func stopTimer() {
+        timer.invalidate()
+        
+        let buttons = [answerButton1, answerButton2, answerButton3, answerButton4]
+        
+        UIView.animate(withDuration: 0.5, delay: 0.5, animations: {
+            self.timerLabel.alpha = 0
+            self.questionLabel.alpha = 0
+            for button in buttons {
+                button?.alpha = 0
+                self.timerLabel.alpha = 0
+            }
+        }) { (_) in
+            self.quiz.nextQuestion()
+            self.nextQuestion()
+        }
     }
     
     func foldBackgroundView() {
@@ -226,8 +281,14 @@ class QuizViewController: UIViewController {
         let answerButtons = [answerButton1, answerButton2, answerButton3, answerButton4]
         var unusedButtons = [UIButton]()
         var usedButtons = [UIButton]()
-        let correctness = quiz.answeredCorrectly(with: sender.title(for: .normal)!)
+        let timeRemaining = Int(timerLabel.text!)!
+        let correctness = quiz.answeredCorrectly(with: sender.title(for: .normal)!, for: timeRemaining)
         var answerCorrectnessImageView = UIImageView()
+        
+        timer.invalidate()
+        UIView.animate(withDuration: 0.2, delay: 0.8, animations: {
+            self.timerLabel.alpha = 0
+        })
         
         // Set the selected answerCorrectness Image View
         switch sender {
@@ -253,11 +314,16 @@ class QuizViewController: UIViewController {
             correctAnswerImageView.image = UIImage(named: "AnswerCorrect")
             
             // Shake Wrong Answer Button
+            let shakeButtonLeft = CGAffineTransform(translationX: 5, y: 0)
             let shakeButtonRight = CGAffineTransform(translationX: -5, y: 0)
-            UIView.animate(withDuration: 0.1, delay: 0, options:[], animations: {
-                sender.transform = shakeButtonRight
+            UIView.animate(withDuration: 0.05, delay: 0, options:[], animations: {
+                sender.transform = shakeButtonLeft
             }) { (_) in
-                sender.transform = .identity
+                UIView.animate(withDuration: 0.05, animations: {
+                    sender.transform = shakeButtonRight
+                }) { (_) in
+                    sender.transform = .identity
+                }
             }
         }
         
@@ -278,7 +344,7 @@ class QuizViewController: UIViewController {
         }, completion: nil)
         
         // Make used buttons disapppear after a short delay
-        UIView.animate(withDuration: 1.0, delay: 1.0, options:[], animations: {
+        UIView.animate(withDuration: 0.5, delay: 1, options:[], animations: {
             for button in usedButtons {
                 button.alpha = 0.0
                 answerCorrectnessImageView.alpha = 0.0
@@ -289,9 +355,6 @@ class QuizViewController: UIViewController {
             self.quiz.nextQuestion()
             self.nextQuestion()
         }
-        
-        
-        
     }
 
     // MARK: - Navigation
@@ -302,10 +365,13 @@ class QuizViewController: UIViewController {
         if segue.identifier == "ShowQuizResults" {
             let quizResultViewController = segue.destination as! QuizResultViewController
             quizResultViewController.quizLevel = quizLevel
-            quizResultViewController.totalGrade = totalGrade
             quizResultViewController.addGrade = quiz.addGrade
             quizResultViewController.correct = quiz.correct
             quizResultViewController.responseBonus = quiz.responseBonus
+            user.changeLevelProgressBy(quiz.addGrade)
+        } else if segue.identifier == "StartQuiz" {
+            let quizViewController = segue.destination as! QuizViewController
+            quizViewController.quizLevel = user.quizLevel
         }
     }
     

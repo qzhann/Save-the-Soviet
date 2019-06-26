@@ -19,12 +19,12 @@ struct ConsequenceController {
     
     // MARK: - Initializers
     
-    init (for user: User, viewController: UIViewController) {
+    init(for user: User = User.currentUser, viewController: UIViewController? = nil) {
         self.user = user
         self.viewController = viewController
     }
     
-    init(for user: User, confirmationViewController: ConfirmationViewController? = nil) {
+    init(for user: User = User.currentUser, confirmationViewController: ConfirmationViewController? = nil) {
         self.user = user
         self.confirmationController = confirmationViewController
     }
@@ -41,18 +41,31 @@ struct ConsequenceController {
     
     func handle(_ consequence: Consequence) {
         switch consequence {
-        case .upgradePower(let power):
-            guard canHandle(consequence) == true else { return }
-            user.upgradePower(power)
-            confirmationController?.dismiss(animated: true, completion: nil)
+        case .endChatFrom(let direction):
+            if let chatViewController = viewController as? ChatViewController {
+                chatViewController.endChatFrom(direction, withDelay: 0)
+            }
+        case .makeNewFriend(let friend):
+            break
         case .deleteFriend(let friend):
             let row = user.friends.firstIndex(of: friend)!
             user.friends.remove(at: row)
             let indexPath = IndexPath(row: row, section: 0)
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
-        case .endChatFrom(let direction):
+        case .changeLevelProgressBy(let change):
+            user.changeLevelProgressBy(change)
+        case .changeEnergyProgressBy(let change):
+            user.changeEnergyProgressBy(change)
+        case .changeFriendshipProgressBy(let change, for: let friend):
+            friend.changeFriendshipProgressBy(change)
+        case .upgradePower(let power):
+            guard canHandle(consequence) == true else { return }
+            user.upgradePower(power)
+            confirmationController?.dismiss(animated: true, completion: nil)
+        
+        case .startQuiz:
             if let chatViewController = viewController as? ChatViewController {
-                chatViewController.endChatFrom(direction, withDelay: 0)
+                chatViewController.performSegue(withIdentifier: "StartQuiz", sender: nil)
             }
         default:
             break

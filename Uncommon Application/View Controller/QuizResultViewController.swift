@@ -21,15 +21,16 @@ class QuizResultViewController: UIViewController {
     
     // Need to be passed by segue, and quizLevel needs to be configured on the fly
     var quizLevel: Int = 0
-    var totalGrade: Int = 0
     var addGrade: Int = 20
     var correct: Double = 4
     var responseBonus: Int = 50
-    
     let total: Double = 5
+    var consequenceController: ConsequenceController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        consequenceController = ConsequenceController()
 
         // Prepare the views
         configureRoundCorners()
@@ -38,9 +39,8 @@ class QuizResultViewController: UIViewController {
         // updateUI with animation
         updateUI()
 
-        // update datas
-        totalGrade += addGrade
-        quizLevel += 1
+        // Handle grades
+        handleGrades()
         
     }
     
@@ -89,12 +89,16 @@ class QuizResultViewController: UIViewController {
         case 40...100:
             gradeLabel.text = "Grade + \(finalAddGrade)!!!"
         default:
-            gradeLabel.text = "Grade - \(finalAddGrade) :("
+            gradeLabel.text = "Grade - \(abs(finalAddGrade)) :("
         }
         
         // AnimateUI
         animateLabelsAndButtons()
         
+    }
+    
+    func handleGrades() {
+        consequenceController.handle(.changeLevelProgressBy(addGrade + responseBonus))
     }
     
     func animateLabelsAndButtons() {
@@ -138,8 +142,6 @@ class QuizResultViewController: UIViewController {
             }
         }
     }
-    
-    // FIXME: Pass the quiz data back to the chat view using unwind segue?
     
     /*
     // MARK: - Navigation

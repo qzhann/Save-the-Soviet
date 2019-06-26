@@ -63,6 +63,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         updateUserInfo()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        updateUserInfo()
+    }
+    
     // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
     override func viewDidLayoutSubviews() {
         prepareUI()

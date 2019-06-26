@@ -155,7 +155,7 @@ struct OutgoingMessage {
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
     init(description: String, texts: String..., responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [Consequence]? = nil) {
-        self.description = "(\(description))"
+        self.description = description
         self.texts = texts
         self.responseMessageId = responseMessageId
         self.levelRestriction = levelRestriction
@@ -181,10 +181,10 @@ struct OutgoingMessage {
     /**
      Initializes a chat action which triggers some ChatConsequences but does not send messages
      */
-    init(description: String, consequences: [Consequence], levelRestriction: Int? = nil) {
+    init(description: String, responseMessageId: Int? = nil, consequences: [Consequence], levelRestriction: Int? = nil) {
         self.description = description
         self.texts = []
-        self.responseMessageId = nil
+        self.responseMessageId = responseMessageId
         self.levelRestriction = levelRestriction
         self.consequences = consequences
     }
@@ -200,7 +200,10 @@ enum Consequence {
     case deleteFriend(Friend)
     case changeLevelProgressBy(Int)
     case changeEnergyProgressBy(Int)
-    case changeFriendshipProgressBy(Int)
+    case changeFriendshipProgressBy(Int, for: Friend)
     case upgradePower(Power)
-    case makeAchievement(Achievement)
+    case startQuiz
 }
+
+// FIXME: handle make new friends
+// FIXME: Handle change level progress, energy progress, and friendship progress by creating small animations on the recorded view controller
