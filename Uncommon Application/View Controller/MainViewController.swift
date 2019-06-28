@@ -12,7 +12,17 @@ protocol FriendImageViewTapDelegate: UIViewController {
     func imageTapped(for friend: Friend)
 }
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate {
+protocol FriendStatusDisplayDelegate: AnyObject {
+    func updateNewMessageStatusFor(_ friend: Friend)
+    func moveCellToTopFor(_ friend: Friend)
+}
+
+protocol UserStatusDisplayDelegate: AnyObject {
+    func updateUserStatus()
+}
+
+
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate {
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -55,15 +65,23 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         friendTableView.endUpdates()
     }
     
+    // MARK: - User status display delegate
+    func updateUserStatus() {
+        updateUserInfo()
+        animateProgressViews(withDuration: 1)
+    }
+    
     
     // MARK: - View Controller Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateUserInfo()
+        user.applyAllPowers()
+        prepareUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        user.statusDisplayDelegate = self
         updateUserInfo()
     }
     
@@ -169,13 +187,29 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
     }
     
-    func animateProgressViews() {
-        // Animate the progress of progress view
-        // FIXME: Animate only from an old value to a new value, but not from 0 to the new value. Transition would be useful if the user returned from other view controllers, or triggered events that changed the values.
-        UIView.animate(withDuration: 1.5, delay: 0, options: [.curveEaseInOut], animations: {
-            self.levelProgressView.setProgress(self.user.level.normalizedProgress, animated: true)
-            self.energyProgressView.setProgress(self.user.energy.normalizedProgress, animated: true)
-        }, completion: nil)
+    func animateProgressViews(withDuration duration: Double = 1.5) {
+        let levelProgress = self.user.level.normalizedProgress
+        let energyProgress = self.user.energy.normalizedProgress
+        
+        // FIXME: This will be useful for the small animations of consequenceController
+        switch self.user.level.levelNumberChangeStatus {
+        case .increased:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.levelProgressView.setProgress(levelProgress, animated: true)
+            })
+        case .decreased:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.levelProgressView.setProgress(levelProgress, animated: true)
+            })
+        case .noChange:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.levelProgressView.setProgress(levelProgress, animated: true)
+            })
+        }
+        
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+            self.energyProgressView.setProgress(energyProgress, animated: true)
+        })
     }
     
     // MARK: - IB Actions
@@ -212,6 +246,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if segue.identifier == "ShowUserDetail" {
             let userDetailViewController = segue.destination as! UserDetailViewController
             userDetailViewController.transitioningDelegate = self
+            user.statusDisplayDelegate = userDetailViewController as UserStatusDisplayDelegate
         } else if segue.identifier == "ShowFriendDetail" {
             let friendDetailViewController = segue.destination as! FriendDetailViewController
             friendDetailViewController.transitioningDelegate = self

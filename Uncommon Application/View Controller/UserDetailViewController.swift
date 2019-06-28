@@ -8,11 +8,16 @@
 
 import UIKit
 
-class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate {
+protocol ConfirmationDelegate: AnyObject {
+    var didConfirm: Bool { get set }
+}
+
+class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate {
     
     unowned var user = User.currentUser
     weak var selectedPower: Power?
     var selectedIndexPath: IndexPath?
+    var didConfirm = false
     
     @IBOutlet weak var backgroundView: UIView!
     
@@ -33,6 +38,13 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var userPowerTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
+    
+    // MARK: - User status display delegate
+    
+    func updateUserStatus() {
+        updateUI()
+        animateProgressViews()
+    }
     
     // MARK: - Table View Data Source Methods
     
@@ -81,11 +93,13 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
         
         prepareUI()
+        updateUI()
         // Calls configure round corners to show round corners during transition
         configureRoundCorners()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // Deselect selected row of the power table view
         if let selectedIndexPath = selectedIndexPath {
             userPowerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
@@ -97,7 +111,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
         animateProgressViews()
-        updateUI()
+        updatePowerTableView()
     }
     
     // MARK: -
@@ -137,25 +151,26 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userNameLabel.text = user.name
         userDescriptionLabel.text = user.description
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
-        
-        // Update level and energy
-        userLevelLabel.text = "Level \(user.level.levelNumber)"
-        userLevelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
-        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
-        userLevelProgressView.progress = 0
-        userEnergyProgressView.progress = 0
     }
     
-    func updateUI() {
-        if let selectedIndexPath = selectedIndexPath {
+    func updatePowerTableView() {
+        if let selectedIndexPath = selectedIndexPath, didConfirm == true {
             userPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
+            didConfirm = false
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
-    func animateProgressViews() {
+    func updateUI() {
+        // Update level and energy
+        userLevelLabel.text = "Level \(user.level.levelNumber)"
+        userLevelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
+        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+    }
+    
+    func animateProgressViews(withDuration duration: Double = 1.5) {
         // Animate the progress of progress views
-        UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut, animations: {
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.userLevelProgressView.setProgress(self.user.level.normalizedProgress, animated: true)
             self.userEnergyProgressView.setProgress(self.user.energy.normalizedProgress, animated: true)
         }, completion: nil)
@@ -191,6 +206,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         if segue.identifier == "UpgradePowerConfirmation" {
             let confirmationViewController = segue.destination as! ConfirmationViewController
             confirmationViewController.transitioningDelegate = self
+            confirmationViewController.confirmationDelegate = self
             confirmationViewController.consequence = .upgradePower(selectedPower!)
             confirmationViewController.user = user
         }

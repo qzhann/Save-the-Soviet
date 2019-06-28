@@ -8,12 +8,13 @@
 
 import UIKit
 
-class FriendDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate {
+class FriendDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate {
     
     unowned var user = User.currentUser
     unowned var friend: Friend!
     weak var selectedPower: Power?
     var selectedIndexPath: IndexPath?
+    var didConfirm = false
 
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var userCoinsLabel: UILabel!
@@ -139,12 +140,12 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         // Update level and energy
         friendshipLevelLabel.text = "Friendship Lv \(friend.friendship.levelNumber)"
         friendshipLevelProgressLabel.text = "\(friend.friendship.progress)/\(friend.friendship.currentUpperBound)"
-        friendshipLevelProgressView.progress = 0
     }
     
     func updateUI() {
-        if let selectedIndexPath = selectedIndexPath {
+        if let selectedIndexPath = selectedIndexPath, didConfirm == true {
             friendPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
+            didConfirm = false
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
@@ -189,6 +190,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         if segue.identifier == "UpgradePowerConfirmation" {
             let confirmationViewController = segue.destination as! ConfirmationViewController
             confirmationViewController.transitioningDelegate = self
+            confirmationViewController.confirmationDelegate = self
             confirmationViewController.consequence = .upgradePower(selectedPower!)
             confirmationViewController.user = user
         } else if segue.identifier == "DeleteFriendConfirmation" {

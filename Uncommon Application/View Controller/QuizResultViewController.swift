@@ -20,8 +20,7 @@ class QuizResultViewController: UIViewController {
     @IBOutlet weak var againImageView: UIImageView!
     
     // Need to be passed by segue, and quizLevel needs to be configured on the fly
-    var quizLevel: Int = 0
-    var addGrade: Int = 20
+    var progressChange: Int = 20
     var correct: Double = 4
     var responseBonus: Int = 50
     let total: Double = 5
@@ -30,7 +29,7 @@ class QuizResultViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        consequenceController = ConsequenceController()
+        consequenceController = ConsequenceController(for: User.currentUser)
 
         // Prepare the views
         configureRoundCorners()
@@ -79,7 +78,7 @@ class QuizResultViewController: UIViewController {
         correctnessLabel.text = "\(Int((correct / total) * 100))% Correctness"
         responseLabel.text = "Bonus + \(responseBonus)"
         
-        let finalAddGrade = addGrade + responseBonus
+        let finalAddGrade = progressChange + responseBonus
         
         switch finalAddGrade {
         case 0...20:
@@ -98,7 +97,7 @@ class QuizResultViewController: UIViewController {
     }
     
     func handleGrades() {
-        consequenceController.handle(.changeLevelProgressBy(addGrade + responseBonus))
+        consequenceController.handle(.changeLevelProgressBy(progressChange + responseBonus))
     }
     
     func animateLabelsAndButtons() {
@@ -142,6 +141,7 @@ class QuizResultViewController: UIViewController {
             }
         }
     }
+    
     
     /*
     // MARK: - Navigation

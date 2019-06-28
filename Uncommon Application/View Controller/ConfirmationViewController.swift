@@ -18,10 +18,11 @@ class ConfirmationViewController: UIViewController {
     unowned var user: User!
     var consequence: Consequence!
     var consequenceController: ConsequenceController!
+    unowned var confirmationDelegate: ConfirmationDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: user, confirmationViewController: self)
+        consequenceController = ConsequenceController(for: User.currentUser, confirmationViewController: self)
     }
     
     override func viewDidLayoutSubviews() {
@@ -66,6 +67,7 @@ class ConfirmationViewController: UIViewController {
     
     @IBAction func confirmButtonTapped(_ sender: UIButton) {
         consequenceController.handle(consequence)
+        confirmationDelegate?.didConfirm = true
     }
     
     @IBAction func cancelButtonTapped(_ sender: UIButton) {

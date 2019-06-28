@@ -9,24 +9,6 @@
 import Foundation
 import UIKit
 
-/**
- Adopted by ChatViewController to display chat history with a Friend.
- */
-protocol ChatDisplayDelegate: AnyObject {
-    /// Called when Friend adds incoming ChatMessage to chatHistory.
-    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [Consequence]?)
-    /// Called when Friend adds outgoing ChatMessage to chatHistory.
-    func didAddOutgoingMessageWith(responseId: Int?, consequences: [Consequence]?)
-}
-
-protocol FriendStatusDisplayDelegate: AnyObject {
-    func updateNewMessageStatusFor(_ friend: Friend)
-    func moveCellToTopFor(_ friend: Friend)
-}
-
-// MARK: -
-// MARK: -
-
 /// A tracker for whether the chat has ended, useful for resuming chat display in the chatDelegate.
 enum ChatEndingStatus {
     case notEnded
@@ -111,6 +93,7 @@ class Friend: Equatable {
      */
     func sendIncomingMessageWithId(_ id: Int) {
         guard let incomingMessage = incomingMessageWithId(id) else { return }
+        chatEndingStatus = .notEnded
         chatHistory.append(contentsOf: incomingMessage.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: incomingMessage.responses, consequences: incomingMessage.consequences)
         responseStatus = .willPromptUserWith(incomingMessage.responses)
@@ -168,35 +151,59 @@ class Friend: Equatable {
         friendship.progress += progress
     }
     
+    func applyAllPowers(to user: User) {
+        for power in powers {
+            apply(power: power, to: user)
+        }
+    }
+    
+    private func apply(power: Power, to user: User) {
+        if let interval = power.effectInterval {
+            switch power.type {
+            case .level:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    user.changeLevelProgressBy(power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
+            case .energy:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    user.changeEnergyProgressBy(power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
+            default:
+                break
+            }
+        } else {
+            switch power.type {
+            case .level:
+                user.changeLevelProgressBy(power.strength)
+            case .energy:
+                user.changeEnergyProgressBy(power.strength)
+            default:
+                break
+            }
+        }
+    }
     
     
-    // MARK: - Test Friend and Test Messages
+    // MARK: - Static properties
+    
     static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     
     static var allPossibleFriends: [Friend] = [
         Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6),
-            powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-                     Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
-                     Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
-            ],
+            powers: Power.testPowers,
             displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
         Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6),
-               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
-                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
-            ],
+               powers: Power.testPowers,
                displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
         Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6),
-               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
-                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
-            ],
+               powers: Power.testPowers,
                displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
         Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6),
-               powers: [Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute."),
-                        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives some gifts from a friend every 30 mins.", coinsNeeded: 30,  upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Receives a gift from a friend every 30 mins.", coinsNeeded: 50)]),
-                        Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.")
-            ],
+               powers: Power.testPowers,
                displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
     ]
     
@@ -206,13 +213,13 @@ class Friend: Equatable {
         2: IncomingMessage(texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)]),
         3: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         4: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        5: IncomingMessage(texts: "Nvm.", responses: nil),
+        5: IncomingMessage(texts: "Nvm.", consequences: [.endChatFrom(.incoming)]),
         6: IncomingMessage(texts: "???", responses: [OutgoingMessage(text: "????", responseMessageId: 5), OutgoingMessage(text: "?????", responseMessageId: 5), OutgoingMessage(text: "??????", responseMessageId: 5), OutgoingMessage(text: "???????", responseMessageId: 5)]),
         7: IncomingMessage(texts: "Yea sure!", responses: nil),
         8: IncomingMessage(texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "(Accept her invitation)", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "(Confirm what she means)", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "(Refuse her invitation)", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         9: IncomingMessage(texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         10: IncomingMessage(texts: "It's okay.", "You don't have to apologize", responses: [OutgoingMessage(description: "(End Chat)", consequences: [Consequence.endChatFrom(.outgoing)])]),
-        11: IncomingMessage(texts: "But...", "Before you come over, you gotta answer some questions", responses: [OutgoingMessage(description: "(Answer Questions)", responseMessageId: nil, consequences: [Consequence.startQuiz]), OutgoingMessage(description: "(Leave Chat)", consequences: [.endChatFrom(.outgoing)])])
+        11: IncomingMessage(texts: "But...", "Before you come over, you gotta answer some questions", responses: [OutgoingMessage(description: "(Answer Questions)", consequences: [Consequence.startQuiz]), OutgoingMessage(description: "(Leave Chat)", consequences: [.endChatFrom(.outgoing)])])
     ]
 }
 
@@ -229,7 +236,7 @@ struct Friendship {
             levelNumber = (progress / 10) + 1
             currentUpperBound = upperBounds[levelNumber]
             previousUpperBound = upperBounds[levelNumber - 1]
-            normalizedProgress = Float((progress - previousUpperBound) / (currentUpperBound - previousUpperBound))
+            normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
         }
     }
     var normalizedProgress: Float = 0

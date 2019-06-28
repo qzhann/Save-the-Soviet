@@ -102,6 +102,84 @@
             </objects>
             <point key="canvasLocation" x="340" y="1628"/>
         </scene>
+        <!--New Friend View Controller-->
+        <scene sceneID="bEA-vZ-gqH">
+            <objects>
+                <viewController id="H7E-0U-FvZ" customClass="NewFriendViewController" customModule="Uncommon_Application" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wUC-xF-hwm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have made a new friend!" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ntq-Ds-pX0">
+                                <rect key="frame" x="53" y="91.666666666666671" width="269.33333333333331" height="60.000000000000014"/>
+                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label autoresizesSubviews="NO" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lucia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d3O-xf-oNk">
+                                <rect key="frame" x="125.33333333333334" y="454" width="124.33333333333334" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="im0-Rn-J8N"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="42"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVD-yN-zlW">
+                                <rect key="frame" x="129" y="504.00000000000006" width="117.33333333333331" height="20.666666666666686"/>
+                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LAg-ll-hZc">
+                                <rect key="frame" x="103" y="240.33333333333337" width="169" height="169"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="LAg-ll-hZc" secondAttribute="height" multiplier="1:1" id="Ags-Bz-pFH"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="fill" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uhy-U8-OOP">
+                                <rect key="frame" x="33.666666666666657" y="609" width="307.66666666666674" height="81.333333333333371"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="33"/>
+                                <state key="normal" title="OK!">
+                                    <color key="titleColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="confirmButtonTapped:" destination="H7E-0U-FvZ" eventType="touchUpInside" id="1Mk-y0-CFd"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="jVD-yN-zlW" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="Eee-gg-SeG"/>
+                            <constraint firstItem="uhy-U8-OOP" firstAttribute="width" secondItem="wUC-xF-hwm" secondAttribute="width" multiplier="0.82" id="Jdx-BN-t5L"/>
+                            <constraint firstItem="LAg-ll-hZc" firstAttribute="width" secondItem="wUC-xF-hwm" secondAttribute="width" multiplier="0.45" id="R2J-iY-6Zx"/>
+                            <constraint firstItem="uhy-U8-OOP" firstAttribute="height" secondItem="wUC-xF-hwm" secondAttribute="height" multiplier="0.1" id="SOr-it-Jdd"/>
+                            <constraint firstItem="ntq-Ds-pX0" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="0.3" id="WWu-O5-hh6"/>
+                            <constraint firstItem="jVD-yN-zlW" firstAttribute="top" secondItem="d3O-xf-oNk" secondAttribute="bottom" id="Yj7-xn-RDB"/>
+                            <constraint firstItem="uhy-U8-OOP" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="aP7-NH-CCl"/>
+                            <constraint firstItem="LAg-ll-hZc" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="d7S-Zn-I0h"/>
+                            <constraint firstItem="LAg-ll-hZc" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="0.8" id="ejD-cL-5ft"/>
+                            <constraint firstItem="d3O-xf-oNk" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="1.18" id="fut-wH-62h"/>
+                            <constraint firstItem="ntq-Ds-pX0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="wUC-xF-hwm" secondAttribute="leading" constant="16" id="ggD-RO-M9B"/>
+                            <constraint firstItem="ntq-Ds-pX0" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="hTZ-NC-5GN"/>
+                            <constraint firstItem="uhy-U8-OOP" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="1.6" id="i7B-Kz-hcY"/>
+                            <constraint firstItem="d3O-xf-oNk" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="rja-lN-Is2"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ntq-Ds-pX0" secondAttribute="trailing" constant="16" id="yAT-Ch-2KC"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="BvF-Z4-rZ6"/>
+                    </view>
+                    <connections>
+                        <outlet property="confirmButton" destination="uhy-U8-OOP" id="Ima-TB-uyy"/>
+                        <outlet property="descriptionLabel" destination="jVD-yN-zlW" id="hNi-Kn-syf"/>
+                        <outlet property="friendImageView" destination="LAg-ll-hZc" id="cfm-9Z-DES"/>
+                        <outlet property="nameLabel" destination="d3O-xf-oNk" id="Neh-UB-85S"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="smJ-IG-zyA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2809" y="500"/>
+        </scene>
         <!--Main View Controller-->
         <scene sceneID="FgZ-fu-FHa">
             <objects>
@@ -371,6 +449,10 @@
                             <mask key="subviews">
                                 <exclude reference="iM9-O3-gjm"/>
                             </mask>
+                            <mask key="constraints">
+                                <exclude reference="35U-ma-ol2"/>
+                                <exclude reference="EKA-pR-nj9"/>
+                            </mask>
                         </variation>
                     </view>
                     <connections>
@@ -615,12 +697,13 @@
                         <outlet property="backButtonBackgroundView" destination="q9r-JH-4oP" id="XNE-ge-oD3"/>
                         <outlet property="chatTableView" destination="Ynx-Uf-Ree" id="LC8-q3-94C"/>
                         <outlet property="responseContainerView" destination="lJB-Rj-4Fi" id="Ulp-kW-pvz"/>
-                        <segue destination="BYZ-38-t0r" kind="show" identifier="StartQuiz" id="bsn-3e-aW5"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="ShowQuiz" id="bsn-3e-aW5"/>
+                        <segue destination="H7E-0U-FvZ" kind="show" identifier="ShowNewFriend" id="QjH-CJ-cPf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cPu-KV-0jr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1957.5999999999999" y="116.74876847290641"/>
+            <point key="canvasLocation" x="1958" y="115"/>
         </scene>
         <!--Response Table View Controller-->
         <scene sceneID="Lgj-2u-nyG">
@@ -671,7 +754,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1XV-X0-I9R" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2760.8000000000002" y="116.94152923538232"/>
+            <point key="canvasLocation" x="1956" y="576"/>
         </scene>
         <!--User Detail View Controller-->
         <scene sceneID="M9W-nN-6zl">
@@ -926,6 +1009,7 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="Cc3-hv-jBf" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4bg-fr-alf" secondAttribute="trailing" constant="16" id="58W-Sl-hgF"/>
                             <constraint firstItem="hzW-BR-pMI" firstAttribute="top" secondItem="kvx-aP-bCB" secondAttribute="top" id="EFx-em-0vB"/>
                             <constraint firstItem="pfG-R4-OMY" firstAttribute="centerY" secondItem="kvx-aP-bCB" secondAttribute="centerY" constant="-162" id="EvL-Ru-eoB"/>
                             <constraint firstItem="HbH-JV-oWs" firstAttribute="width" secondItem="HbH-JV-oWs" secondAttribute="height" multiplier="1:1" id="FTM-t8-on4"/>
@@ -1168,7 +1252,9 @@
                                             <constraint firstItem="VyH-m0-TO6" firstAttribute="centerY" secondItem="DbL-52-uUD" secondAttribute="centerY" multiplier="0.6" id="8Ss-1r-IAV"/>
                                             <constraint firstItem="MDx-Tq-rnV" firstAttribute="centerY" secondItem="DbL-52-uUD" secondAttribute="centerY" multiplier="0.6" id="EI8-av-7Jw"/>
                                             <constraint firstItem="esf-6d-JTC" firstAttribute="centerX" secondItem="DbL-52-uUD" secondAttribute="centerX" id="Qae-eG-gwX"/>
+                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="MDx-Tq-rnV" secondAttribute="trailing" constant="8" id="RGo-Z2-f0G"/>
                                             <constraint firstItem="esf-6d-JTC" firstAttribute="width" secondItem="DbL-52-uUD" secondAttribute="width" multiplier="0.8" id="Tby-V3-m8N"/>
+                                            <constraint firstItem="MDx-Tq-rnV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DbL-52-uUD" secondAttribute="leading" constant="8" id="msD-Gi-STY"/>
                                             <constraint firstAttribute="bottom" secondItem="esf-6d-JTC" secondAttribute="bottom" constant="30" id="qEw-OL-En9"/>
                                             <constraint firstItem="VyH-m0-TO6" firstAttribute="centerX" secondItem="DbL-52-uUD" secondAttribute="centerX" id="sIs-nR-Nio"/>
                                         </constraints>
@@ -1207,7 +1293,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1958" y="887"/>
+            <point key="canvasLocation" x="2810" y="-420"/>
         </scene>
         <!--Quiz Result View Controller-->
         <scene sceneID="mSo-Ka-WHl">
@@ -1330,7 +1416,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FFR-5s-trI" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="Nwl-Vp-vyD" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2818" y="887"/>
+            <point key="canvasLocation" x="3615" y="-420"/>
         </scene>
         <!--Friend Detail View Controller-->
         <scene sceneID="CYM-pq-Eh7">
@@ -1623,6 +1709,6 @@
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="D5C-dI-ZN5"/>
+        <segue reference="MOI-z0-leT"/>
     </inferredMetricsTieBreakers>
 </document>

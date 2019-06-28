@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		42060E6A22917F63002E1C64 /* RightChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */; };
+		422ECC5A22C3AB4100422A63 /* NewFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */; };
 		42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4922443777008B6DC8 /* MainViewController.swift */; };
 		42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */; };
 		423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */; };
@@ -42,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightChatTableViewCell.swift; sourceTree = "<group>"; };
+		422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendViewController.swift; sourceTree = "<group>"; };
 		42366B4922443777008B6DC8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
 		423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerTableViewCell.swift; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */,
 				423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */,
 				42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */,
+				422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */,
 				4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */,
 				428136172203E7B70046EF11 /* ChatViewController.swift */,
 				42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */,
@@ -277,6 +280,7 @@
 				42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */,
 				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
+				422ECC5A22C3AB4100422A63 /* NewFriendViewController.swift in Sources */,
 				42D492FD22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift in Sources */,
 				42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */,
 				42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */,

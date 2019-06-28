@@ -14,19 +14,25 @@ struct ConsequenceController {
     
     unowned let user: User
     unowned var confirmationController: ConfirmationViewController?
+    unowned var chatViewController: ChatViewController?
     unowned var viewController: UIViewController?
     
     
     // MARK: - Initializers
     
-    init(for user: User = User.currentUser, viewController: UIViewController? = nil) {
+    init(for user: User, viewController: UIViewController? = nil) {
         self.user = user
         self.viewController = viewController
     }
     
-    init(for user: User = User.currentUser, confirmationViewController: ConfirmationViewController? = nil) {
+    init(for user: User, confirmationViewController: ConfirmationViewController?) {
         self.user = user
         self.confirmationController = confirmationViewController
+    }
+    
+    init(for user: User, chatViewController: ChatViewController?) {
+        self.user = user
+        self.chatViewController = chatViewController
     }
     
     
@@ -46,7 +52,8 @@ struct ConsequenceController {
                 chatViewController.endChatFrom(direction, withDelay: 0)
             }
         case .makeNewFriend(let friend):
-            break
+            user.makeNewFriend(friend: friend)
+            chatViewController?.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
         case .deleteFriend(let friend):
             let row = user.friends.firstIndex(of: friend)!
             user.friends.remove(at: row)
@@ -62,10 +69,9 @@ struct ConsequenceController {
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)
             confirmationController?.dismiss(animated: true, completion: nil)
-        
         case .startQuiz:
             if let chatViewController = viewController as? ChatViewController {
-                chatViewController.performSegue(withIdentifier: "StartQuiz", sender: nil)
+                chatViewController.performSegue(withIdentifier: "ShowQuiz", sender: nil)
             }
         default:
             break

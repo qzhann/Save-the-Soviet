@@ -10,33 +10,39 @@ import Foundation
 import UIKit
 
 class User {
+    // MARK: Instance properties
     var name: String
     var description: String
     var image: UIImage
-    
-    var level = Level(progress: 240)  // FIXME: Replace with default initializer
-    var energy: Energy = Energy(progress: 15)    // FIXME: Replace with default initializer
-    
-    
+    // FIXME: Replace with default initializer
+    var level = Level(progress: 280) {
+        didSet {
+            statusDisplayDelegate?.updateUserStatus()
+        }
+    }
+    // FIXME: Replace with default initializer
+    var energy: Energy = Energy(progress: 15) {
+        didSet {
+            statusDisplayDelegate?.updateUserStatus()
+        }
+    }
     var coins: Int
-    var quizLevel: Int = 0
-    
     var friends: [Friend] = []
-
     var powers: [Power] = Power.testPowers
+    unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
     
-    static var allPossibleFriends: [Friend] = Friend.allPossibleFriends
-    static var allPossiblePowers: [Power] = []      // FIXME: Replace with real powers
-    static var allPossibleQuizQuestions: [Int: [QuizQuestion]] = QuizQuestion.allPossibleQuizQuestions
     
-    init(name: String, description: String, image: UIImage, level: Level, energy: Energy, coins: Int, quizLevel: Int, friends: [Friend], powers: [Power]) {
+    // MARK: - Initializers
+    /**
+     Full initializer.
+     */
+    init(name: String, description: String, image: UIImage, level: Level, energy: Energy, coins: Int, friends: [Friend], powers: [Power]) {
         self.name = name
         self.description = description
         self.image = image
         self.level = level
         self.energy = energy
         self.coins = coins
-        self.quizLevel = quizLevel
         self.friends = friends
         self.powers = powers
         // FIXME: Handle all the powers
@@ -63,24 +69,62 @@ class User {
         self.coins = coins
     }
     
+    /**
+     Handles change in progress.
+     */
     func changeLevelProgressBy(_ progress: Int) {
-        level.progress += progress
+         level.progress += progress
     }
     
     func changeEnergyProgressBy(_ progress: Int) {
         energy.progress += progress
     }
     
-    func makeNewFriend(friend: Friend) {}
-    // FIXME: Continue to write more user functions
+    func makeNewFriend(friend: Friend) {
+        friends.append(friend)
+        friend.applyAllPowers(to: self)
+    }
     
     func upgradePower(_ power: Power) {
         coins -= power.coinsNeeded
         power.upgrade()
+        applyPower(power)
     }
     
-    func handlePower(_ power: Power) {
-        
+    func applyAllPowers() {
+        for power in powers {
+            applyPower(power)
+        }
+    }
+    
+    private func applyPower(_ power: Power) {
+        if let interval = power.effectInterval {
+            switch power.type {
+            case .level:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    self.changeLevelProgressBy(power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
+            case .energy:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    self.changeEnergyProgressBy(power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
+            default:
+                break
+            }
+        } else {
+            switch power.type {
+            case .level:
+                self.changeLevelProgressBy(power.strength)
+            case .energy:
+                self.changeEnergyProgressBy(power.strength)
+            default:
+                break
+            }
+        }
     }
     
     
@@ -100,23 +144,37 @@ class User {
     * Initialize with progress.
  */
 struct Level {
+    // MARK: Instance properties
     var progress: Int {
         didSet {
             levelNumber = (progress / 100) + 1
             currentUpperBound = upperBounds[levelNumber]
             previousUpperBound = upperBounds[levelNumber - 1]
-            normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
+            let rawNormalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
+            normalizedProgress = rawNormalizedProgress * 0.95 + 0.05
         }
     }
     
     var normalizedProgress: Float = 0
-    
-    var levelNumber: Int = 0
-    
+    var levelNumber: Int = 0 {
+        didSet {
+            let difference = self.levelNumber - oldValue
+            if difference > 0 {
+                levelNumberChangeStatus = .increased
+            } else if difference < 0 {
+                levelNumberChangeStatus = .decreased
+            } else {
+                levelNumberChangeStatus = .noChange
+            }
+        }
+    }
     var currentUpperBound: Int = 100
     private var previousUpperBound: Int = 0
     private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700]
+    var levelNumberChangeStatus: LevelNumberChangeStatus = .noChange
     
+    
+    // MARK: - Initializers
     /**
      Default initializer, typically used to create a Level instance for a new user.
      */
@@ -136,6 +194,10 @@ struct Level {
     }
 }
 
+enum LevelNumberChangeStatus {
+    case increased, decreased, noChange
+}
+
 /**
  ### Instance properties:
     * progress: Progress of energy in Int. Whenever updated, automatically updates the normalized progress.
@@ -153,14 +215,10 @@ struct Energy {
             normalizedProgress = Float(progress / maximum)
         }
     }
-    
     var maximum: Int = 20
-    
     var normalizedProgress: Float = 0
-    
     // Energy replenished per minute
     var currentReplenishRate: Int = 1
-    
     // Could be DateInterval or TimeInterval(Double) and then we format it using formatter. Need Verification.
     var remainingTime: TimeInterval = 0
     

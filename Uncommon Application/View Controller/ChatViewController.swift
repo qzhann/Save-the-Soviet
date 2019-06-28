@@ -8,6 +8,16 @@
 
 import UIKit
 
+/**
+ Display chat history with a Friend.
+ */
+protocol ChatDisplayDelegate: AnyObject {
+    /// Called when Friend adds incoming ChatMessage to chatHistory.
+    func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [Consequence]?)
+    /// Called when Friend adds outgoing ChatMessage to chatHistory.
+    func didAddOutgoingMessageWith(responseId: Int?, consequences: [Consequence]?)
+}
+
 struct ChatController {
     /// The data source used to display the chat history.
     var displayedChatHistory: [ChatMessage] = []
@@ -40,7 +50,7 @@ struct ChatController {
     private var didRecordcontentOffset = false
 }
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate, UIViewControllerTransitioningDelegate {
     
     // MARK: Instance properties
     unowned var user = User.currentUser
@@ -69,7 +79,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: user, viewController: self)
+        consequenceController = ConsequenceController(for: User.currentUser, viewController: self)
         prepareUI()
         resumeChat()
 
@@ -226,13 +236,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Handle responses and consequences
         let promptUserTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
-            if let responses = responses {
-                self.promptUserWith(responses: responses)
-            } else {
-                self.endChatFrom(.incoming)
-            }
+            // Note that we don't want to automatically end chat. This is handled as a consequence
             
             self.handleConsequences(consequences)
+            
+            if let responses = responses {
+                self.promptUserWith(responses: responses)
+            }
         }
         
         // Save energy
@@ -497,6 +507,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    
     // MARK: - IB Actions
     
     @IBAction func backButtonTapped(_ sender: UIButton) {
@@ -515,12 +526,37 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             let responseTableViewController = segue.destination as! ResponseTableViewController
             responseTableViewController.chatViewController = self
             self.responseTableViewController = responseTableViewController
+        } else if segue.identifier == "ShowQuiz" {
+            let quizViewController = segue.destination as! QuizViewController
+            quizViewController.transitioningDelegate = self
         }
     }
+    
+    // MARK: - View controller transitioning delegate
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented is QuizViewController {
+            return PushPresentationAnimationController()
+        }
+        
+        return nil
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if dismissed is QuizViewController {
+            return PushDismissalAnimationController()
+        }
+        
+        
+        
+        return nil
+    }
+    
+    // MARK: - Unwind Segue
     
     /// present the user with some choices after a quiz is done
     @IBAction func unwindToChatViewController(unwindSegue: UIStoryboardSegue) {
         didAddIncomingMessageWith(responses: [OutgoingMessage(text: "How did I do?", responseMessageId: 5)], consequences: nil)
+        
     }
 
 }

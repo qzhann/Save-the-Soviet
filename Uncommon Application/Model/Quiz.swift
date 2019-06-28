@@ -70,7 +70,7 @@ class Quiz {
 // TODO: Remember to implement the countdown in each QuizQuestion
 
 struct QuizQuestion {
-// Instance properties
+    // MARK: Instance properties
     var difficultyLevel: Int = 0
     
     var category: String = "Default"
@@ -82,7 +82,7 @@ struct QuizQuestion {
     var addGrade: Int = 10
     var minusGrade: Int = 0
     
-// Initializer
+    // MARK: - Initializers
     init(difficultyLevel: Int, category: String, text: String, answers: [String], correctAnswer: String, time: Int, addGrade: Int, minusGrade: Int) {
         self.difficultyLevel = difficultyLevel
         self.category = category
@@ -94,7 +94,7 @@ struct QuizQuestion {
         self.minusGrade = minusGrade
     }
     
-// Type variable
+    // MARK: - Static properties
     static var allPossibleQuizQuestions: [Int: [QuizQuestion]] = [
         0: [
         QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is cos(2π)?", answers: ["1/2", "-1/2", "1", "-1"], correctAnswer: "1", time: 2, addGrade: 10, minusGrade: 10),
@@ -111,6 +111,30 @@ struct QuizQuestion {
             QuizQuestion(difficultyLevel: 1, category: "History", text: "Who is the 4th president of the US?", answers: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], correctAnswer: "James Madison", time: 5, addGrade: 10, minusGrade: 20),
         ],
         2: [
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+        ],
+        3: [
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+        ],
+        4: [
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+        ],
+        5: [
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
+            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+        ],
+        6: [
             QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
             QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
             QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),

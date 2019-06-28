@@ -27,10 +27,9 @@ class QuizViewController: UIViewController {
     @IBOutlet weak var answerCorrectnessImageView4: UIImageView!
     
     // Need to be passed by segue
-    var quizLevel: Int = 0
     var totalGrade: Int = 0
     var timer = Timer()
-    var quiz = Quiz()
+    var quiz: Quiz!
     var hasTimer = false
     var seconds = 5
     var user = User.currentUser
@@ -44,10 +43,12 @@ class QuizViewController: UIViewController {
     
     // Functions inside viewWillAppear will still operate the second time the view controller appears
     override func viewWillAppear(_ animated: Bool) {
+        expandBackgroundView()
         
         // Initialize a quiz with quizLevel
-        quiz = Quiz(ofDifficulty: quizLevel)
-        expandBackgroundView()
+        quiz = Quiz(ofDifficulty: user.level.levelNumber)
+        
+        // updateUI with animation
         updateUI()
     }
     
@@ -57,9 +58,6 @@ class QuizViewController: UIViewController {
         // Prepare the views
         configureRoundCorners()
         resetAllViews()
-        
-        // updateUI with animation
-        updateUI()
     }
     
     func configureRoundCorners() {
@@ -208,6 +206,7 @@ class QuizViewController: UIViewController {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
             self.updateTimer()
         }
+        timer.tolerance = 0.2
     }
     
     func updateTimer() {
@@ -364,25 +363,16 @@ class QuizViewController: UIViewController {
         // Pass information to QuizResultViewController
         if segue.identifier == "ShowQuizResults" {
             let quizResultViewController = segue.destination as! QuizResultViewController
-            quizResultViewController.quizLevel = quizLevel
-            quizResultViewController.addGrade = quiz.addGrade
+            quizResultViewController.progressChange = quiz.addGrade
             quizResultViewController.correct = quiz.correct
             quizResultViewController.responseBonus = quiz.responseBonus
             user.changeLevelProgressBy(quiz.addGrade)
         } else if segue.identifier == "StartQuiz" {
-            let quizViewController = segue.destination as! QuizViewController
-            quizViewController.quizLevel = user.quizLevel
+            
         }
     }
     
     @IBAction func unwindToQuizViewController(unwindSegue: UIStoryboardSegue) {
-        
-        // Pass information back to self
-        if unwindSegue.identifier == "UnwindToQuiz" {
-            let quizResultViewController = unwindSegue.source as! QuizResultViewController
-            quizLevel = quizResultViewController.quizLevel
-            totalGrade = quizResultViewController.quizLevel
-        }
     }
 
 

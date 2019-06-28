@@ -102,7 +102,7 @@ struct IncomingMessage {
         - responses: An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
         - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
      */
-    init(texts: String..., responses: [OutgoingMessage]?, consequences: [Consequence]? = nil) {
+    init(texts: String..., responses: [OutgoingMessage]? = nil, consequences: [Consequence]? = nil) {
         self.texts = texts
         self.responses = responses
         self.consequences = consequences
@@ -181,10 +181,9 @@ struct OutgoingMessage {
     /**
      Initializes a chat action which triggers some ChatConsequences but does not send messages
      */
-    init(description: String, responseMessageId: Int? = nil, consequences: [Consequence], levelRestriction: Int? = nil) {
+    init(description: String, consequences: [Consequence], levelRestriction: Int? = nil) {
         self.description = description
         self.texts = []
-        self.responseMessageId = responseMessageId
         self.levelRestriction = levelRestriction
         self.consequences = consequences
     }
