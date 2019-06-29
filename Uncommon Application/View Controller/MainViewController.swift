@@ -67,8 +67,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - User status display delegate
     func updateUserStatus() {
-        updateUserInfo()
-        animateProgressViews(withDuration: 1)
+        animateProgressViewsAndLabels()
     }
     
     
@@ -82,7 +81,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewWillAppear(_ animated: Bool) {
         user.statusDisplayDelegate = self
-        updateUserInfo()
     }
     
     // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
@@ -92,7 +90,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // Animate the progressViews once the views have occured
     override func viewDidAppear(_ animated: Bool) {
-        animateProgressViews()
+        animateProgressViewsAndLabels()
     }
     
     
@@ -180,16 +178,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         coinImageView.alpha = 1
     }
     
-    func updateUserInfo() {
-        // Update the User info
-        levelNumberLabel.text = "\(user.level.levelNumber)"
-        levelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
-        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
-    }
-    
-    func animateProgressViews(withDuration duration: Double = 1.5) {
+    func animateProgressViewsAndLabels(withDuration duration: Double = 1.5) {
         let levelProgress = self.user.level.normalizedProgress
         let energyProgress = self.user.energy.normalizedProgress
+        
+        // Animate level progress view
         
         // FIXME: This will be useful for the small animations of consequenceController
         switch self.user.level.levelNumberChangeStatus {
@@ -207,9 +200,30 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             })
         }
         
+        // Animate energy progress view
+        
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.energyProgressView.setProgress(energyProgress, animated: true)
         })
+        
+        // Animate the text changes
+        levelNumberLabel.text = "\(user.level.levelNumber)"
+        
+        let progressDifference = user.level.progress - user.level.previousProgress
+        var displayProgress = user.level.previousProgress
+        if progressDifference != 0 {
+            Timer.scheduledTimer(withTimeInterval: duration / Double(progressDifference), repeats: true) { (timer) in
+                if displayProgress == self.user.level.progress {
+                    timer.invalidate()
+                }
+                
+                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                displayProgress += 1
+            }
+        }
+        
+        
+        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
     }
     
     // MARK: - IB Actions

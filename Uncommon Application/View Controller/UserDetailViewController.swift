@@ -42,8 +42,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - User status display delegate
     
     func updateUserStatus() {
-        updateUI()
-        animateProgressViews()
+        animateProgressViewsAndLabels()
     }
     
     // MARK: - Table View Data Source Methods
@@ -93,7 +92,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
         
         prepareUI()
-        updateUI()
         // Calls configure round corners to show round corners during transition
         configureRoundCorners()
     }
@@ -110,7 +108,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
-        animateProgressViews()
+        animateProgressViewsAndLabels()
         updatePowerTableView()
     }
     
@@ -147,10 +145,17 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func prepareUI() {
-        // Update User Info
+        // Prepare User Info
         userNameLabel.text = user.name
         userDescriptionLabel.text = user.description
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
+        userLevelLabel.text = "Level \(user.level.levelNumber)"
+        userLevelProgressLabel.text = "\(user.level.previousProgress)/\(self.user.level.currentUpperBound)"
+        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        
+        // Prepare progress views
+        userLevelProgressView.setProgress(0.05, animated: false)
+        userEnergyProgressView.setProgress(0.05, animated: false)
     }
     
     func updatePowerTableView() {
@@ -161,19 +166,52 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
-    func updateUI() {
-        // Update level and energy
-        userLevelLabel.text = "Level \(user.level.levelNumber)"
-        userLevelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
-        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
-    }
-    
-    func animateProgressViews(withDuration duration: Double = 1.5) {
-        // Animate the progress of progress views
+    func animateProgressViewsAndLabels(withDuration duration: Double = 1.5) {
+        let levelProgress = self.user.level.normalizedProgress
+        let energyProgress = self.user.energy.normalizedProgress
+        
+        // Animate level progress view
+        
+        // FIXME: This will be useful for the small animations of consequenceController
+        switch self.user.level.levelNumberChangeStatus {
+        case .increased:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+            })
+        case .decreased:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+            })
+        case .noChange:
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+            })
+        }
+        
+        // Animate energy progress view
+        
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-            self.userLevelProgressView.setProgress(self.user.level.normalizedProgress, animated: true)
-            self.userEnergyProgressView.setProgress(self.user.energy.normalizedProgress, animated: true)
-        }, completion: nil)
+            self.userEnergyProgressView.setProgress(energyProgress, animated: true)
+        })
+        
+        // Animate the text changes
+        userLevelLabel.text = "Level \(user.level.levelNumber)"
+        
+        let progressDifference = user.level.progress - user.level.previousProgress
+        var displayProgress = user.level.previousProgress
+        if progressDifference != 0 {
+            Timer.scheduledTimer(withTimeInterval: duration / Double(progressDifference), repeats: true) { (timer) in
+                if displayProgress == self.user.level.progress {
+                    timer.invalidate()
+                }
+                
+                self.userLevelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                displayProgress += 1
+            }
+        }
+        
+        
+        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
     }
     
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {

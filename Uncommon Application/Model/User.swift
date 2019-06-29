@@ -152,8 +152,10 @@ struct Level {
             previousUpperBound = upperBounds[levelNumber - 1]
             let rawNormalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
             normalizedProgress = rawNormalizedProgress * 0.95 + 0.05
+            previousProgress = oldValue
         }
     }
+    var previousProgress: Int = 0
     
     var normalizedProgress: Float = 0
     var levelNumber: Int = 0 {

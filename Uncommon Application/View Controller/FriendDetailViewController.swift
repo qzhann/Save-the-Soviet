@@ -140,6 +140,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         // Update level and energy
         friendshipLevelLabel.text = "Friendship Lv \(friend.friendship.levelNumber)"
         friendshipLevelProgressLabel.text = "\(friend.friendship.progress)/\(friend.friendship.currentUpperBound)"
+        friendshipLevelProgressView.setProgress(0.05, animated: false)
     }
     
     func updateUI() {
