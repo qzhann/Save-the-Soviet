@@ -103,7 +103,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        user.applyAllPowers()
+        // FIXME: This is commented, might cause problems.
+        //user.applyAllPowers()
         consequenceController = ConsequenceController(for: User.currentUser)
         
     }
@@ -169,6 +170,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Setting round corner for views in User Status View
         userImageView.layer.cornerRadius = 10
         userImageView.clipsToBounds = true
+        // Setting the user image
+        userImageView.image = user.image
         
         levelProgressView.layer.cornerRadius = 3
         levelProgressView.clipsToBounds = true
@@ -213,18 +216,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Prepare progress views and labels
         let levelProgress = user.level.normalizedProgress
-        let energyProgress = user.energy.normalizedProgress
+        let energyProgress = user.support.normalizedProgress
         levelProgressView.setProgress(levelProgress, animated: false)
         energyProgressView.setProgress(energyProgress, animated: false)
         levelNumberLabel.text = "\(user.level.levelNumber)"
-        levelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
-        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        levelProgressLabel.text = user.level.progressDescription
+        energyProgressLabel.text = user.support.progressDescription
     }
     
     func animateProgressViewsAndLabels() {
         let duration = 1.5
         let levelProgress = user.level.normalizedProgress
-        let energyProgress = user.energy.normalizedProgress
+        let energyProgress = user.support.normalizedProgress
         
         // Animate level progress view
         
@@ -268,14 +271,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         
         
-        // Animate energy progress view
+        // Animate support progress view
         
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.energyProgressView.setProgress(energyProgress, animated: true)
         })
         
         
-        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        energyProgressLabel.text = user.support.progressDescription
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {

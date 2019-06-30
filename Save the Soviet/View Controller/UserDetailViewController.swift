@@ -144,7 +144,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userLevelProgressView.layer.cornerRadius = 3
         userLevelProgressView.clipsToBounds = true
         
-        // In user energy background view
+        // In user support background view
         userEnergyBackgroundView.layer.cornerRadius = 10
         userEnergyBackgroundView.clipsToBounds = true
         userEnergyProgressView.layer.cornerRadius = 3
@@ -167,8 +167,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userDescriptionLabel.text = user.description
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
         userLevelLabel.text = "Level \(user.level.levelNumber)"
-        userLevelProgressLabel.text = "\(user.level.previousProgress)/\(self.user.level.currentUpperBound)"
-        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        userLevelProgressLabel.text = user.level.progressDescription
+        userEnergyProgressLabel.text = user.support.progressDescription
+        userImageView.image = user.image
         
         // Prepare progress views
         userLevelProgressView.setProgress(0.05, animated: false)
@@ -186,7 +187,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     func animateProgressViewsAndLabels() {
         let duration = 1.5
         let levelProgress = self.user.level.normalizedProgress
-        let energyProgress = self.user.energy.normalizedProgress
+        let energyProgress = self.user.support.normalizedProgress
         
         // Animate level progress view
         
@@ -206,7 +207,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
             })
         }
         
-        // Animate energy progress view
+        // Animate support progress view
         
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.userEnergyProgressView.setProgress(energyProgress, animated: true)
@@ -235,7 +236,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         }
         
         
-        userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        userEnergyProgressLabel.text = user.support.progressDescription
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {

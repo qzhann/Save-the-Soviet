@@ -10,143 +10,136 @@ import Foundation
 import UIKit
 
 class User {
+    
     // MARK: Instance properties
     var name: String
+    /// Description string for displaying on UserDetailViewController
     var description: String
     var image: UIImage
-    // FIXME: Replace with default initializer
-    var level = Level(progress: 280) {
+    /// User level changes as the game progresses. This is related to the difficulty of the quiz questions and other aspects of the game.
+    var level: Level {
         didSet {
             statusDisplayDelegate?.updateUserStatus()
         }
     }
-    // FIXME: Replace with default initializer
-    var energy: Energy = Energy(progress: 15) {
+    /// User support rate reprented as percentage. When support drops to 0, the game ends.
+    var support: Percentage {
         didSet {
             statusDisplayDelegate?.updateUserStatus()
         }
     }
+    /// Coins can be used to upgrade power for User and Friends.
     var coins: Int
-    var friends: [Friend] = []
-    var powers: [Power] = Power.testPowers
+    /// Friends the user currently has.
+    var friends: [Friend]
+    /// Powers the user has.
+    var powers: [Power]
+    /// The view controller currently displaying user level and support progress informations.
     unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
     
     
     // MARK: - Initializers
-    /**
-     Full initializer.
-     */
-    init(name: String, description: String, image: UIImage, level: Level, energy: Energy, coins: Int, friends: [Friend], powers: [Power]) {
+    
+    /// Full initializer.
+    init(name: String, description: String, image: UIImage, level: Level, support: Percentage, coins: Int, friends: [Friend], powers: [Power]) {
         self.name = name
         self.description = description
         self.image = image
         self.level = level
-        self.energy = energy
+        self.support = support
         self.coins = coins
         self.friends = friends
         self.powers = powers
-        // FIXME: Handle all the powers
+        self.applyAllPowers()
     }
     
-    /**
-     Initialize with name, description, and image.
-     */
-    init(name: String, description: String, image: UIImage) {
-        self.name = name
-        self.description = description
-        self.image = image
-        self.coins = 100
+
+    /// Handles changes in level progress.
+    func changeLevelBy(progress: Int) {
+        // Level progress does not go beyond maximum
+        let newProgress = level.progress + progress
+        level.progress = min(newProgress, level.maximumProgress)
     }
     
-    /**
-     Initialize with name, description, image, and friends.
-     */
-    init(name: String, description: String, image: UIImage, friends: [Friend], coins: Int) {
-        self.name = name
-        self.description = description
-        self.image = image
-        self.friends = friends
-        self.coins = coins
+    /// Handles changes in support progress.
+    func changeSupportBy(progress: Int) {
+        // Support progress does not go beyond maximum
+        let newProgress = support.progress + progress
+        support.progress = min(newProgress, support.maximumProgress)
     }
     
-    /**
-     Handles change in progress.
-     */
-    func changeLevelProgressBy(_ progress: Int) {
-         level.progress += progress
-    }
-    
-    func changeEnergyProgressBy(_ progress: Int) {
-        energy.progress += progress
-    }
-    
+    /// Handle the addition of a new friend.
     func makeNewFriend(friend: Friend) {
         friends.append(friend)
         friend.applyAllPowers(to: self)
     }
     
+    /// Handle the upgrade of a power.
     func upgradePower(_ power: Power) {
         coins -= power.coinsNeeded
         power.upgrade()
         applyPower(power)
     }
     
+    /// Apply all powers. This is called when the user is initialized.
     func applyAllPowers() {
         for power in powers {
             applyPower(power)
         }
     }
     
+    /// Apply a power to self.
     private func applyPower(_ power: Power) {
+        
         if let interval = power.effectInterval {
+            // Apply power that effects periodically
             switch power.type {
             case .level:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
-                    self.changeLevelProgressBy(power.strength)
+                    self.changeLevelBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
             case .energy:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
-                    self.changeEnergyProgressBy(power.strength)
+                    self.changeSupportBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
             default:
                 break
             }
+            
         } else {
+            // Apply one-time power
             switch power.type {
             case .level:
-                self.changeLevelProgressBy(power.strength)
+                self.changeLevelBy(progress: power.strength)
             case .energy:
-                self.changeEnergyProgressBy(power.strength)
+                self.changeSupportBy(progress: power.strength)
             default:
                 break
             }
         }
     }
     
+    // MARK: - Static properties
     
     // FIXME: Test User
-    static var currentUser = User(name: "Gavin", description: "The guy who stays in his room all day.", image: UIImage(named: "Dog")!, friends: Friend.allPossibleFriends, coins: 100)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 0), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
-/**
- ### Instance Properties
-    * progress: Progress of the Level in Int values. Whenever updated, automatically updates levelNumber, currentUpperBound, and progressForCurrentLevel
-    * normalizedProgress: Progress of made from the previous level upperbound to the current level upperbound in Float.
-    * levelNumber: Level Number displayed on UI
-    * currentUpperBound: The maximum progress number to remain in the same levelNumber
- 
- ### Initializer
-    * Default initializer. Typically used to create a Level instance for a new user.
-    * Initialize with progress.
- */
+// MARK: -
+
+/// A progress tracker which tracks level number and progress. Level number changes as progress increases or decreases.
 struct Level {
+    
     // MARK: Instance properties
+    
+    /// Internal progress represented as an Int.
     var progress: Int {
         didSet {
+            // level increases every 100 progress
             levelNumber = (progress / 100) + 1
             currentUpperBound = upperBounds[levelNumber]
             previousUpperBound = upperBounds[levelNumber - 1]
@@ -155,9 +148,11 @@ struct Level {
             previousProgress = oldValue
         }
     }
+    /// Initialized to be the same as progress. When progress changes, this records the old value of progress.
     var previousProgress: Int
-    
+    /// Progress normalized into value from 0 to 1 inclusive, useful for updating progress views.
     var normalizedProgress: Float = 0
+    /// Level number represented as an Int.
     var levelNumber: Int = 0 {
         didSet {
             let difference = self.levelNumber - oldValue
@@ -170,23 +165,23 @@ struct Level {
             }
         }
     }
+    /// Status of level number changes, useful for visualizing the level number changes.
+    var levelNumberChangeStatus: LevelNumberChangeStatus = .noChange
+    /// currentUpperBound, previousUpperBound, and upperBounds are internal data that determines when changes in level number occurs, and what to display on progress labels.
     var currentUpperBound: Int = 100
     private var previousUpperBound: Int = 0
-    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100]
-    var levelNumberChangeStatus: LevelNumberChangeStatus = .noChange
+    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    var maximumProgress: Int = 1000
+    /// Returns a string to display on progress labels.
+    var progressDescription: String {
+        return "\(progress)/\(currentUpperBound)"
+    }
     
     
     // MARK: - Initializers
-    /**
-     Default initializer, typically used to create a Level instance for a new user.
-     */
-    init() {
-        self.progress = 0
-        self.previousProgress = 0
-    }
     
     /**
-     - parameter progress: progress for the level in Int
+     Initializes using progress.
      */
     init(progress: Int) {
         self.progress = progress
@@ -198,49 +193,42 @@ struct Level {
     }
 }
 
+// MARK: -
+
+/// States of the changes of level number.
 enum LevelNumberChangeStatus {
     case increased, decreased, noChange
 }
 
-/**
- ### Instance properties:
-    * progress: Progress of energy in Int. Whenever updated, automatically updates the normalized progress.
-    * maximum: The current upperbound for energy.
-    * currentReplenishRate: The current rate of replenishing for energy.
-    * time: Time remaining until the energy is full.
- 
- ### Initializers:
-    * Initialze using progress in Int.
- 
- */
-struct Energy {
+// MARK: -
+
+/// A progress tracker which represents progress in percentage. Does not have a level property.
+struct Percentage {
+    
+    // MARK: Instance properties
+    
+    /// Internal progress represented as an Int.
     var progress: Int {
         didSet {
-            normalizedProgress = Float(progress / maximum)
+            normalizedProgress = Float(progress) / Float(maximumProgress)
         }
     }
-    var maximum: Int = 20
+    let maximumProgress = 100
+    /// Progress normalized into value from 0 to 1 inclusive, useful for updating progress views.
     var normalizedProgress: Float = 0
-    // Energy replenished per minute
-    var currentReplenishRate: Int = 1
-    // Could be DateInterval or TimeInterval(Double) and then we format it using formatter. Need Verification.
-    var remainingTime: TimeInterval = 0
-    
-    /**
-     Set the new maximum by a non-negative integer. Useful as a helper method called by user functions that are more descriptive of their effects, and is thus fileprivate.
-     */
-    fileprivate mutating func increaseMaximum(by value: Int) {
-        guard value >= 0 else { return }
-        maximum += value
+    /// Returns a string to display on progress labels.
+    var progressDescription: String {
+        return "\(progress)%"
     }
     
+    
+    // MARK: - Initializers
     
     /**
      Initializes using progress.
-     - parameter progress: progress in Int
      */
     init(progress: Int) {
         self.progress = progress
-        normalizedProgress = Float(progress) / Float(maximum)
+        normalizedProgress = Float(progress) / Float(maximumProgress)
     }
 }

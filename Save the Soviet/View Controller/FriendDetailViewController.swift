@@ -137,7 +137,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         friendDescriptionLabel.text = friend.description
         friendImageView.image = friend.image
         
-        // Update level and energy
+        // Update level and support
         friendshipLevelLabel.text = "Friendship Lv \(friend.friendship.levelNumber)"
         friendshipLevelProgressLabel.text = "\(friend.friendship.progress)/\(friend.friendship.currentUpperBound)"
         friendshipLevelProgressView.setProgress(0.05, animated: false)

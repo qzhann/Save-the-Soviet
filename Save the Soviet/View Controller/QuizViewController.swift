@@ -421,7 +421,7 @@ class QuizViewController: UIViewController {
             quizResultViewController.progressChange = quiz.addGrade
             quizResultViewController.correct = quiz.correct
             quizResultViewController.responseBonus = quiz.responseBonus
-            user.changeLevelProgressBy(quiz.addGrade)
+            user.changeLevelBy(progress: quiz.addGrade)
         } else if segue.identifier == "StartQuiz" {
             
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {

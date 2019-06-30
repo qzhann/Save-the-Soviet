@@ -205,4 +205,4 @@ enum Consequence {
 }
 
 // FIXME: handle make new friends
-// FIXME: Handle change level progress, energy progress, and friendship progress by creating small animations on the recorded view controller
+// FIXME: Handle change level progress, support progress, and friendship progress by creating small animations on the recorded view controller

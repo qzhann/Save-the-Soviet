@@ -61,9 +61,9 @@ struct ConsequenceController {
             let indexPath = IndexPath(row: row, section: 0)
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
         case .changeLevelProgressBy(let change):
-            user.changeLevelProgressBy(change)
+            user.changeLevelBy(progress: change)
         case .changeEnergyProgressBy(let change):
-            user.changeEnergyProgressBy(change)
+            user.changeSupportBy(progress: change)
         case .changeFriendshipProgressBy(let change, for: let friend):
             friend.changeFriendshipProgressBy(change)
         case .upgradePower(let power):

@@ -162,13 +162,13 @@ class Friend: Equatable {
             switch power.type {
             case .level:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
-                    user.changeLevelProgressBy(power.strength)
+                    user.changeLevelBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
             case .energy:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
-                    user.changeEnergyProgressBy(power.strength)
+                    user.changeSupportBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
@@ -178,9 +178,9 @@ class Friend: Equatable {
         } else {
             switch power.type {
             case .level:
-                user.changeLevelProgressBy(power.strength)
+                user.changeLevelBy(progress: power.strength)
             case .energy:
-                user.changeEnergyProgressBy(power.strength)
+                user.changeSupportBy(progress: power.strength)
             default:
                 break
             }
