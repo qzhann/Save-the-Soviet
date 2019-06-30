@@ -155,7 +155,7 @@ struct Level {
             previousProgress = oldValue
         }
     }
-    var previousProgress: Int = 0
+    var previousProgress: Int
     
     var normalizedProgress: Float = 0
     var levelNumber: Int = 0 {
@@ -172,7 +172,7 @@ struct Level {
     }
     var currentUpperBound: Int = 100
     private var previousUpperBound: Int = 0
-    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700]
+    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100]
     var levelNumberChangeStatus: LevelNumberChangeStatus = .noChange
     
     
@@ -182,6 +182,7 @@ struct Level {
      */
     init() {
         self.progress = 0
+        self.previousProgress = 0
     }
     
     /**
@@ -189,6 +190,7 @@ struct Level {
      */
     init(progress: Int) {
         self.progress = progress
+        self.previousProgress = progress
         levelNumber = (progress / 100) + 1
         currentUpperBound = upperBounds[levelNumber]
         previousUpperBound = upperBounds[levelNumber - 1]

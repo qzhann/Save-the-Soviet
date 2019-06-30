@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol ConsequenceVisualizationDelegate: AnyObject {
+    func visualizeConsequence(_ consequence: Consequence)
+}
+
 struct ConsequenceController {
     
     // MARK: Instance properties
@@ -16,13 +20,13 @@ struct ConsequenceController {
     unowned var confirmationController: ConfirmationViewController?
     unowned var chatViewController: ChatViewController?
     unowned var viewController: UIViewController?
+    unowned var delegate: ConsequenceVisualizationDelegate?
     
     
     // MARK: - Initializers
     
-    init(for user: User, viewController: UIViewController? = nil) {
+    init(for user: User) {
         self.user = user
-        self.viewController = viewController
     }
     
     init(for user: User, confirmationViewController: ConfirmationViewController?) {
@@ -48,8 +52,8 @@ struct ConsequenceController {
     func handle(_ consequence: Consequence) {
         switch consequence {
         case .endChatFrom(let direction):
-            if let chatViewController = viewController as? ChatViewController {
-                chatViewController.endChatFrom(direction, withDelay: 0)
+            if let chatViewController = chatViewController {
+                chatViewController.endChatFrom(direction)
             }
         case .makeNewFriend(let friend):
             user.makeNewFriend(friend: friend)
@@ -76,5 +80,9 @@ struct ConsequenceController {
         default:
             break
         }
+    }
+    
+    func visualize(_ consequence: Consequence) {
+        delegate?.visualizeConsequence(consequence)
     }
 }

@@ -26,6 +26,7 @@
 		42D492FD22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D492FC22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift */; };
 		42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */; };
 		42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */; };
+		42EAC4CF22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */; };
 		42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */; };
 		42ECF9D421CB2EC4007AF7F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D221CB2EC4007AF7F9 /* Main.storyboard */; };
 		42ECF9D621CB2ECB007AF7F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42ECF9D521CB2ECB007AF7F9 /* Assets.xcassets */; };
@@ -61,6 +62,7 @@
 		42D492FC22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftThinkingChatTableViewCell.swift; sourceTree = "<group>"; };
 		42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewController.swift; sourceTree = "<group>"; };
 		42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewCell.swift; sourceTree = "<group>"; };
+		42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelProgressChangeIndicatorViewController.swift; sourceTree = "<group>"; };
 		42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uncommon Application.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42ECF9D321CB2EC4007AF7F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
 				42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */,
+				42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 				42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */,
 				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
 				428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */,
+				42EAC4CF22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift in Sources */,
 				42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */,
 				4260A66622B0DA9D006BFBDE /* ConfirmationViewController.swift in Sources */,
 				42A9841A22AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift in Sources */,

@@ -67,7 +67,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - IB Outlets
     
     @IBOutlet weak var chatTableView: UITableView!
-    @IBOutlet weak var tableViewHeader: UIView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var backButtonBackgroundView: UIView!
     @IBOutlet weak var responseContainerView: UIView!
@@ -79,7 +78,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: User.currentUser, viewController: self)
+        consequenceController = ConsequenceController(for: User.currentUser, chatViewController: self)
         prepareUI()
         resumeChat()
 
@@ -238,7 +237,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let promptUserTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
             // Note that we don't want to automatically end chat. This is handled as a consequence
             
-            self.handleConsequences(consequences)
+            if let consequences = consequences {
+                self.handleConsequences(consequences)
+            }
             
             if let responses = responses {
                 self.promptUserWith(responses: responses)
@@ -257,7 +258,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         let addResponseTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
             // Note that we don't want to automatically end chat. This is handled as a consequence
             
-            self.handleConsequences(consequences)
+            if let consequences = consequences {
+                self.handleConsequences(consequences)
+            }
             
             if let responseId = responseId {
                 self.friend.sendIncomingMessageWithId(responseId)
@@ -341,7 +344,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         return totalDelay == 0 ? 0.5 : totalDelay
     }
     
-    func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.5) {
+    func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.3) {
         
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
             self.chatController.chatEndingStatus = .endedFrom(direction)
@@ -358,8 +361,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         RunLoop.current.add(endChatTimer, forMode: .common)
     }
     
-    func handleConsequences(_ consequences: [Consequence]?) {
-        guard let consequences = consequences else { return }
+    func handleConsequences(_ consequences: [Consequence]) {
         for consequence in consequences {
             if consequenceController.canHandle(consequence) {
                 consequenceController.handle(consequence)

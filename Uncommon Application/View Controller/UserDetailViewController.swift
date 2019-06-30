@@ -12,12 +12,15 @@ protocol ConfirmationDelegate: AnyObject {
     var didConfirm: Bool { get set }
 }
 
-class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate {
+class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate {
     
     unowned var user = User.currentUser
     weak var selectedPower: Power?
     var selectedIndexPath: IndexPath?
     var didConfirm = false
+    var consequenceController: ConsequenceController!
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    
     
     @IBOutlet weak var backgroundView: UIView!
     
@@ -31,6 +34,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     @IBOutlet weak var userLevelLabel: UILabel!
     @IBOutlet weak var userLevelProgressView: UIProgressView!
     @IBOutlet weak var userLevelProgressLabel: UILabel!
+    @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
     
     @IBOutlet weak var userEnergyBackgroundView: UIView!
     @IBOutlet weak var userEnergyProgressView: UIProgressView!
@@ -43,6 +47,17 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     func updateUserStatus() {
         animateProgressViewsAndLabels()
+    }
+    
+    // MARK: - Consequence visualization delegate
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeLevelProgressBy(let change):
+            levelProgressChangeIndicatorViewController.updateUsing(change)
+            animateLevelProgressChangeIndicatorFor(change: change)
+        default:
+            break
+        }
     }
     
     // MARK: - Table View Data Source Methods
@@ -90,6 +105,8 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        consequenceController = ConsequenceController(for: user)
+        consequenceController.delegate = self
         
         prepareUI()
         // Calls configure round corners to show round corners during transition
@@ -101,6 +118,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         if let selectedIndexPath = selectedIndexPath {
             userPowerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
+        levelProgressChangeIndicatorView.alpha = 0
     }
     
     // Overriding view did appear correctly configures round corners and animates the progress of progress views
@@ -166,7 +184,8 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
-    func animateProgressViewsAndLabels(withDuration duration: Double = 1.5) {
+    func animateProgressViewsAndLabels() {
+        let duration = 1.5
         let levelProgress = self.user.level.normalizedProgress
         let energyProgress = self.user.energy.normalizedProgress
         
@@ -197,21 +216,61 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         // Animate the text changes
         userLevelLabel.text = "Level \(user.level.levelNumber)"
         
-        let progressDifference = user.level.progress - user.level.previousProgress
+        let levelProgressDifference = user.level.progress - user.level.previousProgress
         var displayProgress = user.level.previousProgress
-        if progressDifference != 0 {
-            Timer.scheduledTimer(withTimeInterval: duration / Double(progressDifference), repeats: true) { (timer) in
+        if levelProgressDifference != 0 {
+            consequenceController.visualize(.changeLevelProgressBy(levelProgressDifference))
+            Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
                 if displayProgress == self.user.level.progress {
                     timer.invalidate()
                 }
                 
                 self.userLevelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
-                displayProgress += 1
+                if levelProgressDifference > 0 {
+                    displayProgress += 1
+                } else {
+                    displayProgress -= 1
+                }
+                
             }
         }
         
         
         userEnergyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+    }
+    
+    private func animateLevelProgressChangeIndicatorFor(change: Int) {
+        var animation: CGAffineTransform!
+        if change > 0 {
+            // Make it rise from the bar
+            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
+            animation = CGAffineTransform(translationX: 0, y: -5)
+        } else if change < 0 {
+            animation = CGAffineTransform(translationX: 0, y: 5)
+        } else {
+            animation = CGAffineTransform(translationX: 0, y: 0)
+        }
+        
+        
+        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 1
+        }
+        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
+            self.levelProgressChangeIndicatorView.transform = animation
+        }
+        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 0
+        }
+        translateAnimator.addCompletion { (_) in
+            disappearAnimator.startAnimation()
+        }
+        
+        disappearAnimator.addCompletion { (_) in
+            self.levelProgressChangeIndicatorView.transform = .identity
+        }
+        
+        appearAnimator.startAnimation()
+        translateAnimator.startAnimation()
     }
     
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
@@ -247,6 +306,8 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
             confirmationViewController.confirmationDelegate = self
             confirmationViewController.consequence = .upgradePower(selectedPower!)
             confirmationViewController.user = user
+        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+            self.levelProgressChangeIndicatorViewController = segue.destination as? LevelProgressChangeIndicatorViewController
         }
     }
 

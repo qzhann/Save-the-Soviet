@@ -92,8 +92,8 @@ class Power {
 
     // MARK: - Static properties
     static var testPowers: [Power] = [
-        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", affecting: .energy, strength: 5, every: 5.minute),
-        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +10 every 2 minutes.", coinsNeeded: 30, affecting: .level, strength: 10, every: 2.minute, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +10 every 10 seconds.", affecting: .level, strength: 10, every: 10.second)]),
+        Power(name: "Healer", image: UIImage(named: "HeartPowerLevel3")!, description: "5 Energy recovered per minute.", affecting: .energy, strength: 5, every: 1.minute),
+        Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +5 every 10 seconds.", coinsNeeded: 30, affecting: .level, strength: 5, every: 5.second, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +10 every 10 seconds.", affecting: .level, strength: 10, every: 10.second)]),
         Power(name: "Amatuer Cheater", image: UIImage(named: "Dog")!, description: "Cheat once every 5 quizzes.", affecting: .other, strength: 0)
     ]
 }
@@ -109,7 +109,7 @@ extension Double {
         return self
     }
     var minute: Double {
-        return self * second
+        return self * second * 60
     }
 }
 

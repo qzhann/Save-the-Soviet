@@ -22,7 +22,7 @@ protocol UserStatusDisplayDelegate: AnyObject {
 }
 
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate {
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -31,6 +31,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var levelProgressLabel: UILabel!
     @IBOutlet weak var energyProgressView: UIProgressView!
     @IBOutlet weak var energyProgressLabel: UILabel!
+    
+    @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
+    
     
     @IBOutlet weak var friendTableView: UITableView!
     
@@ -41,6 +44,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     unowned var user: User = User.currentUser
     var currentFriend: Friend!
     var deletedIndexPath: IndexPath?
+    var consequenceController: ConsequenceController!
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    private var didPrepareUI = false
     
     // MARK: - Friend Image View Tap Delegate Method
     
@@ -65,9 +71,22 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         friendTableView.endUpdates()
     }
     
+    
     // MARK: - User status display delegate
+    
     func updateUserStatus() {
         animateProgressViewsAndLabels()
+    }
+    
+    // MARK: - Consequence visualization delegate
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeLevelProgressBy(let change):
+            levelProgressChangeIndicatorViewController.updateUsing(change)
+            animateLevelProgressChangeIndicatorFor(change: change)
+        default:
+            break
+        }
     }
     
     
@@ -76,16 +95,22 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         user.applyAllPowers()
+        consequenceController = ConsequenceController(for: User.currentUser)
+        consequenceController.delegate = self
         prepareUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         user.statusDisplayDelegate = self
+        levelProgressChangeIndicatorView.alpha = 0
     }
     
     // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
     override func viewDidLayoutSubviews() {
-        prepareUI()
+        if didPrepareUI == false {
+            prepareUI()
+            didPrepareUI = true
+        }
     }
     
     // Animate the progressViews once the views have occured
@@ -176,15 +201,24 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Reset coin image view
         coinImageView.alpha = 1
+        
+        // Prepare progress views and labels
+        let levelProgress = user.level.normalizedProgress
+        let energyProgress = user.energy.normalizedProgress
+        levelProgressView.setProgress(levelProgress, animated: true)
+        energyProgressView.setProgress(energyProgress, animated: true)
+        levelNumberLabel.text = "\(user.level.levelNumber)"
+        levelProgressLabel.text = "\(user.level.progress)/\(user.level.currentUpperBound)"
+        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
     }
     
-    func animateProgressViewsAndLabels(withDuration duration: Double = 1.5) {
-        let levelProgress = self.user.level.normalizedProgress
-        let energyProgress = self.user.energy.normalizedProgress
+    func animateProgressViewsAndLabels() {
+        let duration = 1.5
+        let levelProgress = user.level.normalizedProgress
+        let energyProgress = user.energy.normalizedProgress
         
         // Animate level progress view
         
-        // FIXME: This will be useful for the small animations of consequenceController
         switch self.user.level.levelNumberChangeStatus {
         case .increased:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
@@ -200,30 +234,73 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             })
         }
         
+        // Animate the text changes
+        levelNumberLabel.text = "\(user.level.levelNumber)"
+        
+        let levelProgressDifference = user.level.progress - user.level.previousProgress
+        var displayProgress = user.level.previousProgress
+        if levelProgressDifference != 0 {
+            consequenceController.visualize(.changeLevelProgressBy(levelProgressDifference))
+            Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
+                if displayProgress == self.user.level.progress {
+                    timer.invalidate()
+                }
+                
+                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                if levelProgressDifference > 0 {
+                    displayProgress += 1
+                } else {
+                    displayProgress -= 1
+                }
+                
+            }
+        }
+        
+        
+        
+        
         // Animate energy progress view
         
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.energyProgressView.setProgress(energyProgress, animated: true)
         })
         
-        // Animate the text changes
-        levelNumberLabel.text = "\(user.level.levelNumber)"
         
-        let progressDifference = user.level.progress - user.level.previousProgress
-        var displayProgress = user.level.previousProgress
-        if progressDifference != 0 {
-            Timer.scheduledTimer(withTimeInterval: duration / Double(progressDifference), repeats: true) { (timer) in
-                if displayProgress == self.user.level.progress {
-                    timer.invalidate()
-                }
-                
-                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
-                displayProgress += 1
-            }
+        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+    }
+    
+    private func animateLevelProgressChangeIndicatorFor(change: Int) {
+        var animation: CGAffineTransform!
+        if change > 0 {
+            // Make it rise from the bar
+            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
+            animation = CGAffineTransform(translationX: 0, y: -5)
+        } else if change < 0 {
+            animation = CGAffineTransform(translationX: 0, y: 5)
+        } else {
+            animation = CGAffineTransform(translationX: 0, y: 0)
         }
         
         
-        energyProgressLabel.text = "\(user.energy.progress)/\(user.energy.maximum)"
+        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 1
+        }
+        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
+            self.levelProgressChangeIndicatorView.transform = animation
+        }
+        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 0
+        }
+        translateAnimator.addCompletion { (_) in
+            disappearAnimator.startAnimation()
+        }
+        
+        disappearAnimator.addCompletion { (_) in
+            self.levelProgressChangeIndicatorView.transform = .identity
+        }
+        
+        appearAnimator.startAnimation()
+        translateAnimator.startAnimation()
     }
     
     // MARK: - IB Actions
@@ -270,8 +347,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             chatViewController.transitioningDelegate = self
             currentFriend.isChatting = true
             chatViewController.friend = currentFriend
-            
             friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)
+        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+            let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
+            self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
         }
     }
     

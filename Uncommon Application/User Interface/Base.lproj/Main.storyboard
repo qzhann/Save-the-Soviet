@@ -100,7 +100,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="340" y="1628"/>
+            <point key="canvasLocation" x="-327" y="1023"/>
         </scene>
         <!--New Friend View Controller-->
         <scene sceneID="bEA-vZ-gqH">
@@ -256,6 +256,12 @@
                                                     <constraint firstAttribute="width" constant="15" id="NRg-27-sdg"/>
                                                 </constraints>
                                             </imageView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hp5-Ue-UIm">
+                                                <rect key="frame" x="156" y="11" width="120" height="13.666666666666664"/>
+                                                <connections>
+                                                    <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="UJk-et-5UX"/>
+                                                </connections>
+                                            </containerView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <gestureRecognizers/>
@@ -263,10 +269,14 @@
                                             <constraint firstItem="i4A-0R-Pu5" firstAttribute="height" secondItem="p9A-zG-1EH" secondAttribute="height" id="0vF-ck-hoF"/>
                                             <constraint firstItem="X8C-3F-qyU" firstAttribute="leading" secondItem="N4J-hR-oua" secondAttribute="leading" constant="10" id="3Ca-BR-lKd"/>
                                             <constraint firstItem="X8C-3F-qyU" firstAttribute="centerY" secondItem="N4J-hR-oua" secondAttribute="centerY" id="3dk-6D-RzU"/>
+                                            <constraint firstItem="hp5-Ue-UIm" firstAttribute="height" secondItem="p9A-zG-1EH" secondAttribute="height" id="5Eq-uy-4RR"/>
+                                            <constraint firstItem="hp5-Ue-UIm" firstAttribute="leading" secondItem="p9A-zG-1EH" secondAttribute="leading" id="5kR-zI-Pyt"/>
                                             <constraint firstItem="p9A-zG-1EH" firstAttribute="width" secondItem="N4J-hR-oua" secondAttribute="width" multiplier="0.35" id="Awa-S7-NHj"/>
                                             <constraint firstItem="pdM-DO-9g5" firstAttribute="centerY" secondItem="6mp-sV-c6I" secondAttribute="centerY" constant="-2.5" id="Edm-Vl-orT"/>
                                             <constraint firstItem="CIO-Jx-0KR" firstAttribute="leading" secondItem="Vva-dk-eUD" secondAttribute="trailing" constant="-8" id="GUg-FO-wB5"/>
                                             <constraint firstItem="Vva-dk-eUD" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="X8C-3F-qyU" secondAttribute="trailing" id="Gky-Fr-ym9"/>
+                                            <constraint firstItem="p9A-zG-1EH" firstAttribute="top" secondItem="hp5-Ue-UIm" secondAttribute="bottom" constant="4" id="Ou2-d4-AxC"/>
+                                            <constraint firstItem="hp5-Ue-UIm" firstAttribute="width" secondItem="p9A-zG-1EH" secondAttribute="width" id="Pr7-mH-GKY"/>
                                             <constraint firstItem="pdM-DO-9g5" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Dim-OL-uMD" secondAttribute="trailing" id="UtS-yi-xEt"/>
                                             <constraint firstItem="p9A-zG-1EH" firstAttribute="centerY" secondItem="6mp-sV-c6I" secondAttribute="centerY" constant="-3.75" id="VOv-pt-Ved"/>
                                             <constraint firstItem="i4A-0R-Pu5" firstAttribute="leading" secondItem="p9A-zG-1EH" secondAttribute="leading" id="Ygt-dM-SjC"/>
@@ -461,6 +471,7 @@
                         <outlet property="energyProgressView" destination="i4A-0R-Pu5" id="Pei-CN-2n0"/>
                         <outlet property="friendTableView" destination="orQ-rH-Ogg" id="I3B-dO-gsv"/>
                         <outlet property="levelNumberLabel" destination="Dim-OL-uMD" id="AFl-sY-0kO"/>
+                        <outlet property="levelProgressChangeIndicatorView" destination="hp5-Ue-UIm" id="HT5-gd-ujc"/>
                         <outlet property="levelProgressLabel" destination="pdM-DO-9g5" id="uWn-cM-TJN"/>
                         <outlet property="levelProgressView" destination="p9A-zG-1EH" id="weg-e4-Rwa"/>
                         <outlet property="shopBackgroundView" destination="iM9-O3-gjm" id="f1I-bT-PTI"/>
@@ -479,7 +490,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1181.5999999999999" y="115.59220389805098"/>
+            <point key="canvasLocation" x="1181.5999999999999" y="115.27093596059113"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="2iR-Iq-1DG">
@@ -754,7 +765,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1XV-X0-I9R" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1956" y="576"/>
+            <point key="canvasLocation" x="1956" y="573"/>
         </scene>
         <!--User Detail View Controller-->
         <scene sceneID="M9W-nN-6zl">
@@ -843,9 +854,19 @@
                                         <color key="textColor" red="0.51673096419999998" green="0.14066147800000001" blue="0.1524061263" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m4f-1H-u1m">
+                                        <rect key="frame" x="73.333333333333314" y="12.666666666666686" width="120" height="11.666666666666664"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="120" id="qim-gm-Hqs"/>
+                                        </constraints>
+                                        <connections>
+                                            <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="4kp-yA-NKo"/>
+                                        </connections>
+                                    </containerView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="m4f-1H-u1m" firstAttribute="leading" secondItem="OQ5-cd-2bB" secondAttribute="trailing" constant="8" id="3uz-2K-All"/>
                                     <constraint firstItem="ra8-a9-oSr" firstAttribute="leading" secondItem="tok-OK-blH" secondAttribute="trailing" constant="8" id="9Qp-P8-L7v"/>
                                     <constraint firstItem="OQ5-cd-2bB" firstAttribute="leading" secondItem="khe-c9-8K7" secondAttribute="leading" constant="16" id="Beu-ZW-L7r"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OQ5-cd-2bB" secondAttribute="trailing" id="IBj-pO-cYk"/>
@@ -856,7 +877,9 @@
                                     <constraint firstItem="tok-OK-blH" firstAttribute="top" secondItem="OQ5-cd-2bB" secondAttribute="bottom" constant="3" id="Zbv-hI-usM"/>
                                     <constraint firstItem="ra8-a9-oSr" firstAttribute="centerY" secondItem="tok-OK-blH" secondAttribute="centerY" id="eqD-Ad-1pf"/>
                                     <constraint firstAttribute="bottom" secondItem="tok-OK-blH" secondAttribute="bottom" constant="14" id="fbG-me-g1b"/>
+                                    <constraint firstItem="m4f-1H-u1m" firstAttribute="height" secondItem="tok-OK-blH" secondAttribute="height" id="iUt-i4-YRP"/>
                                     <constraint firstItem="OQ5-cd-2bB" firstAttribute="top" secondItem="khe-c9-8K7" secondAttribute="top" constant="8" id="nPY-fo-xYC"/>
+                                    <constraint firstItem="m4f-1H-u1m" firstAttribute="centerY" secondItem="OQ5-cd-2bB" secondAttribute="centerY" id="thv-Ma-XaD"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Uz-HN-QXK">
@@ -1037,6 +1060,7 @@
                     </view>
                     <connections>
                         <outlet property="backgroundView" destination="hzW-BR-pMI" id="Nk7-Zz-RHT"/>
+                        <outlet property="levelProgressChangeIndicatorView" destination="m4f-1H-u1m" id="Hco-Hh-16g"/>
                         <outlet property="tableViewHeader" destination="wCO-Jb-qHm" id="9FE-mS-XyU"/>
                         <outlet property="userBasicInfoBackgroundView" destination="pfG-R4-OMY" id="8f1-w8-fxw"/>
                         <outlet property="userCoinsLabel" destination="4bg-fr-alf" id="zkx-FW-sWh"/>
@@ -1061,7 +1085,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-63" y="887"/>
+            <point key="canvasLocation" x="-657" y="193"/>
         </scene>
         <!--Quiz View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -1694,7 +1718,50 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="720.79999999999995" y="886.69950738916259"/>
+            <point key="canvasLocation" x="9" y="193"/>
+        </scene>
+        <!--Level Progress Change Indicator View Controller-->
+        <scene sceneID="CEC-WU-Keg">
+            <objects>
+                <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Uncommon_Application" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="Increase" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
+                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="7fd-th-QSg" secondAttribute="height" multiplier="1:1" id="UKo-as-f6U"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNj-aV-Z2p">
+                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
+                                <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
+                                <color key="textColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="7fd-th-QSg" secondAttribute="bottom" id="5RC-x4-kKB"/>
+                            <constraint firstItem="7fd-th-QSg" firstAttribute="leading" secondItem="P1z-nB-5cp" secondAttribute="leading" id="Som-YY-bhB"/>
+                            <constraint firstItem="7fd-th-QSg" firstAttribute="top" secondItem="P1z-nB-5cp" secondAttribute="top" id="ZXj-jV-sEp"/>
+                            <constraint firstAttribute="trailing" secondItem="KNj-aV-Z2p" secondAttribute="trailing" id="j3z-eu-7Fv"/>
+                            <constraint firstItem="KNj-aV-Z2p" firstAttribute="centerY" secondItem="7fd-th-QSg" secondAttribute="centerY" constant="1" id="lGh-Qw-9BP"/>
+                            <constraint firstItem="KNj-aV-Z2p" firstAttribute="leading" secondItem="7fd-th-QSg" secondAttribute="trailing" id="z0E-tc-zCA"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="uMp-2X-4CR"/>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="7fd-th-QSg" id="jdk-lt-Ltt"/>
+                        <outlet property="label" destination="KNj-aV-Z2p" id="JlQ-to-b0L"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fPj-h4-6OJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="467" y="856"/>
         </scene>
     </scenes>
     <resources>
@@ -1705,10 +1772,12 @@
         <image name="Coin" width="30.666666030883789" height="25.333333969116211"/>
         <image name="Dog" width="60" height="60"/>
         <image name="Energy" width="31" height="25"/>
+        <image name="Increase" width="40" height="58"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="4kp-yA-NKo"/>
         <segue reference="MOI-z0-leT"/>
     </inferredMetricsTieBreakers>
 </document>
