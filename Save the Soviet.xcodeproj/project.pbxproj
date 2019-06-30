@@ -63,7 +63,7 @@
 		42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewController.swift; sourceTree = "<group>"; };
 		42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewCell.swift; sourceTree = "<group>"; };
 		42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelProgressChangeIndicatorViewController.swift; sourceTree = "<group>"; };
-		42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Uncommon Application.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		42ECF9CB21CB2EC4007AF7F9 /* Save the Soviet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Save the Soviet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		42ECF9CE21CB2EC4007AF7F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		42ECF9D321CB2EC4007AF7F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		42ECF9D521CB2ECB007AF7F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -102,7 +102,7 @@
 		42ECF9C221CB2EC4007AF7F9 = {
 			isa = PBXGroup;
 			children = (
-				42ECF9CD21CB2EC4007AF7F9 /* Uncommon Application */,
+				42ECF9CD21CB2EC4007AF7F9 /* Save the Soviet */,
 				42ECF9CC21CB2EC4007AF7F9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,12 +110,12 @@
 		42ECF9CC21CB2EC4007AF7F9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */,
+				42ECF9CB21CB2EC4007AF7F9 /* Save the Soviet.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		42ECF9CD21CB2EC4007AF7F9 /* Uncommon Application */ = {
+		42ECF9CD21CB2EC4007AF7F9 /* Save the Soviet */ = {
 			isa = PBXGroup;
 			children = (
 				42FDD864228AA622007BE38A /* Model */,
@@ -125,7 +125,7 @@
 				42FDD868228AA65C007BE38A /* User Interface */,
 				42FDD869228AA67A007BE38A /* Bundle Files */,
 			);
-			path = "Uncommon Application";
+			path = "Save the Soviet";
 			sourceTree = "<group>";
 		};
 		42FDD864228AA622007BE38A /* Model */ = {
@@ -199,9 +199,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		42ECF9CA21CB2EC4007AF7F9 /* Uncommon Application */ = {
+		42ECF9CA21CB2EC4007AF7F9 /* Save the Soviet */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 42ECF9DD21CB2ECB007AF7F9 /* Build configuration list for PBXNativeTarget "Uncommon Application" */;
+			buildConfigurationList = 42ECF9DD21CB2ECB007AF7F9 /* Build configuration list for PBXNativeTarget "Save the Soviet" */;
 			buildPhases = (
 				42ECF9C721CB2EC4007AF7F9 /* Sources */,
 				42ECF9C821CB2EC4007AF7F9 /* Frameworks */,
@@ -211,9 +211,9 @@
 			);
 			dependencies = (
 			);
-			name = "Uncommon Application";
+			name = "Save the Soviet";
 			productName = "Uncommon Application";
-			productReference = 42ECF9CB21CB2EC4007AF7F9 /* Uncommon Application.app */;
+			productReference = 42ECF9CB21CB2EC4007AF7F9 /* Save the Soviet.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -237,7 +237,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 42ECF9C621CB2EC4007AF7F9 /* Build configuration list for PBXProject "Uncommon Application" */;
+			buildConfigurationList = 42ECF9C621CB2EC4007AF7F9 /* Build configuration list for PBXProject "Save the Soviet" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -250,7 +250,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				42ECF9CA21CB2EC4007AF7F9 /* Uncommon Application */,
+				42ECF9CA21CB2EC4007AF7F9 /* Save the Soviet */,
 			);
 		};
 /* End PBXProject section */
@@ -450,13 +450,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CJYVMFG9D9;
-				INFOPLIST_FILE = "$(SRCROOT)/Uncommon Application/Bundle Files/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Save the Soviet/Bundle Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "qzhann.Uncommon-Application";
+				PRODUCT_BUNDLE_IDENTIFIER = "qzhann.Save-the-Soviet";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -469,13 +469,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CJYVMFG9D9;
-				INFOPLIST_FILE = "$(SRCROOT)/Uncommon Application/Bundle Files/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Save the Soviet/Bundle Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "qzhann.Uncommon-Application";
+				PRODUCT_BUNDLE_IDENTIFIER = "qzhann.Save-the-Soviet";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -485,7 +485,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		42ECF9C621CB2EC4007AF7F9 /* Build configuration list for PBXProject "Uncommon Application" */ = {
+		42ECF9C621CB2EC4007AF7F9 /* Build configuration list for PBXProject "Save the Soviet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42ECF9DB21CB2ECB007AF7F9 /* Debug */,
@@ -494,7 +494,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		42ECF9DD21CB2ECB007AF7F9 /* Build configuration list for PBXNativeTarget "Uncommon Application" */ = {
+		42ECF9DD21CB2ECB007AF7F9 /* Build configuration list for PBXNativeTarget "Save the Soviet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42ECF9DE21CB2ECB007AF7F9 /* Debug */,
