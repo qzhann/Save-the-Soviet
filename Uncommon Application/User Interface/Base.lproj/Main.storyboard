@@ -1754,7 +1754,7 @@
             <objects>
                 <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Uncommon_Application" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
-                        <rect key="frame" x="0.0" y="0.0" width="120" height="13.666666666666666"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="13.666666666666668"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LevelIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
