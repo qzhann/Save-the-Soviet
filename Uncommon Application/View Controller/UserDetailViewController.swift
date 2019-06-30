@@ -12,7 +12,7 @@ protocol ConfirmationDelegate: AnyObject {
     var didConfirm: Bool { get set }
 }
 
-class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate {
+class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate {
     
     unowned var user = User.currentUser
     weak var selectedPower: Power?
@@ -53,7 +53,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
         case .changeLevelProgressBy(let change):
-            levelProgressChangeIndicatorViewController.updateUsing(change)
+            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
             animateLevelProgressChangeIndicatorFor(change: change)
         default:
             break
@@ -106,7 +106,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         consequenceController = ConsequenceController(for: user)
-        consequenceController.delegate = self
         
         prepareUI()
         // Calls configure round corners to show round corners during transition
@@ -219,7 +218,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         let levelProgressDifference = user.level.progress - user.level.previousProgress
         var displayProgress = user.level.previousProgress
         if levelProgressDifference != 0 {
-            consequenceController.visualize(.changeLevelProgressBy(levelProgressDifference))
+            visualizeConsequence(.changeLevelProgressBy(levelProgressDifference))
             Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
                 if displayProgress == self.user.level.progress {
                     timer.invalidate()

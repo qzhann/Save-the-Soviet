@@ -17,10 +17,26 @@ class LevelProgressChangeIndicatorViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    func updateUsing(_ change: Int) {
-        imageView.image = change >= 0 ? UIImage(named: "Increase")!  : UIImage(named: "Decrease")!
-        label.text = "\(change)"
+    func configureUsing(change: Int, style: ProgressChangeIndicatorDisplayStyle) {
+        switch style {
+        case .short:
+            imageView.image = change >= 0 ? UIImage(named: "LevelIncrease")! : UIImage(named: "LevelDecrease")!
+            label.text = "\(change)"
+            label.textColor = UIColor(red: 130 / 255, green: 37 / 255, blue: 41 / 255, alpha: 1)
+        case .long:
+            imageView.image = change >= 0 ? UIImage(named: "LevelIncrease")! : UIImage(named: "LevelDecrease")!
+            label.text = change >= 0 ? "Level +\(change)" : "Level \(change)"
+            label.textColor = UIColor(red: 130 / 255, green: 37 / 255, blue: 41 / 255, alpha: 1)
+        case .whiteLong:
+            imageView.image = change >= 0 ? UIImage(named: "LevelIncreaseWhite")! : UIImage(named: "LevelDecreaseWhite")!
+            label.text = change >= 0 ? "Level +\(change)" : "Level \(change)"
+            label.textColor = UIColor.white
+        }
     }
     
 
+}
+
+enum ProgressChangeIndicatorDisplayStyle {
+    case short, long, whiteLong
 }

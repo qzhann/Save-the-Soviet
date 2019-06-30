@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol ConsequenceVisualizationDelegate: AnyObject {
-    func visualizeConsequence(_ consequence: Consequence)
-}
-
 struct ConsequenceController {
     
     // MARK: Instance properties
@@ -19,9 +15,7 @@ struct ConsequenceController {
     unowned let user: User
     unowned var confirmationController: ConfirmationViewController?
     unowned var chatViewController: ChatViewController?
-    unowned var viewController: UIViewController?
-    unowned var delegate: ConsequenceVisualizationDelegate?
-    
+    unowned var viewController: UIViewController?    
     
     // MARK: - Initializers
     
@@ -56,8 +50,11 @@ struct ConsequenceController {
                 chatViewController.endChatFrom(direction)
             }
         case .makeNewFriend(let friend):
-            user.makeNewFriend(friend: friend)
-            chatViewController?.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
+            if let chatViewController = chatViewController {
+                chatViewController.delayedConsequenceHandlingDelegate.delayedConsequences.append(consequence)
+                chatViewController.newFriend = friend
+                chatViewController.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
+            }
         case .deleteFriend(let friend):
             let row = user.friends.firstIndex(of: friend)!
             user.friends.remove(at: row)
@@ -74,15 +71,9 @@ struct ConsequenceController {
             user.upgradePower(power)
             confirmationController?.dismiss(animated: true, completion: nil)
         case .startQuiz:
-            if let chatViewController = viewController as? ChatViewController {
-                chatViewController.performSegue(withIdentifier: "ShowQuiz", sender: nil)
-            }
+            chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         default:
             break
         }
-    }
-    
-    func visualize(_ consequence: Consequence) {
-        delegate?.visualizeConsequence(consequence)
     }
 }

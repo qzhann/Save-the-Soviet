@@ -15,6 +15,7 @@ class QuizViewController: UIViewController {
     
     @IBOutlet weak var questionCategoryLabel: UILabel!
     @IBOutlet weak var questionLabel: UILabel!
+    @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
     
     @IBOutlet weak var answerButton1: UIButton!
     @IBOutlet weak var answerButton2: UIButton!
@@ -33,6 +34,7 @@ class QuizViewController: UIViewController {
     var hasTimer = false
     var seconds = 5
     var user = User.currentUser
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
     
     // The index of the button corresponding to the right answer of currentQuestion
     var correctButton = UIButton()
@@ -58,6 +60,7 @@ class QuizViewController: UIViewController {
         // Prepare the views
         configureRoundCorners()
         resetAllViews()
+        levelProgressChangeIndicatorView.alpha = 0
     }
     
     func configureRoundCorners() {
@@ -275,6 +278,50 @@ class QuizViewController: UIViewController {
         }
     }
     
+    private func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeLevelProgressBy(let change):
+            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
+            animateLevelProgressChangeIndicatorFor(change: change)
+        default:
+            break
+        }
+    }
+    
+    private func animateLevelProgressChangeIndicatorFor(change: Int) {
+        var animation: CGAffineTransform!
+        if change > 0 {
+            // Make it rise from the bar
+            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
+            animation = CGAffineTransform(translationX: 0, y: -5)
+        } else if change < 0 {
+            animation = CGAffineTransform(translationX: 0, y: 5)
+        } else {
+            animation = CGAffineTransform(translationX: 0, y: 0)
+        }
+        
+        
+        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 1
+        }
+        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
+            self.levelProgressChangeIndicatorView.transform = animation
+        }
+        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 0
+        }
+        translateAnimator.addCompletion { (_) in
+            disappearAnimator.startAnimation()
+        }
+        
+        disappearAnimator.addCompletion { (_) in
+            self.levelProgressChangeIndicatorView.transform = .identity
+        }
+        
+        appearAnimator.startAnimation()
+        translateAnimator.startAnimation()
+    }
+    
     @IBAction func answerButtonTapped(_ sender: UIButton) {
 
         let answerButtons = [answerButton1, answerButton2, answerButton3, answerButton4]
@@ -284,10 +331,18 @@ class QuizViewController: UIViewController {
         let correctness = quiz.answeredCorrectly(with: sender.title(for: .normal)!, for: timeRemaining)
         var answerCorrectnessImageView = UIImageView()
         
+        // Invalidate the timer
         timer.invalidate()
         UIView.animate(withDuration: 0.2, delay: 0.8, animations: {
             self.timerLabel.alpha = 0
         })
+        
+        // Visualize the consequence
+        if correctness == true {
+            visualizeConsequence(.changeLevelProgressBy(quiz.currentQuestion!.addGrade))
+        } else {
+            visualizeConsequence(.changeLevelProgressBy(-quiz.currentQuestion!.minusGrade))
+        }
         
         // Set the selected answerCorrectness Image View
         switch sender {
@@ -369,6 +424,9 @@ class QuizViewController: UIViewController {
             user.changeLevelProgressBy(quiz.addGrade)
         } else if segue.identifier == "StartQuiz" {
             
+        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+            let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
+            self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
         }
     }
     

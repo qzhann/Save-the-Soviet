@@ -191,6 +191,7 @@ class Friend: Equatable {
     // MARK: - Static properties
     
     static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
+    static var testNewFriend: Friend = Friend(name: "Lucia2", image: UIImage(named: "Dog")!, description: "The.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: [:])
     
     static var allPossibleFriends: [Friend] = [
         Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6),
@@ -208,9 +209,9 @@ class Friend: Equatable {
     ]
     
     static var allTestMessages: [Int: IncomingMessage] = [
-        0: IncomingMessage(texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1), OutgoingMessage(text: "Whats up", responseMessageId: 1), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
+        0: IncomingMessage(texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1, consequences: [.changeLevelProgressBy(10)]), OutgoingMessage(text: "Whats up", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
         1: IncomingMessage(texts: "I couldn't figure out the answer to the coding problem...", "Could you plz help me?", "Love to have you help me here.", "I'm for real.", "Not lying to you.", "yea for real...", responses: [OutgoingMessage(text: "Yea", responseMessageId: 3), OutgoingMessage(text: "Sure~", responseMessageId: 11), OutgoingMessage(text: "Sorry... Can't help you.", responseMessageId: 5)]),
-        2: IncomingMessage(texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)]),
+        2: IncomingMessage(texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)], consequences: [.changeLevelProgressBy(15), .makeNewFriend(Friend.testNewFriend)]),
         3: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         4: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
         5: IncomingMessage(texts: "Nvm.", consequences: [.endChatFrom(.incoming)]),

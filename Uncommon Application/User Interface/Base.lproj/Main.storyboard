@@ -146,6 +146,7 @@
                                 </state>
                                 <connections>
                                     <action selector="confirmButtonTapped:" destination="H7E-0U-FvZ" eventType="touchUpInside" id="1Mk-y0-CFd"/>
+                                    <segue destination="T0Y-u8-LuV" kind="unwind" unwindAction="unwindToChatViewControllerAfterNewFriendWithUnwindSegue:" id="Okl-yd-4Pq"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -177,6 +178,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="smJ-IG-zyA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="T0Y-u8-LuV" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="2809" y="500"/>
         </scene>
@@ -490,7 +492,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="1181.5999999999999" y="115.27093596059113"/>
+            <point key="canvasLocation" x="1145" y="115"/>
         </scene>
         <!--Chat View Controller-->
         <scene sceneID="2iR-Iq-1DG">
@@ -683,6 +685,16 @@
                                     <segue destination="6DJ-m5-0fJ" kind="embed" identifier="EmbedResponseTableViewController" id="2Ac-ni-Crf"/>
                                 </connections>
                             </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SRC-Ia-h7b">
+                                <rect key="frame" x="147.66666666666666" y="477.33333333333331" width="80" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="mES-iD-PC5"/>
+                                    <constraint firstAttribute="height" constant="20" id="oez-ex-oKr"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="zJq-xZ-mBz"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -692,6 +704,7 @@
                             <constraint firstAttribute="bottom" secondItem="lJB-Rj-4Fi" secondAttribute="bottom" id="K9p-WX-pYa"/>
                             <constraint firstItem="lJB-Rj-4Fi" firstAttribute="trailing" secondItem="7xX-sY-5pY" secondAttribute="trailing" id="Oh9-uR-DjE"/>
                             <constraint firstItem="Ynx-Uf-Ree" firstAttribute="trailing" secondItem="7xX-sY-5pY" secondAttribute="trailing" id="OoL-bM-DVA"/>
+                            <constraint firstItem="SRC-Ia-h7b" firstAttribute="centerX" secondItem="xZ2-XS-fsX" secondAttribute="centerX" id="UOb-MM-zyj"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="leading" secondItem="ZwB-cl-nxU" secondAttribute="leading" id="Z3T-ef-SxA"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="top" secondItem="ZwB-cl-nxU" secondAttribute="top" id="alq-2o-h5k"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="trailing" secondItem="ZwB-cl-nxU" secondAttribute="trailing" id="dc7-pu-bhZ"/>
@@ -699,6 +712,7 @@
                             <constraint firstItem="Ynx-Uf-Ree" firstAttribute="top" secondItem="7xX-sY-5pY" secondAttribute="top" id="hEm-e5-p0P"/>
                             <constraint firstItem="ZwB-cl-nxU" firstAttribute="leading" secondItem="7xX-sY-5pY" secondAttribute="leading" constant="16" id="rff-Xu-5qa"/>
                             <constraint firstAttribute="bottom" secondItem="Ynx-Uf-Ree" secondAttribute="bottom" id="wNL-zD-0p8"/>
+                            <constraint firstItem="SRC-Ia-h7b" firstAttribute="centerY" secondItem="xZ2-XS-fsX" secondAttribute="centerY" multiplier="1.2" id="wbZ-VI-hb6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7xX-sY-5pY"/>
                     </view>
@@ -707,6 +721,7 @@
                         <outlet property="backButton" destination="ZwB-cl-nxU" id="Vlf-dW-K0V"/>
                         <outlet property="backButtonBackgroundView" destination="q9r-JH-4oP" id="XNE-ge-oD3"/>
                         <outlet property="chatTableView" destination="Ynx-Uf-Ree" id="LC8-q3-94C"/>
+                        <outlet property="levelProgressChangeIndicatorView" destination="SRC-Ia-h7b" id="3B2-mb-WX9"/>
                         <outlet property="responseContainerView" destination="lJB-Rj-4Fi" id="Ulp-kW-pvz"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="ShowQuiz" id="bsn-3e-aW5"/>
                         <segue destination="H7E-0U-FvZ" kind="show" identifier="ShowNewFriend" id="QjH-CJ-cPf"/>
@@ -714,7 +729,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cPu-KV-0jr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1958" y="115"/>
+            <point key="canvasLocation" x="1957.5999999999999" y="114.53201970443351"/>
         </scene>
         <!--Response Table View Controller-->
         <scene sceneID="Lgj-2u-nyG">
@@ -765,7 +780,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1XV-X0-I9R" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1956" y="573"/>
+            <point key="canvasLocation" x="1956" y="606"/>
         </scene>
         <!--User Detail View Controller-->
         <scene sceneID="M9W-nN-6zl">
@@ -1269,9 +1284,21 @@
                                                     </view>
                                                 </subviews>
                                             </stackView>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ow-ys-AAH">
+                                                <rect key="frame" x="131.66666666666666" y="297" width="80" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="80" id="PAy-if-Zwm"/>
+                                                    <constraint firstAttribute="width" constant="80" id="QCq-jr-EOg"/>
+                                                    <constraint firstAttribute="height" constant="20" id="zOE-oq-PyK"/>
+                                                </constraints>
+                                                <connections>
+                                                    <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="Y7e-s1-VNE"/>
+                                                </connections>
+                                            </containerView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstItem="0ow-ys-AAH" firstAttribute="centerX" secondItem="DbL-52-uUD" secondAttribute="centerX" id="6MQ-Pr-s4K"/>
                                             <constraint firstItem="MDx-Tq-rnV" firstAttribute="centerX" secondItem="DbL-52-uUD" secondAttribute="centerX" id="7qx-Dh-HHx"/>
                                             <constraint firstItem="VyH-m0-TO6" firstAttribute="centerY" secondItem="DbL-52-uUD" secondAttribute="centerY" multiplier="0.6" id="8Ss-1r-IAV"/>
                                             <constraint firstItem="MDx-Tq-rnV" firstAttribute="centerY" secondItem="DbL-52-uUD" secondAttribute="centerY" multiplier="0.6" id="EI8-av-7Jw"/>
@@ -1281,6 +1308,7 @@
                                             <constraint firstItem="MDx-Tq-rnV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="DbL-52-uUD" secondAttribute="leading" constant="8" id="msD-Gi-STY"/>
                                             <constraint firstAttribute="bottom" secondItem="esf-6d-JTC" secondAttribute="bottom" constant="30" id="qEw-OL-En9"/>
                                             <constraint firstItem="VyH-m0-TO6" firstAttribute="centerX" secondItem="DbL-52-uUD" secondAttribute="centerX" id="sIs-nR-Nio"/>
+                                            <constraint firstItem="0ow-ys-AAH" firstAttribute="centerY" secondItem="DbL-52-uUD" secondAttribute="centerY" multiplier="0.9" id="u8h-0d-Acl"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1309,6 +1337,7 @@
                         <outlet property="answerCorrectnessImageView3" destination="doH-Ol-UUW" id="tEY-ZL-jY3"/>
                         <outlet property="answerCorrectnessImageView4" destination="DuF-fZ-adO" id="90J-xO-f9y"/>
                         <outlet property="curvedEdgeBackgroundView" destination="DbL-52-uUD" id="i9n-1f-DiB"/>
+                        <outlet property="levelProgressChangeIndicatorView" destination="0ow-ys-AAH" id="5Eg-Pk-sjH"/>
                         <outlet property="questionCategoryLabel" destination="VyH-m0-TO6" id="viH-ag-Kww"/>
                         <outlet property="questionLabel" destination="MDx-Tq-rnV" id="1DV-CL-OG5"/>
                         <outlet property="timerLabel" destination="EOB-HB-Zko" id="qSu-T9-AKd"/>
@@ -1405,7 +1434,7 @@
                                     <color key="titleColor" red="0.51372549020000002" green="0.098039215690000001" blue="0.1529411765" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Nwl-Vp-vyD" kind="unwind" identifier="UnwindToChat" unwindAction="unwindToChatViewControllerWithUnwindSegue:" id="UnT-tS-oV1"/>
+                                    <segue destination="Nwl-Vp-vyD" kind="unwind" unwindAction="unwindToChatViewControllerAfterQuizWithUnwindSegue:" id="Nfa-pr-dJT"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -1725,17 +1754,17 @@
             <objects>
                 <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Uncommon_Application" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
-                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="13.666666666666666"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="Increase" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
-                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LevelIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
+                                <rect key="frame" x="0.0" y="0.0" width="13.666666666666666" height="13.666666666666666"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="7fd-th-QSg" secondAttribute="height" multiplier="1:1" id="UKo-as-f6U"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNj-aV-Z2p">
-                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
+                                <rect key="frame" x="13.666666666666664" y="-1.333333333333333" width="106.33333333333334" height="18.333333333333332"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1772,12 +1801,12 @@
         <image name="Coin" width="30.666666030883789" height="25.333333969116211"/>
         <image name="Dog" width="60" height="60"/>
         <image name="Energy" width="31" height="25"/>
-        <image name="Increase" width="40" height="58"/>
+        <image name="LevelIncrease" width="40" height="58"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="4kp-yA-NKo"/>
+        <segue reference="UJk-et-5UX"/>
         <segue reference="MOI-z0-leT"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -32,7 +32,6 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     
     func respondedAt(indexPath: IndexPath) {
         chatViewController.userRespondedWith(responseChoices[indexPath.row])
-        
     }
 
     // MARK: - Table view data source

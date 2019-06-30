@@ -15,7 +15,7 @@ class NewFriendViewController: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var confirmButton: UIButton!
     
-    unowned var friend: Friend = Friend.testFriend
+    unowned var friend: Friend!
 
     override func viewDidLoad() {
         super.viewDidLoad()

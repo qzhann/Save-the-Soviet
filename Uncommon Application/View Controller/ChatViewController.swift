@@ -52,6 +52,15 @@ struct ChatController {
 
 class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatDisplayDelegate, UIViewControllerTransitioningDelegate {
     
+    
+    // MARK: - IB Outlets
+    
+    @IBOutlet weak var chatTableView: UITableView!
+    @IBOutlet weak var backButton: UIButton!
+    @IBOutlet weak var backButtonBackgroundView: UIView!
+    @IBOutlet weak var responseContainerView: UIView!
+    @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
+    
     // MARK: Instance properties
     unowned var user = User.currentUser
     unowned var friend: Friend!
@@ -61,17 +70,24 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .default
     }
+    var newFriend: Friend?
     var consequenceController: ConsequenceController!
-    
-    
-    // MARK: - IB Outlets
-    
-    @IBOutlet weak var chatTableView: UITableView!
-    @IBOutlet weak var backButton: UIButton!
-    @IBOutlet weak var backButtonBackgroundView: UIView!
-    @IBOutlet weak var responseContainerView: UIView!
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    unowned var delayedConsequenceHandlingDelegate: DelayConsequenceHandlingDelegate!
     
     let hairlineView = UIView()
+    
+    // MARK: - Consequence visualization delegate
+    
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeLevelProgressBy(let change):
+            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
+            animateLevelProgressChangeIndicatorFor(change: change)
+        default:
+            break
+        }
+    }
     
     
     // MARK: - View Controller Methods
@@ -254,13 +270,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         
+        // We handle the consequences for outgoing messages first
+        if let consequences = consequences {
+            self.handleConsequences(consequences)
+        }
+        
         // Handle responses and consequences
         let addResponseTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
             // Note that we don't want to automatically end chat. This is handled as a consequence
-            
-            if let consequences = consequences {
-                self.handleConsequences(consequences)
-            }
             
             if let responseId = responseId {
                 self.friend.sendIncomingMessageWithId(responseId)
@@ -365,6 +382,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         for consequence in consequences {
             if consequenceController.canHandle(consequence) {
                 consequenceController.handle(consequence)
+                visualizeConsequence(consequence)
             }
         }
     }
@@ -387,6 +405,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         responseContainerView.isHidden = true
         responseContainerView.alpha = 0
+        
+        // Hide progress change indicators
+        levelProgressChangeIndicatorView.alpha = 0
     }
     
     func resumeChat() {
@@ -509,6 +530,40 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    private func animateLevelProgressChangeIndicatorFor(change: Int) {
+        var animation: CGAffineTransform!
+        if change > 0 {
+            // Make it rise from the bar
+            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 8)
+            animation = CGAffineTransform(translationX: 0, y: -8)
+        } else if change < 0 {
+            animation = CGAffineTransform(translationX: 0, y: 8)
+        } else {
+            animation = CGAffineTransform(translationX: 0, y: 0)
+        }
+        
+        
+        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 1
+        }
+        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
+            self.levelProgressChangeIndicatorView.transform = animation
+        }
+        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
+            self.levelProgressChangeIndicatorView.alpha = 0
+        }
+        translateAnimator.addCompletion { (_) in
+            disappearAnimator.startAnimation()
+        }
+        
+        disappearAnimator.addCompletion { (_) in
+            self.levelProgressChangeIndicatorView.transform = .identity
+        }
+        
+        appearAnimator.startAnimation()
+        translateAnimator.startAnimation()
+    }
+    
     
     // MARK: - IB Actions
     
@@ -531,6 +586,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else if segue.identifier == "ShowQuiz" {
             let quizViewController = segue.destination as! QuizViewController
             quizViewController.transitioningDelegate = self
+        } else if segue.identifier == "ShowNewFriend" {
+            let newFriendViewController = segue.destination as! NewFriendViewController
+            newFriendViewController.friend = self.newFriend
+        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+            let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
+            self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
         }
     }
     
@@ -548,17 +609,19 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             return PushDismissalAnimationController()
         }
         
-        
-        
         return nil
     }
     
     // MARK: - Unwind Segue
     
     /// present the user with some choices after a quiz is done
-    @IBAction func unwindToChatViewController(unwindSegue: UIStoryboardSegue) {
+    @IBAction func unwindToChatViewControllerAfterQuiz(unwindSegue: UIStoryboardSegue) {
         didAddIncomingMessageWith(responses: [OutgoingMessage(text: "How did I do?", responseMessageId: 5)], consequences: nil)
         
+    }
+    
+    @IBAction func unwindToChatViewControllerAfterNewFriend(unwindSegue: UIStoryboardSegue) {
+        didAddIncomingMessageWith(responses: [OutgoingMessage(description: "(Leave chat)", responseMessageId: nil, consequences: [.endChatFrom(.outgoing)]),], consequences: nil)
     }
 
 }
