@@ -251,6 +251,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         let levelProgressDifference = user.level.progress - user.level.previousProgress
         var displayProgress = user.level.previousProgress
+        
+        // Animate the progress change indicator if change is not zero
         if levelProgressDifference != 0 {
             visualizeConsequence(.changeLevelProgressBy(levelProgressDifference))
             Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
@@ -259,6 +261,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 }
                 
                 self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                if displayProgress == self.user.level.progress {
+                    self.levelProgressLabel.text = self.user.level.progressDescription
+                }
                 if levelProgressDifference > 0 {
                     displayProgress += 1
                 } else {

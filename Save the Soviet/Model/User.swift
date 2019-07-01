@@ -71,7 +71,7 @@ class User {
     /// Handle the addition of a new friend.
     func makeNewFriend(friend: Friend) {
         friends.append(friend)
-        friend.applyAllPowers(to: self)
+        friend.applyAllPowers(to: self, and: friend)
     }
     
     /// Handle the upgrade of a power.
@@ -94,13 +94,13 @@ class User {
         if let interval = power.effectInterval {
             // Apply power that effects periodically
             switch power.type {
-            case .level:
+            case .userLevel:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
                     self.changeLevelBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
-            case .energy:
+            case .userEnergy:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
                     self.changeSupportBy(progress: power.strength)
                 })
@@ -113,9 +113,9 @@ class User {
         } else {
             // Apply one-time power
             switch power.type {
-            case .level:
+            case .userLevel:
                 self.changeLevelBy(progress: power.strength)
-            case .energy:
+            case .userEnergy:
                 self.changeSupportBy(progress: power.strength)
             default:
                 break
@@ -125,8 +125,7 @@ class User {
     
     // MARK: - Static properties
     
-    // FIXME: Test User
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 0), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 990), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -
@@ -139,13 +138,20 @@ struct Level {
     /// Internal progress represented as an Int.
     var progress: Int {
         didSet {
-            // level increases every 100 progress
-            levelNumber = (progress / 100) + 1
-            currentUpperBound = upperBounds[levelNumber]
-            previousUpperBound = upperBounds[levelNumber - 1]
-            let rawNormalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
-            normalizedProgress = rawNormalizedProgress * 0.95 + 0.05
-            previousProgress = oldValue
+            // Set the properties differently when the progress hits maximum
+            if progress < maximumProgress {
+                // level increases every 100 progress
+                levelNumber = (progress / 100) + 1
+                currentUpperBound = upperBounds[levelNumber]
+                previousUpperBound = upperBounds[levelNumber - 1]
+                let rawNormalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
+                normalizedProgress = rawNormalizedProgress * 0.95 + 0.05
+            } else {
+                levelNumber = 10
+                normalizedProgress = 1
+                previousProgress = oldValue
+            }
+            
         }
     }
     /// Initialized to be the same as progress. When progress changes, this records the old value of progress.
@@ -170,11 +176,16 @@ struct Level {
     /// currentUpperBound, previousUpperBound, and upperBounds are internal data that determines when changes in level number occurs, and what to display on progress labels.
     var currentUpperBound: Int = 100
     private var previousUpperBound: Int = 0
-    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+    private var upperBounds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
     var maximumProgress: Int = 1000
     /// Returns a string to display on progress labels.
     var progressDescription: String {
-        return "\(progress)/\(currentUpperBound)"
+        if progress < maximumProgress {
+            return "\(progress)/\(currentUpperBound)"
+        } else {
+            return "MAX"
+        }
+        
     }
     
     
@@ -218,7 +229,12 @@ struct Percentage {
     var normalizedProgress: Float = 0
     /// Returns a string to display on progress labels.
     var progressDescription: String {
-        return "\(progress)%"
+        if progress < maximumProgress {
+            return "\(progress)%"
+        } else {
+            return "MAX"
+        }
+        
     }
     
     

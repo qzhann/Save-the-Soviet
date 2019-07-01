@@ -15,7 +15,18 @@ enum ChatEndingStatus {
     case endedFrom(MessageDirection)
 }
 
-// MARK: -
+/// A tracker for whether the user is expecting choices, just responded, or just began a chat.
+enum ResponseStatus {
+    /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses.
+    case willPromptUserWith([OutgoingMessage]?)
+    /// User completed a whole set of responses in a chat.
+    case completed
+    /// Chat will begin for the first time using an array of OutgoingMessages to prompt user as choices.
+    case willBeginChatWith([OutgoingMessage])
+    /// Chat will begin for the first time by sending an IncomingMessage from friend.
+    case willBeginChatWithIncomingMessageId(Int)
+}
+
 // MARK: -
 
 /**
@@ -24,75 +35,87 @@ enum ChatEndingStatus {
 class Friend: Equatable {
     
     // MARK: Instance properties
-    var name: String
+    
+    var shortName: String
+    var fullName: String
     var image: UIImage
+    /// The description displayed on FriendDetailViewController
     var description: String
-    var friendship: Friendship
+    var loyalty: Percentage
     var powers: [Power]
     /// The object responsible for displaying the chat history, typically the ChatViewController.
     weak var chatDelegate: ChatDisplayDelegate?
+    /// The object responsible for displaying the new message status of the friend, typically the MainViewController.
     weak var statusDisplayDelegate: FriendStatusDisplayDelegate?
     /// chatHistory records all ChatMessage send to and from the Friend. If the chatDelegate did not finish the delayed display of the chatHistory upon dismissal, chatHistory will be copied over to update the chatDelegate when presenting it.
-    var chatHistory: [ChatMessage] = []
+    var chatHistory: [ChatMessage]
     /// This tracks the number of ChatMessages displayed by the chatDelegate. When the chatDelegate was dismissed, this resumes chat from the appropriate message.
     var displayedMessageCount = 0
-    
+    /// Used to show or hide the end chat cell.
     var hasNewMessage = false
-    
+    /// When set to false, the friend will update the chat history in the background.
     var isChatting = false
+    
+    // FIXME: To trigger the beginning of a chat differently, maybe we should use the response status wisely.
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
-    var responseStatus: ResponseStatus = .noRecord
-    enum ResponseStatus {
-        /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses, otherwise this should end chat.
-        case willPromptUserWith([OutgoingMessage]?)
-        /// User completed a whole set of responses in a chat
-        case completed
-        /// No response is recorded, this triggers the beginning of a chat.
-        case noRecord
-    }
+    var responseStatus: ResponseStatus
     /// This tracks whether the chat has ended, useful for resuming chat display in the chatDelegate.
     var chatEndingStatus: ChatEndingStatus = .notEnded
-    
-    /// The data store for all messages that can be sent to and from a Friend, accessed by the chat status control instance methods.
+    /// The data store for all messages that can be sent to and from a Friend.
     private var allPossibleMessages: [Int: IncomingMessage]
     
     // MARK: - Initializers
-    /**
-     Full initializer for a Friend.
-     */
-    init(name: String, image: UIImage, description: String, friendship: Friendship, powers: [Power], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage]) {
-        self.name = name
+    
+    /// Full intializer for a Friend, begins chat with sending incoming message.
+    init(shortName: String, fullName: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int) {
+        self.shortName = shortName
+        self.fullName = fullName
         self.image = image
         self.description = description
-        self.friendship = friendship
+        self.loyalty = loyalty
         self.powers = powers
+        self.chatHistory = chatHistory
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
+        self.responseStatus = .willBeginChatWithIncomingMessageId(id)
+    }
+    
+    /// Full initializer for a Friend, begins chat with prompting the user with choices.
+    init(shortName: String, fullName: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage]) {
+        self.shortName = shortName
+        self.fullName = fullName
+        self.image = image
+        self.description = description
+        self.loyalty = loyalty
+        self.powers = powers
+        self.chatHistory = chatHistory
+        self.displayedMessageCount = displayedMessageCount
+        self.allPossibleMessages = allPossibleMessages
+        self.responseStatus = .willBeginChatWith(choices)
     }
     
     
     // MARK: - Equatable
+    
     static func == (lhs: Friend, rhs: Friend) -> Bool {
-        return lhs.name == rhs.name && lhs.description == rhs.description
+        return lhs.fullName == rhs.fullName && lhs.description == rhs.description
     }
     
-    
-    // MARK: - Chat Status Control Methods
-    
+    // MARK: - Chat status control methods
     /**
-     Helper method to retrieve an IncomingMessage from allPossibleMessages using id as array index.
-     - returns: Optional IncomingMessage whose index in allPossibleMessages is the parameter id, nil if id is an invalid index.
+     Helper method to retrieve an IncomingMessage from allPossibleMessages using its corresponding number index.
+     - returns: Optional IncomingMessage whose index in allPossibleMessages is the number, nil if number is invalid.
      */
-    private func incomingMessageWithId(_ id: Int) -> IncomingMessage? {
-        guard id >= 0 && id < allPossibleMessages.count else { return nil }
-        return allPossibleMessages[id]
+    private func incomingMessageNumbered(_ number: Int) -> IncomingMessage? {
+        guard number >= 0 && number < allPossibleMessages.count else { return nil }
+        return allPossibleMessages[number]
     }
     
     /**
-     Sends IncomingMessage with the id as index in allPossibleMessages. Generates ChatMessages from the IncomingMessage and append to the chat history. Notifies chatDelegate of the addition. Records the IncomingMessage's responses as the mostRecentResponse, if responses is nil,
+     Sends IncomingMessage with the corresponding index number in allPossibleMessages. Generates ChatMessages from the IncomingMessage and append to the chat history. Notifies chatDelegate of the addition. Records the IncomingMessage's responses to set the responseStatus, if responses is nil,
      */
-    func sendIncomingMessageWithId(_ id: Int) {
-        guard let incomingMessage = incomingMessageWithId(id) else { return }
+    func sendIncomingMessageNumbered(_ number: Int) {
+        guard let incomingMessage = incomingMessageNumbered(number) else { return }
         chatEndingStatus = .notEnded
         chatHistory.append(contentsOf: incomingMessage.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: incomingMessage.responses, consequences: incomingMessage.consequences)
@@ -100,7 +123,7 @@ class Friend: Equatable {
     }
 
     /**
-     Sends OutgoingMessage chosen by the user. Generates ChatMessages from the OutgoingMessage and appends to chatHistory. Notifies chatDelegate of the addition. Records the mostRecentResponse as completed.
+     Sends OutgoingMessage chosen by the user. Generates ChatMessages from the OutgoingMessage and appends to chatHistory. Notifies chatDelegate of the addition. Records the responseStatus as completed.
      */
     func respondedWith(_ outgoingMessage: OutgoingMessage) {
         chatHistory.append(contentsOf: outgoingMessage.chatMessages)
@@ -111,6 +134,7 @@ class Friend: Equatable {
     
     // MARK: - Instance methods
     
+    /// When friend is not chatting, this updates chat history at the same time.
     func updateChatHistoryInBackground() {
         var messageAdditionTime: Double = 0
         
@@ -120,12 +144,14 @@ class Friend: Equatable {
         
         hasNewMessage = chatHistory.count - displayedMessageCount != 0
         
+        // Update the chat history
         for messageIndex in displayedMessageCount ..< chatHistory.count {
             let message = chatHistory[messageIndex]
             guard message.direction == .incoming else { continue }
             
             messageAdditionTime += message.delay
             let messageBackgroundAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (timer) in
+                // Stop updating as soon as the friend is chatting again
                 guard self.isChatting == false else {
                     timer.invalidate()
                     return
@@ -141,34 +167,48 @@ class Friend: Equatable {
         }
     }
     
+    /// Before dismissing chat delegate, update the displayed message count, isChatting status and start updating chat in background. This is called when the the chat delegate is about to be dismissed.
     func willDismissChatDelegateWithChatHistoryCount(_ count: Int) {
         displayedMessageCount = count
         isChatting = false
         updateChatHistoryInBackground()
     }
     
-    func changeFriendshipProgressBy(_ progress: Int) {
-        friendship.progress += progress
+    /// Changes loyalty progress.
+    func changeLoyaltyBy(progress: Int) {
+        // Progress does not go beyond maximum.
+        let newProgress = loyalty.progress + progress
+        loyalty.progress = min(newProgress, loyalty.maximumProgress)
     }
     
-    func applyAllPowers(to user: User) {
+    /// Applys all powers to user and self
+    func applyAllPowers(to user: User, and friend: Friend) {
         for power in powers {
-            apply(power: power, to: user)
+            apply(power: power, to: user, and: self)
         }
     }
     
-    private func apply(power: Power, to user: User) {
+    /// Applys power to user and self, depending on the power type.
+    private func apply(power: Power, to user: User, and friend: Friend) {
+        
         if let interval = power.effectInterval {
+            // Apply power that effects periodically
             switch power.type {
-            case .level:
+            case .userLevel:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
                     user.changeLevelBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
-            case .energy:
+            case .userEnergy:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
                     user.changeSupportBy(progress: power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
+            case .friendLoyalty:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    friend.changeLoyaltyBy(progress: power.strength)
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
@@ -176,11 +216,14 @@ class Friend: Equatable {
                 break
             }
         } else {
+            // Apply one-time power
             switch power.type {
-            case .level:
+            case .userLevel:
                 user.changeLevelBy(progress: power.strength)
-            case .energy:
+            case .userEnergy:
                 user.changeSupportBy(progress: power.strength)
+            case .friendLoyalty:
+                friend.changeLoyaltyBy(progress: power.strength)
             default:
                 break
             }
@@ -190,71 +233,35 @@ class Friend: Equatable {
     
     // MARK: - Static properties
     
-    static var testFriend: Friend = Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
-    static var testNewFriend: Friend = Friend(name: "Lucia2", image: UIImage(named: "Dog")!, description: "The.", friendship: Friendship(progress: 6), powers: Power.testPowers, displayedMessageCount: 0, allPossibleMessages: [:])
+    static var dyatlov = Friend(shortName: "Engineer Dytlov", fullName: "Deputy Chief Engineer Dyatlov", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var legasov = Friend(shortName: "Scientist Legasov", fullName: "Nuclear Scientist Legasov", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var fomin = Friend(shortName: "Engineer Fomin", fullName: "Chief Engineer Fomin", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!)
+    static var akimov = Friend(shortName: "Engineer Akimov", fullName: "Chernobyl Shift Leader Akimov", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    
+    static var testNewFriend = Friend(shortName: "Engineer Dytlov 2", fullName: "Deputy Chief Engineer Dyatlov 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0)
     
     static var allPossibleFriends: [Friend] = [
-        Friend(name: "Rishabh", image: UIImage(named: "AnswerCorrect")!, description: "The other guy who stays in his room forever.", friendship: Friendship(progress: 6),
-            powers: Power.testPowers,
-            displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Han", image: UIImage(named: "AnswerWrong")!, description: "The third guy who stays in his room till the world ends.", friendship: Friendship(progress: 6),
-               powers: Power.testPowers,
-               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Zane", image: UIImage(named: "Coin")!, description: "The guy who masturbates all day.", friendship: Friendship(progress: 6),
-               powers: Power.testPowers,
-               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages),
-        Friend(name: "Lucia", image: UIImage(named: "Dog")!, description: "The most beautiful girl in the world.", friendship: Friendship(progress: 6),
-               powers: Power.testPowers,
-               displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages)
+        Friend.dyatlov,
+        Friend.legasov,
+        Friend.fomin,
+        Friend.akimov
     ]
     
+    // FIXME: Handle change loyalty progress
     static var allTestMessages: [Int: IncomingMessage] = [
-        0: IncomingMessage(texts: "Hey Honey", responses: [OutgoingMessage(text: "Hey Babe", responseMessageId: 1, consequences: [.changeLevelProgressBy(10)]), OutgoingMessage(text: "Whats up", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]), OutgoingMessage(text: "Yooooooo", responseMessageId: 2)]),
-        1: IncomingMessage(texts: "I couldn't figure out the answer to the coding problem...", "Could you plz help me?", "Love to have you help me here.", "I'm for real.", "Not lying to you.", "yea for real...", responses: [OutgoingMessage(text: "Yea", responseMessageId: 3), OutgoingMessage(text: "Sure~", responseMessageId: 11), OutgoingMessage(text: "Sorry... Can't help you.", responseMessageId: 5)]),
-        2: IncomingMessage(texts: "?", responses: [OutgoingMessage(text: "What you want?", responseMessageId: 5), OutgoingMessage(text: "Don't be a jerk to me", responseMessageId: 5), OutgoingMessage(text: "??", responseMessageId: 6)], consequences: [.changeLevelProgressBy(15), .makeNewFriend(Friend.testNewFriend)]),
-        3: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        4: IncomingMessage(texts: "Actually... I was wondering if you wanna come over to my room tonight", "Might be better if you could come over and teach me how to fix the problem ;)", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Confirm what she means", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        5: IncomingMessage(texts: "Nvm.", consequences: [.endChatFrom(.incoming)]),
-        6: IncomingMessage(texts: "???", responses: [OutgoingMessage(text: "????", responseMessageId: 5), OutgoingMessage(text: "?????", responseMessageId: 5), OutgoingMessage(text: "??????", responseMessageId: 5), OutgoingMessage(text: "???????", responseMessageId: 5)]),
-        7: IncomingMessage(texts: "Yea sure!", responses: nil),
-        8: IncomingMessage(texts: "Just come over and we'll see~", responses: [OutgoingMessage(description: "(Accept her invitation)", texts: "Definitely", "I'll be there in a minute.", responseMessageId: nil), OutgoingMessage(description: "(Confirm what she means)", texts: "Um...", "Anyone else in your room?", responseMessageId: 9), OutgoingMessage(description: "(Refuse her invitation)", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        9: IncomingMessage(texts: "There won't be if you come", responses: [OutgoingMessage(description: "Accept her invitation", texts: "Definitely", "I'll be there in a minute.", "Do I need to bring anything with me?", responseMessageId: 8), OutgoingMessage(description: "Refuse her invitation", texts: "I have a girlfriend already", "Don't wanna cheat on her", "Sorry.", responseMessageId: 10)]),
-        10: IncomingMessage(texts: "It's okay.", "You don't have to apologize", responses: [OutgoingMessage(description: "(End Chat)", consequences: [Consequence.endChatFrom(.outgoing)])]),
-        11: IncomingMessage(texts: "But...", "Before you come over, you gotta answer some questions", responses: [OutgoingMessage(description: "(Answer Questions)", consequences: [Consequence.startQuiz]), OutgoingMessage(description: "(Leave Chat)", consequences: [.endChatFrom(.outgoing)])])
+        0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+                OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+                OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+                OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+            ]),
+        1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [
+                OutgoingMessage(description: "Good", texts: "Good.", "I will check on your work later on", "It is an honor working on the job you have now", "people depend on your work", responseMessageId: 2),
+                OutgoingMessage(description: "Wonderful", texts: "Wonderful.", "It is great that our country has diligent people like you.", responseMessageId: 2, consequences: [.makeNewFriend(Friend.testNewFriend)]),
+                OutgoingMessage(description: "OK", texts: "OK.", "Keep it up.", responseMessageId: 3, consequences: [.changeLoyaltyProgressBy(-1)]),
+            ]),
+        2: IncomingMessage(texts: "Thank you, president Gorbachev.", consequences: [.changeSupportProgressBy(1), .changeLoyaltyProgressBy(2)], responses: [
+                OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
+            ]),
+        3: IncomingMessage(texts: "Certainly... Thank you president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil)
     ]
-}
-
-// MARK: -
-// MARK: -
-
-/**
- A struct to hold information about the Friendship with a Friend.
- */
-struct Friendship {
-    // MARK: Instance properties
-    var progress: Int {
-        didSet {
-            levelNumber = (progress / 10) + 1
-            currentUpperBound = upperBounds[levelNumber]
-            previousUpperBound = upperBounds[levelNumber - 1]
-            normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
-        }
-    }
-    var normalizedProgress: Float = 0
-    var levelNumber: Int = 0
-    var currentUpperBound: Int = 10
-    private var previousUpperBound: Int = 0
-    private var upperBounds = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110]
-    
-    // MARK: - Initializers
-    /**
-     Initializes a Friendship using progress.
-     */
-    init(progress: Int) {
-        self.progress = progress
-        levelNumber = (progress / 10) + 1
-        currentUpperBound = upperBounds[levelNumber]
-        previousUpperBound = upperBounds[levelNumber - 1]
-        normalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
-    }
 }

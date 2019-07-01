@@ -194,7 +194,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cell.selectionStyle = .none
                 switch direction {
                 case .incoming:
-                    cell.configureUsing(text: "\(friend.name) has left chat.")
+                    cell.configureUsing(text: "\(friend.shortName) has left chat.")
                 case .outgoing:
                     cell.configureUsing(text: "You have left chat.")
                 }
@@ -280,7 +280,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             // Note that we don't want to automatically end chat. This is handled as a consequence
             
             if let responseId = responseId {
-                self.friend.sendIncomingMessageWithId(responseId)
+                self.friend.sendIncomingMessageNumbered(responseId)
             }
             
         }
@@ -425,9 +425,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
         case .willPromptUserWith(let outgoingMessages):
             didAddIncomingMessageWith(responses: outgoingMessages, consequences: nil)
-        // If the Friend had no record of most recent response, begin a chat.
-        case .noRecord:
-            friend.sendIncomingMessageWithId(0)
+        // If the Friend will begin chat with an incoming message, send it.
+        case .willBeginChatWithIncomingMessageId(let id):
+            friend.sendIncomingMessageNumbered(id)
+        // If the Friend will begin chat by prompting user with choices, prompt it.
+        case .willBeginChatWith(let choices):
+            didAddIncomingMessageWith(responses: choices, consequences: nil)
         // If the Friend has completed the chat, do nothing
         case .completed:
             break

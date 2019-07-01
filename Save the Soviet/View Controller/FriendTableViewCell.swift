@@ -31,7 +31,7 @@ class FriendTableViewCell: UITableViewCell {
         
         // Set image and name label
         friendImageView.image = friend.image
-        friendNameLabel.text = friend.name
+        friendNameLabel.text = friend.shortName
         
         // Set new message indications. Empty unreadMessages means no new message.
         if friend.hasNewMessage {

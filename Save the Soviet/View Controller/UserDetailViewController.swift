@@ -226,6 +226,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
                 }
                 
                 self.userLevelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                if displayProgress == self.user.level.progress {
+                    self.userLevelProgressLabel.text = self.user.level.progressDescription
+                }
                 if levelProgressDifference > 0 {
                     displayProgress += 1
                 } else {

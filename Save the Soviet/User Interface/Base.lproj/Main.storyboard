@@ -221,23 +221,23 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" progressViewStyle="bar" progress="0.34999999999999998" translatesAutoresizingMaskIntoConstraints="NO" id="p9A-zG-1EH">
-                                                <rect key="frame" x="158.33333333333334" y="28.666666666666675" width="120.33333333333334" height="14.666666666666668"/>
+                                                <rect key="frame" x="162.33333333333334" y="28.666666666666675" width="120.33333333333334" height="14.666666666666668"/>
                                                 <color key="progressTintColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="trackTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </progressView>
                                             <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" progressViewStyle="bar" progress="0.40000000000000002" translatesAutoresizingMaskIntoConstraints="NO" id="i4A-0R-Pu5">
-                                                <rect key="frame" x="158.33333333333334" y="55" width="120.33333333333334" height="14.666666666666671"/>
+                                                <rect key="frame" x="162.33333333333334" y="55" width="120.33333333333334" height="14.666666666666671"/>
                                                 <color key="progressTintColor" red="0.1077675298" green="0.30285480619999999" blue="0.50178319220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <color key="trackTintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </progressView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1320/1400" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pdM-DO-9g5">
-                                                <rect key="frame" x="281.66666666666669" y="28.999999999999996" width="49.666666666666686" height="15.333333333333332"/>
+                                                <rect key="frame" x="285.66666666666669" y="28.999999999999996" width="49.666666666666686" height="15.333333333333332"/>
                                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="11"/>
                                                 <color key="textColor" red="0.51673096418380737" green="0.14066147804260254" blue="0.15240612626075745" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dim-OL-uMD">
-                                                <rect key="frame" x="148.33333333333334" y="38.333333333333329" width="7.6666666666666572" height="15"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dim-OL-uMD">
+                                                <rect key="frame" x="148" y="38.333333333333329" width="15.333333333333343" height="15"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="15" id="VhI-61-HrZ"/>
                                                 </constraints>
@@ -246,7 +246,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1320/1400" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gGc-Jc-JrY">
-                                                <rect key="frame" x="281.66666666666669" y="54.333333333333329" width="49.666666666666686" height="15.333333333333329"/>
+                                                <rect key="frame" x="285.66666666666669" y="54.333333333333329" width="49.666666666666686" height="15.333333333333329"/>
                                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="11"/>
                                                 <color key="textColor" red="0.10776752978563309" green="0.30285480618476868" blue="0.50178319215774536" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -259,7 +259,7 @@
                                                 </constraints>
                                             </imageView>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hp5-Ue-UIm">
-                                                <rect key="frame" x="158.33333333333334" y="11" width="120.33333333333334" height="13.666666666666664"/>
+                                                <rect key="frame" x="162.33333333333334" y="11" width="120.33333333333334" height="13.666666666666664"/>
                                                 <connections>
                                                     <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="UJk-et-5UX"/>
                                                 </connections>
@@ -285,7 +285,7 @@
                                             <constraint firstItem="6mp-sV-c6I" firstAttribute="centerY" secondItem="N4J-hR-oua" secondAttribute="centerY" multiplier="0.8" id="cxw-cA-JX9"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="pdM-DO-9g5" secondAttribute="trailing" id="d6p-5a-Me1"/>
                                             <constraint firstItem="gGc-Jc-JrY" firstAttribute="centerY" secondItem="Vva-dk-eUD" secondAttribute="centerY" constant="-2" id="dQu-wc-Ary"/>
-                                            <constraint firstItem="Dim-OL-uMD" firstAttribute="leading" secondItem="6mp-sV-c6I" secondAttribute="trailing" id="eHr-nX-v3Y"/>
+                                            <constraint firstItem="Dim-OL-uMD" firstAttribute="leading" secondItem="6mp-sV-c6I" secondAttribute="trailing" constant="-0.5" id="eHr-nX-v3Y"/>
                                             <constraint firstItem="X8C-3F-qyU" firstAttribute="height" secondItem="N4J-hR-oua" secondAttribute="height" multiplier="0.7" id="enN-ar-VRe"/>
                                             <constraint firstItem="p9A-zG-1EH" firstAttribute="height" secondItem="N4J-hR-oua" secondAttribute="height" multiplier="0.14" id="feW-Ql-1br"/>
                                             <constraint firstItem="6mp-sV-c6I" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="X8C-3F-qyU" secondAttribute="trailing" id="giT-56-1fi"/>
@@ -293,7 +293,7 @@
                                             <constraint firstItem="6mp-sV-c6I" firstAttribute="centerX" secondItem="N4J-hR-oua" secondAttribute="centerX" multiplier="0.7" id="lUX-TC-t6H"/>
                                             <constraint firstItem="Vva-dk-eUD" firstAttribute="trailing" secondItem="6mp-sV-c6I" secondAttribute="trailing" constant="3" id="mEq-eB-wDU"/>
                                             <constraint firstItem="i4A-0R-Pu5" firstAttribute="width" secondItem="p9A-zG-1EH" secondAttribute="width" id="nui-Sf-FFc"/>
-                                            <constraint firstItem="p9A-zG-1EH" firstAttribute="leading" secondItem="6mp-sV-c6I" secondAttribute="trailing" constant="10" id="nxT-9P-c6A"/>
+                                            <constraint firstItem="p9A-zG-1EH" firstAttribute="leading" secondItem="6mp-sV-c6I" secondAttribute="trailing" constant="14" id="nxT-9P-c6A"/>
                                             <constraint firstItem="CIO-Jx-0KR" firstAttribute="top" secondItem="Vva-dk-eUD" secondAttribute="bottom" constant="-12" id="pRr-8p-Wr0"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="gGc-Jc-JrY" secondAttribute="trailing" id="pYP-F0-FxJ"/>
                                             <constraint firstItem="Dim-OL-uMD" firstAttribute="top" secondItem="6mp-sV-c6I" secondAttribute="bottom" constant="-11.5" id="rC2-Bi-Zcs"/>
@@ -338,7 +338,7 @@
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w6F-AH-BJc">
                                                             <rect key="frame" x="73.333333333333329" y="9.6666666666666661" width="47.333333333333329" height="23.333333333333336"/>
                                                             <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="17"/>
-                                                            <nil key="textColor"/>
+                                                            <color key="textColor" red="0.15133248730964466" green="0.15133248730964466" blue="0.15133248730964466" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="fCE-T8-fMq">

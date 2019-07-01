@@ -62,10 +62,14 @@ struct ConsequenceController {
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
         case .changeLevelProgressBy(let change):
             user.changeLevelBy(progress: change)
-        case .changeEnergyProgressBy(let change):
+        case .changeSupportProgressBy(let change):
             user.changeSupportBy(progress: change)
-        case .changeFriendshipProgressBy(let change, for: let friend):
-            friend.changeFriendshipProgressBy(change)
+        case .changeLoyaltyProgressBy(let change):
+            if let viewController = viewController as? ChatViewController {
+                viewController.friend.changeLoyaltyBy(progress: change)
+            } else if let viewController = viewController as? FriendDetailViewController {
+                viewController.friend.changeLoyaltyBy(progress: change)
+            }
         case .upgradePower(let power):
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)

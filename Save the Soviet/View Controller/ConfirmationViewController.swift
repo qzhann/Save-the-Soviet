@@ -53,7 +53,7 @@ class ConfirmationViewController: UIViewController {
                 cancelButton.setTitle("Cancel", for: .normal)
             }
         case .deleteFriend(let friend):
-            textLabel.text = "Delete \(friend.name) ?"
+            textLabel.text = "Delete \(friend.shortName) ?"
             confirmButton.setTitle("Yes", for: .normal)
             cancelButton.setTitle("Maybe not.", for: .normal)
         default:

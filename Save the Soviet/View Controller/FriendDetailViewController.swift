@@ -133,13 +133,13 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
         
         // Update friend info
-        friendNameLabel.text = friend.name
+        friendNameLabel.text = friend.fullName
         friendDescriptionLabel.text = friend.description
         friendImageView.image = friend.image
         
         // Update level and support
-        friendshipLevelLabel.text = "Friendship Lv \(friend.friendship.levelNumber)"
-        friendshipLevelProgressLabel.text = "\(friend.friendship.progress)/\(friend.friendship.currentUpperBound)"
+        friendshipLevelLabel.text = "Loyalty"
+        friendshipLevelProgressLabel.text = friend.loyalty.progressDescription
         friendshipLevelProgressView.setProgress(0.05, animated: false)
     }
     
@@ -154,7 +154,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     func animateProgressViews() {
         // Animate the progress of progress views
         UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut, animations: {
-            self.friendshipLevelProgressView.setProgress(self.friend.friendship.normalizedProgress, animated: true)
+            self.friendshipLevelProgressView.setProgress(self.friend.loyalty.normalizedProgress, animated: true)
         }, completion: nil)
     }
     

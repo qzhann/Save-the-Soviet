@@ -17,18 +17,17 @@ enum MessageDirection {
 }
 
 // MARK: -
-// MARK: -
 
-/**
- The data model held by a Friend in its chatHistory.
- */
+
+/// The data model held by a Friend in its chatHistory.
 class ChatMessage: Equatable, CustomStringConvertible {
-    // MARK: Equatable protocol stub
+    
+    // MARK: Equatable
     static func ==(lhs: ChatMessage, rhs: ChatMessage) -> Bool{
         return lhs.text == rhs.text && lhs.direction == rhs.direction
     }
     
-    // MARK: - CustomStringCovertible stub
+    // MARK: - Custom String Covertible
     var description: String {
         let messageDirectionString = direction == .incoming ? "Incoming: " : "Outgoing: "
         return messageDirectionString + text
@@ -36,25 +35,26 @@ class ChatMessage: Equatable, CustomStringConvertible {
     
     
     // MARK: - Instance properties
+    
+    /// The text displayed on the chat table view.
     var text: String
+    /// The direction of the message
     var direction: MessageDirection
     /// The time for a ChatMessage in the chatHistory to be displayed.
     var delay: Double
     
     
     // MARK: - Initializers
-    /**
-     Initializes a ChatMessage using text and direction. Calculates delay using the length of the text.
-     */
+    
+    /// Initializes a ChatMessage using text and direction. Calculates delay using the length of the text.
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
         self.delay = 1.2 + Double(text.count) / 20
     }
     
-    /**
-     Initializes a ChatMessage using text and direction. Calculates delay using the length of the text.
-     */
+    
+    /// Initializes a ChatMessage using text and direction, manually set the delay.
     init(text: String, direction: MessageDirection, delay: Double) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
@@ -62,16 +62,16 @@ class ChatMessage: Equatable, CustomStringConvertible {
     }
     
     // MARK: - Static properties
+    
     static let incomingThinkingMessage = ChatMessage(text: "...", direction: .incoming, delay: 0)
     static let outgoingThinkingMessage = ChatMessage(text: "...", direction: .outgoing, delay: 0)
 }
 
 // MARK: -
-// MARK: -
 
 
 /**
- A struct that holds texts, optional OutgoingMessage array as responses, and optional Consequence array as consequences, marked by a unique id for quick retrieval.
+ A struct that holds texts, optional OutgoingMessage array as responses, and optional Consequence array as consequences.
  */
 struct IncomingMessage {
     // MARK: Instance properties
@@ -94,26 +94,19 @@ struct IncomingMessage {
     
     
     // MARK: - Initializers
-    /**
-     Initializes an IncomingMessage.
-     - Parameters:
-        - id: The unique identifier for the IncomingMessage. This should always be the same as the IncomingMessage's index in allPossibleMessages.
-        - texts: A variadic parameter that takes in Strings to be texted in sequence by a Friend when sending the IncomingMessage.
-        - responses: An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
-        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-     */
-    init(texts: String..., responses: [OutgoingMessage]? = nil, consequences: [Consequence]? = nil) {
+    
+    /// Full initializer. Responses and consequences can be nil.
+    init(texts: String..., consequences: [Consequence]? = nil, responses: [OutgoingMessage]? = nil) {
         self.texts = texts
-        self.responses = responses
         self.consequences = consequences
+        self.responses = responses
     }
 }
 
 // MARK: -
-// MARK: -
 
 /**
- A struct that holds description, texts, optional Int as the Id for the response IncomingMessage, and optional Consequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
+ A struct that holds description, texts, optional Int useful for the response IncomingMessage, and optional Consequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
  */
 struct OutgoingMessage {
     // MARK: Instance properties
@@ -145,15 +138,8 @@ struct OutgoingMessage {
     
     
     // MARK: - Initializers
-    /**
-     Initializes an IncomingMessage whose description and texts are different.
-     - Parameters:
-        - description: The String displayed for each response choice.
-        - texts: A variadic parameter that takes in Strings to be texted in sequence by the User when sending the OutgoingMessage.
-        - responseMessageId: If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
-        - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
-        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-     */
+    
+    /// Full initializer. responseMessageId, levelRestriction, and consequences can be nil.
     init(description: String, texts: String..., responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [Consequence]? = nil) {
         self.description = description
         self.texts = texts
@@ -162,14 +148,8 @@ struct OutgoingMessage {
         self.consequences = consequences
     }
     
-    /**
-     Initializes a single-text OutgoingMessage.
-     - Parameters:
-        - text: The only string that will be texted by the User when sending the OutgoingMessage.The OutgoingMessage's description is initialized using this parameter.
-        - responseMessageId: If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
-        - levelRestriction: If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
-        - consequences: An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-     */
+    
+    /// Initializes a single-text OutgoingMessage. The description is set t obe equal to the text.
     init(text: String, responseMessageId: Int?, levelRestriction: Int? = nil, consequences: [Consequence]? = nil) {
         self.description = text
         self.texts = [text]
@@ -179,7 +159,7 @@ struct OutgoingMessage {
     }
     
     /**
-     Initializes a chat action which triggers some ChatConsequences but does not send messages
+     Initializes a chat action which triggers some ChatConsequences without sending any message. This is typically useful for an end chat consequence.
      */
     init(description: String, consequences: [Consequence], levelRestriction: Int? = nil) {
         self.description = description
@@ -198,11 +178,8 @@ enum Consequence {
     case makeNewFriend(Friend)
     case deleteFriend(Friend)
     case changeLevelProgressBy(Int)
-    case changeEnergyProgressBy(Int)
-    case changeFriendshipProgressBy(Int, for: Friend)
+    case changeSupportProgressBy(Int)
+    case changeLoyaltyProgressBy(Int)
     case upgradePower(Power)
     case startQuiz
 }
-
-// FIXME: handle make new friends
-// FIXME: Handle change level progress, support progress, and friendship progress by creating small animations on the recorded view controller
