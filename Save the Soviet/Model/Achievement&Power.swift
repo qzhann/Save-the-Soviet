@@ -9,24 +9,6 @@
 import Foundation
 import UIKit
 
-struct Achievement {
-// Instance properties
-    var id: Int
-    
-    var name: String
-    var description: String
-    var image: UIImage
-    
-// Instance methods
-    
-// Type methods
-    var AllAchievements: [Achievement] = [] // Need to implement!
-}
-
-// MARK: -
-
-
-// FIXME: A power should contain some consequences which will be handled by the user when the power is loaded / updated
 class Power {
     
     // MARK: Instance properties

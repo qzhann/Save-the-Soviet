@@ -114,8 +114,8 @@ class QuizViewController: UIViewController {
         // Reset UI
         resetAllViews()
         
-        // Set category and question label
-        questionCategoryLabel.text = question.category
+        // Set categoryString and question label
+        questionCategoryLabel.text = question.categoryString
         questionLabel.text = question.text
         
         // Set Answer button titles
@@ -152,23 +152,23 @@ class QuizViewController: UIViewController {
         
     //: - Animate Category Label
         
-        // Set category label to the leftmost position
+        // Set categoryString label to the leftmost position
         let prepareCategoryLabel = CGAffineTransform(translationX: -70, y: 0)
-        // Set category label to the rightmost position
+        // Set categoryString label to the rightmost position
         let categoryLabelDisappear = CGAffineTransform(translationX: 100, y: 0)
         
         // Category Label Animation
         UIView.animate(withDuration: 0, delay: 0, options:[], animations: {
-            // Prepare category label
+            // Prepare categoryString label
             self.questionCategoryLabel.transform = prepareCategoryLabel
             self.questionCategoryLabel.alpha = 0.0
         }) { (_) in
-            // Reveal category label
+            // Reveal categoryString label
             UIView.animate(withDuration: 1, delay: 0.5, options: [], animations: {
                 self.questionCategoryLabel.transform = .identity
                 self.questionCategoryLabel.alpha = 1.0
             }, completion: { (_) in
-                // Make category label disappear
+                // Make categoryString label disappear
                 UIView.animate(withDuration: 1, delay: 0.5, options:[], animations: {
                     self.questionCategoryLabel.transform = categoryLabelDisappear
                     self.questionCategoryLabel.alpha = 0.0
@@ -339,9 +339,9 @@ class QuizViewController: UIViewController {
         
         // Visualize the consequence
         if correctness == true {
-            visualizeConsequence(.changeLevelProgressBy(quiz.currentQuestion!.addGrade))
+            visualizeConsequence(.changeLevelProgressBy(quiz.currentQuestion!.addExperience))
         } else {
-            visualizeConsequence(.changeLevelProgressBy(-quiz.currentQuestion!.minusGrade))
+            visualizeConsequence(.changeLevelProgressBy(-quiz.currentQuestion!.minusExperience))
         }
         
         // Set the selected answerCorrectness Image View
@@ -418,10 +418,10 @@ class QuizViewController: UIViewController {
         // Pass information to QuizResultViewController
         if segue.identifier == "ShowQuizResults" {
             let quizResultViewController = segue.destination as! QuizResultViewController
-            quizResultViewController.progressChange = quiz.addGrade
+            quizResultViewController.progressChange = quiz.experienceChange
             quizResultViewController.correct = quiz.correct
             quizResultViewController.responseBonus = quiz.responseBonus
-            user.changeLevelBy(progress: quiz.addGrade)
+            user.changeLevelBy(progress: quiz.experienceChange)
         } else if segue.identifier == "StartQuiz" {
             
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {

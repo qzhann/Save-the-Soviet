@@ -8,35 +8,54 @@
 
 import Foundation
 
+/// Holds the QuizQuestions used during a quiz.
 class Quiz {
+    
     // MARK: Instance properties
-    var questions: [QuizQuestion] = []
+    
+    /// Questions left to answer
+    var questions: [QuizQuestion]
+    /// The question about to be answered. Quiz session should end when this turns nil.
     var currentQuestion: QuizQuestion? {
         get {
             return questions.first
         }
         
     }
-    
+    /// Tracks the number of correctly answered questions
     var correct: Double = 0
-    
+    /// Tracks the response bonuses of the correctly answered questions
     var responseBonus: Int = 0
-    
-    var addGrade: Int = 0
+    /// Tracks the grade that should be added
+    var experienceChange: Int = 0
     
     // MARK: - Initializers
-    // Default initializer
-    init() {}
     
-    init(ofDifficulty: Int) {
-        // If ofDiffculty exceeds the bounds of the array, set it to highest difficulty
-        let difficulty = ofDifficulty > QuizQuestion.allPossibleQuizQuestions.count - 1 ? QuizQuestion.allPossibleQuizQuestions.count - 1 : ofDifficulty
-        
-        // Add random questions of this difficulty to questions array
-        for index in 0 ..< 5 {
-            questions.append((QuizQuestion.allPossibleQuizQuestions[difficulty]?.randomElement()!)!)
-            questions[index].answers.shuffle()
+    /// Initialize a Quiz using difficulty and category. If category is nil, randomly select category and questions inside the categories from that difficulty.
+    init(ofDifficulty difficulty: Int, category: QuizQuestionCategory?) {
+        // Difficulty does not go beyond range
+        var currentDifficulty = difficulty
+        if difficulty > QuizQuestion.allPossibleQuizQuestions.count - 1 {
+            currentDifficulty = QuizQuestion.allPossibleQuizQuestions.count - 1
         }
+        
+        questions = []
+        
+        if let category = category {
+            // Add random questions of the category at current difficulty
+            for index in 0 ..< 5 {
+                questions.append((QuizQuestion.allPossibleQuizQuestions[currentDifficulty]?[category]?.randomElement())!)
+                questions[index].answers.shuffle()
+            }
+        } else {
+            // Add random questions of random category at current difficulty
+            for index in 0 ..< 5 {
+                questions.append((QuizQuestion.allPossibleQuizQuestions[currentDifficulty]?[QuizQuestionCategory.random]?.randomElement())!)
+                questions[index].answers.shuffle()
+            }
+        }
+        
+        
     }
     
     // Instance methods
@@ -53,11 +72,11 @@ class Quiz {
         guard currentQuestion != nil else { return false }
         if currentQuestion!.correctAnswer == answer {
             correct += 1
-            addGrade += currentQuestion!.addGrade
+            experienceChange += currentQuestion!.addExperience
             responseBonus += time
             return true
         } else {
-            addGrade -= currentQuestion!.minusGrade
+            experienceChange -= currentQuestion!.minusExperience
         }
         
         return false
@@ -67,78 +86,82 @@ class Quiz {
     
 }
 
-// TODO: Remember to implement the countdown in each QuizQuestion
+// MARK: -
+
+enum QuizQuestionCategory: String, CaseIterable {
+    case facts = "Facts"
+    case history = "History"
+    case nuclear = "Nuclear"
+    case crisis = "Crisis"
+    case decision = "Decision"
+    
+    static var random: QuizQuestionCategory {
+        return self.allCases.randomElement()!
+    }
+}
 
 struct QuizQuestion {
-    // MARK: Instance properties
-    var difficultyLevel: Int = 0
     
-    var category: String = "Default"
-    var text: String = "Default Question"
-    var answers: [String] = ["Default1", "Default2", "Default3", "Default4"]
-    var correctAnswer: String = "Default1"
-    var isLastQuestion = false
-    var time: Int = 10
-    var addGrade: Int = 10
-    var minusGrade: Int = 0
+    // MARK: Instance properties
+    
+    /// Level of the question, ranging from 1 to 10, inclusive, corresponding to the user's level
+    var level: Int
+    /// The category of the question
+    var category: QuizQuestionCategory
+    /// The category of the question represented in string, used to display before each question appears.
+    var categoryString: String {
+        return category.rawValue
+    }
+    /// The text string of the question
+    var text: String
+    /// The multiple choices of answers to the question
+    var answers: [String]
+    /// The correct answer string to the question
+    var correctAnswer: String
+    /// Experience that will be added to user level if question is answered correctly
+    var addExperience: Int {
+        return (11 - level) * 5
+    }
+    /// Experience that will be subtracted from user level if question is answered wrongly
+    var minusExperience: Int {
+        return level * 2
+    }
+    
     
     // MARK: - Initializers
-    init(difficultyLevel: Int, category: String, text: String, answers: [String], correctAnswer: String, time: Int, addGrade: Int, minusGrade: Int) {
-        self.difficultyLevel = difficultyLevel
+    
+    /// Full initializer
+    init(level: Int, category: QuizQuestionCategory, text: String, answers: [String], correctAnswer: String) {
+        self.level = level
         self.category = category
         self.text = text
         self.answers = answers
         self.correctAnswer = correctAnswer
-        self.time = time
-        self.addGrade = addGrade
-        self.minusGrade = minusGrade
     }
     
     // MARK: - Static properties
-    static var allPossibleQuizQuestions: [Int: [QuizQuestion]] = [
-        0: [
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is cos(2π)?", answers: ["1/2", "-1/2", "1", "-1"], correctAnswer: "1", time: 2, addGrade: 10, minusGrade: 10),
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is sin(2π)?", answers: ["1/2", "-1/2", "0", "-1"], correctAnswer: "0", time: 2, addGrade: 10, minusGrade: 10),
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is cos(π)?", answers: ["1/2", "-1/2", "1", "-1"], correctAnswer: "-1", time: 2, addGrade: 10, minusGrade: 10),
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is sin(π)?", answers: ["1/2", "0", "1", "-1"], correctAnswer: "0", time: 2, addGrade: 10, minusGrade: 10),
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is cos(π/2)?", answers: ["1/2", "-1/2", "1", "0"], correctAnswer: "0", time: 2, addGrade: 10, minusGrade: 10),
-        QuizQuestion(difficultyLevel: 0, category: "Mathematics", text: "How much is sin(π/2)?", answers: ["1/2", "-1/2", "1", "-1"], correctAnswer: "1", time: 2, addGrade: 10, minusGrade: 10)
-        ],
+    
+    static var allPossibleQuizQuestions: [Int: [QuizQuestionCategory: [QuizQuestion]]] = [
         1: [
-            QuizQuestion(difficultyLevel: 1, category: "History", text: "Who is the 1st president of the US?", answers: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], correctAnswer: "George Washington", time: 5, addGrade: 10, minusGrade: 20),
-            QuizQuestion(difficultyLevel: 1, category: "History", text: "Who is the 2nd president of the US?", answers: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], correctAnswer: "John Adams", time: 5, addGrade: 10, minusGrade: 20),
-            QuizQuestion(difficultyLevel: 1, category: "History", text: "Who is the 3rd president of the US?", answers: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], correctAnswer: "Thomas Jefferson", time: 5, addGrade: 10, minusGrade: 20),
-            QuizQuestion(difficultyLevel: 1, category: "History", text: "Who is the 4th president of the US?", answers: ["George Washington", "John Adams", "Thomas Jefferson", "James Madison"], correctAnswer: "James Madison", time: 5, addGrade: 10, minusGrade: 20),
+            .facts: [],
+            .history: [],
+            .nuclear: [],
+            .crisis: [],
+            .decision: []
         ],
         2: [
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+            .facts: [],
+            .history: [],
+            .nuclear: [],
+            .crisis: [],
+            .decision: []
         ],
         3: [
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
-        ],
-        4: [
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
-        ],
-        5: [
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
-        ],
-        6: [
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 1st element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Hydrogen", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 2nd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Helium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 3rd element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Lithium", time: 5, addGrade: 10, minusGrade: 30),
-            QuizQuestion(difficultyLevel: 2, category: "Chemistry", text: "What is the 4th element on the periodic table?", answers: ["Hydrogen", "Helium", "Lithium", "Beryllium"], correctAnswer: "Beryllium", time: 5, addGrade: 10, minusGrade: 30),
+            .facts: [],
+            .history: [],
+            .nuclear: [],
+            .crisis: [],
+            .decision: []
         ],
     ]
 }
