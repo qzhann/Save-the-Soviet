@@ -17,7 +17,6 @@ class Power {
     var image: UIImage
     var description: String
     var coinsNeeded: Int
-    var levelNeeded: Int?
     private var upgrades: [Power] = []
     var hasUpgrade: Bool {
         return !upgrades.isEmpty
@@ -32,12 +31,11 @@ class Power {
      Initializes a fully functional power. Power instances initialized using this initializer should support upgrading.
      - Important: The max power in the series of power upgrades should have a nil value for coinsNeeded, while any other power in the upgrade series should have a non-nil value for coinsNeeded.
      */
-    init(name: String, image: UIImage, description: String, coinsNeeded: Int = 0, levelNeeded: Int? = nil, affecting type: PowerType, strength: Int, every interval: Double? = nil, upgrades: [Power] = []) {
+    init(name: String, image: UIImage, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil, upgrades: [Power] = []) {
         self.name = name
         self.image = image
         self.description = description
         self.coinsNeeded = coinsNeeded
-        self.levelNeeded = levelNeeded
         self.upgrades = upgrades
         self.type = type
         self.strength = strength
@@ -61,7 +59,6 @@ class Power {
         self.image = nextLevel.image
         self.description = nextLevel.description
         self.coinsNeeded = nextLevel.coinsNeeded
-        self.levelNeeded = nextLevel.levelNeeded
         self.type = nextLevel.type
         self.strength = nextLevel.strength
         self.effectInterval = nextLevel.effectInterval
@@ -94,6 +91,3 @@ extension Double {
         return self * second * 60
     }
 }
-
-
-// FIXME: Note that levelNeeded is not yet handled by the UI or the logic yet.

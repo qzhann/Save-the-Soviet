@@ -19,20 +19,19 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var userCoinsLabel: UILabel!
     
-    @IBOutlet weak var friendBasicInfoBackgroundView: UIView!
-    @IBOutlet weak var friendImageView: UIImageView!
-    @IBOutlet weak var friendNameLabel: UILabel!
-    @IBOutlet weak var friendDescriptionLabel: UILabel!
+    @IBOutlet weak var basicInfoBackgroundView: UIView!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     
-    @IBOutlet weak var friendshipLevelBackgroundView: UIView!
-    @IBOutlet weak var friendshipLevelLabel: UILabel!
-    @IBOutlet weak var friendshipLevelProgressView: UIProgressView!
-    @IBOutlet weak var friendshipLevelProgressLabel: UILabel!
+    @IBOutlet weak var loyaltyBackgroundView: UIView!
+    @IBOutlet weak var loyaltyProgressView: UIProgressView!
+    @IBOutlet weak var loyaltyProgressLabel: UILabel!
     
-    @IBOutlet weak var friendPowerTableView: UITableView!
+    @IBOutlet weak var powerTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
     
-    @IBOutlet weak var deleteFriendButton: UIButton!
+    @IBOutlet weak var executeFriendButton: UIButton!
     
     
     // MARK: - Table View Data Source Methods
@@ -52,7 +51,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     // MARK: - Table View Delegate Methods
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        tableViewHeader.frame = CGRect(x: 0, y: 0, width: friendBasicInfoBackgroundView.frame.width, height: 10)
+        tableViewHeader.frame = CGRect(x: 0, y: 0, width: basicInfoBackgroundView.frame.width, height: 10)
         return tableViewHeader
     }
     
@@ -88,7 +87,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     override func viewWillAppear(_ animated: Bool) {
         if let selectedIndexPath = selectedIndexPath {
-            friendPowerTableView.deselectRow(at: selectedIndexPath, animated: true)
+            powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
     }
     
@@ -104,28 +103,28 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     func configureRoundCorners() {
         // In friend basic info background view
-        friendBasicInfoBackgroundView.layer.cornerRadius = 10
-        friendBasicInfoBackgroundView.clipsToBounds = true
-        friendImageView.layer.cornerRadius = friendImageView.bounds.height / 2
-        friendImageView.clipsToBounds = true
+        basicInfoBackgroundView.layer.cornerRadius = 10
+        basicInfoBackgroundView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.bounds.height / 2
+        imageView.clipsToBounds = true
         
         // In user level background view
-        friendshipLevelBackgroundView.layer.cornerRadius = 10
-        friendshipLevelBackgroundView.clipsToBounds = true
-        friendshipLevelProgressView.layer.cornerRadius = 3
-        friendshipLevelProgressView.clipsToBounds = true
+        loyaltyBackgroundView.layer.cornerRadius = 10
+        loyaltyBackgroundView.clipsToBounds = true
+        loyaltyProgressView.layer.cornerRadius = 3
+        loyaltyProgressView.clipsToBounds = true
         
         // In user power table view
-        friendPowerTableView.layer.cornerRadius = 10
-        friendPowerTableView.clipsToBounds = true
+        powerTableView.layer.cornerRadius = 10
+        powerTableView.clipsToBounds = true
         
         // For progress views
-        friendshipLevelProgressView.subviews[1].layer.cornerRadius = 3
-        friendshipLevelProgressView.subviews[1].clipsToBounds = true
+        loyaltyProgressView.subviews[1].layer.cornerRadius = 3
+        loyaltyProgressView.subviews[1].clipsToBounds = true
         
         // For delete friend button
-        deleteFriendButton.layer.cornerRadius = 10
-        deleteFriendButton.clipsToBounds = true
+        executeFriendButton.layer.cornerRadius = 10
+        executeFriendButton.clipsToBounds = true
     }
     
     func prepareUI() {
@@ -133,19 +132,21 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
         
         // Update friend info
-        friendNameLabel.text = friend.fullName
-        friendDescriptionLabel.text = friend.description
-        friendImageView.image = friend.image
+        nameLabel.text = friend.fullName
+        descriptionLabel.text = friend.description
+        imageView.image = friend.image
         
         // Update level and support
-        friendshipLevelLabel.text = "Loyalty"
-        friendshipLevelProgressLabel.text = friend.loyalty.progressDescription
-        friendshipLevelProgressView.setProgress(0.05, animated: false)
+        loyaltyProgressLabel.text = friend.loyalty.progressDescription
+        loyaltyProgressView.setProgress(0.05, animated: false)
+        
+        // Update Execute friend button title
+        executeFriendButton.setTitle("Execute \(friend.lastName)", for: .normal)
     }
     
     func updateUI() {
         if let selectedIndexPath = selectedIndexPath, didConfirm == true {
-            friendPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
+            powerTableView.reloadRows(at: [selectedIndexPath], with: .left)
             didConfirm = false
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
@@ -154,7 +155,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     func animateProgressViews() {
         // Animate the progress of progress views
         UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut, animations: {
-            self.friendshipLevelProgressView.setProgress(self.friend.loyalty.normalizedProgress, animated: true)
+            self.loyaltyProgressView.setProgress(self.friend.loyalty.normalizedProgress, animated: true)
         }, completion: nil)
     }
     

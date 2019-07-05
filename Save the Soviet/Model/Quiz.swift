@@ -32,7 +32,7 @@ class Quiz {
     // MARK: - Initializers
     
     /// Initialize a Quiz using difficulty and category. If category is nil, randomly select category and questions inside the categories from that difficulty.
-    init(ofDifficulty difficulty: Int, category: QuizQuestionCategory?) {
+    init(ofDifficulty difficulty: Int, category: QuizQuestionCategory? = nil) {
         // Difficulty does not go beyond range
         var currentDifficulty = difficulty
         if difficulty > QuizQuestion.allPossibleQuizQuestions.count - 1 {
@@ -89,16 +89,23 @@ class Quiz {
 // MARK: -
 
 enum QuizQuestionCategory: String, CaseIterable {
+    /// Factutal questions
     case facts = "Facts"
+    /// Historic questions
     case history = "History"
+    /// Nuclear questions
     case nuclear = "Nuclear"
+    /// Crisis handling questions
     case crisis = "Crisis"
+    /// Questions that are in the form of making decisions.
     case decision = "Decision"
     
     static var random: QuizQuestionCategory {
         return self.allCases.randomElement()!
     }
 }
+
+// MARK: -
 
 struct QuizQuestion {
     
@@ -126,17 +133,20 @@ struct QuizQuestion {
     var minusExperience: Int {
         return level * 2
     }
+    /// The time for the user to respond
+    var responseTime: Int
     
     
     // MARK: - Initializers
     
     /// Full initializer
-    init(level: Int, category: QuizQuestionCategory, text: String, answers: [String], correctAnswer: String) {
+    init(level: Int, category: QuizQuestionCategory, text: String, answers: [String], correctAnswer: String, responseTime: Int) {
         self.level = level
         self.category = category
         self.text = text
         self.answers = answers
         self.correctAnswer = correctAnswer
+        self.responseTime = responseTime
     }
     
     // MARK: - Static properties

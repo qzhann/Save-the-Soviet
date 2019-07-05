@@ -39,7 +39,6 @@
 		42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */; };
 		42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */; };
 		42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */; };
-		42FDD86F228AC2CE007BE38A /* FriendPowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,7 +76,6 @@
 		42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
 		42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultViewController.swift; sourceTree = "<group>"; };
 		42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailViewController.swift; sourceTree = "<group>"; };
-		42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendPowerTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +146,6 @@
 				42437C812250900D00ED18F4 /* UserDetailViewController.swift */,
 				42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */,
 				423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */,
-				42FDD86E228AC2CE007BE38A /* FriendPowerTableViewCell.swift */,
 				422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */,
 				4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */,
 				428136172203E7B70046EF11 /* ChatViewController.swift */,
@@ -276,7 +273,6 @@
 				42ECF9E921CB2FE0007AF7F9 /* Power.swift in Sources */,
 				42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */,
 				427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */,
-				42FDD86F228AC2CE007BE38A /* FriendPowerTableViewCell.swift in Sources */,
 				42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */,
 				42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */,
 				42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */,

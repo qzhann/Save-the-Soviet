@@ -195,7 +195,7 @@ class QuizViewController: UIViewController {
             for button in answerButtons {
                 button?.isEnabled = true
             }
-            self.seconds = self.quiz.currentQuestion!.time
+            self.seconds = self.quiz.currentQuestion!.responseTime
             self.timerLabel.text = "\(self.seconds)"
             self.runTimer()
             

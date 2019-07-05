@@ -35,9 +35,15 @@ enum ResponseStatus {
 class Friend: Equatable {
     
     // MARK: Instance properties
-    
-    var shortName: String
-    var fullName: String
+    var lastName: String
+    var shortTitle: String
+    var fullTitle: String
+    var shortName: String {
+        return "\(shortTitle) \(lastName)"
+    }
+    var fullName: String {
+        return "\(fullTitle) \(lastName)"
+    }
     var image: UIImage
     /// The description displayed on FriendDetailViewController
     var description: String
@@ -67,9 +73,10 @@ class Friend: Equatable {
     // MARK: - Initializers
     
     /// Full intializer for a Friend, begins chat with sending incoming message.
-    init(shortName: String, fullName: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int) {
-        self.shortName = shortName
-        self.fullName = fullName
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int) {
+        self.lastName = lastName
+        self.shortTitle = shortTitle
+        self.fullTitle = fullTitle
         self.image = image
         self.description = description
         self.loyalty = loyalty
@@ -81,9 +88,10 @@ class Friend: Equatable {
     }
     
     /// Full initializer for a Friend, begins chat with prompting the user with choices.
-    init(shortName: String, fullName: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage]) {
-        self.shortName = shortName
-        self.fullName = fullName
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage]) {
+        self.lastName = lastName
+        self.shortTitle = shortTitle
+        self.fullTitle = fullTitle
         self.image = image
         self.description = description
         self.loyalty = loyalty
@@ -233,12 +241,12 @@ class Friend: Equatable {
     
     // MARK: - Static properties
     
-    static var dyatlov = Friend(shortName: "Engineer Dytlov", fullName: "Deputy Chief Engineer Dyatlov", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
-    static var legasov = Friend(shortName: "Scientist Legasov", fullName: "Nuclear Scientist Legasov", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
-    static var fomin = Friend(shortName: "Engineer Fomin", fullName: "Chief Engineer Fomin", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!)
-    static var akimov = Friend(shortName: "Engineer Akimov", fullName: "Chernobyl Shift Leader Akimov", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!)
+    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
     
-    static var testNewFriend = Friend(shortName: "Engineer Dytlov 2", fullName: "Deputy Chief Engineer Dyatlov 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0)
+    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0)
     
     static var allPossibleFriends: [Friend] = [
         Friend.dyatlov,

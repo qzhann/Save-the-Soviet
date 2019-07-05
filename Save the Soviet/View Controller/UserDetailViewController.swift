@@ -25,22 +25,22 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     @IBOutlet weak var backgroundView: UIView!
     
     @IBOutlet weak var userCoinsLabel: UILabel!
-    @IBOutlet weak var userBasicInfoBackgroundView: UIView!
-    @IBOutlet weak var userImageView: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var userDescriptionLabel: UILabel!
+    @IBOutlet weak var basicInfoBackgroundView: UIView!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
     
-    @IBOutlet weak var userLevelBackgroundView: UIView!
-    @IBOutlet weak var userLevelLabel: UILabel!
-    @IBOutlet weak var userLevelProgressView: UIProgressView!
-    @IBOutlet weak var userLevelProgressLabel: UILabel!
+    @IBOutlet weak var levelBackgroundView: UIView!
+    @IBOutlet weak var levelLabel: UILabel!
+    @IBOutlet weak var levelProgressView: UIProgressView!
+    @IBOutlet weak var levelProgressLabel: UILabel!
     @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
     
-    @IBOutlet weak var userEnergyBackgroundView: UIView!
-    @IBOutlet weak var userEnergyProgressView: UIProgressView!
-    @IBOutlet weak var userEnergyProgressLabel: UILabel!
+    @IBOutlet weak var supportBackgroundView: UIView!
+    @IBOutlet weak var supportProgressView: UIProgressView!
+    @IBOutlet weak var supportProgressLabel: UILabel!
     
-    @IBOutlet weak var userPowerTableView: UITableView!
+    @IBOutlet weak var powerTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
     
     // MARK: - User status display delegate
@@ -76,7 +76,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - Table View Delegate Methods
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        tableViewHeader.frame = CGRect(x: 0, y: 0, width: userBasicInfoBackgroundView.frame.width, height: 10)
+        tableViewHeader.frame = CGRect(x: 0, y: 0, width: basicInfoBackgroundView.frame.width, height: 10)
         return tableViewHeader
     }
     
@@ -115,7 +115,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     override func viewWillAppear(_ animated: Bool) {
         // Deselect selected row of the power table view
         if let selectedIndexPath = selectedIndexPath {
-            userPowerTableView.deselectRow(at: selectedIndexPath, animated: true)
+            powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
         levelProgressChangeIndicatorView.alpha = 0
     }
@@ -133,52 +133,52 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     func configureRoundCorners() {
         // In user basic info background view
-        userBasicInfoBackgroundView.layer.cornerRadius = 10
-        userBasicInfoBackgroundView.clipsToBounds = true
-        userImageView.layer.cornerRadius = userImageView.bounds.height / 2
-        userImageView.clipsToBounds = true
+        basicInfoBackgroundView.layer.cornerRadius = 10
+        basicInfoBackgroundView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.bounds.height / 2
+        imageView.clipsToBounds = true
         
         // In user level background view
-        userLevelBackgroundView.layer.cornerRadius = 10
-        userLevelBackgroundView.clipsToBounds = true
-        userLevelProgressView.layer.cornerRadius = 3
-        userLevelProgressView.clipsToBounds = true
+        levelBackgroundView.layer.cornerRadius = 10
+        levelBackgroundView.clipsToBounds = true
+        levelProgressView.layer.cornerRadius = 3
+        levelProgressView.clipsToBounds = true
         
         // In user support background view
-        userEnergyBackgroundView.layer.cornerRadius = 10
-        userEnergyBackgroundView.clipsToBounds = true
-        userEnergyProgressView.layer.cornerRadius = 3
-        userEnergyProgressView.clipsToBounds = true
+        supportBackgroundView.layer.cornerRadius = 10
+        supportBackgroundView.clipsToBounds = true
+        supportProgressView.layer.cornerRadius = 3
+        supportProgressView.clipsToBounds = true
         
         // In user power table view
-        userPowerTableView.layer.cornerRadius = 10
-        userPowerTableView.clipsToBounds = true
+        powerTableView.layer.cornerRadius = 10
+        powerTableView.clipsToBounds = true
         
         // For progress views
-        userLevelProgressView.subviews[1].layer.cornerRadius = 3
-        userLevelProgressView.subviews[1].clipsToBounds = true
-        userEnergyProgressView.subviews[1].layer.cornerRadius = 3
-        userEnergyProgressView.subviews[1].clipsToBounds = true
+        levelProgressView.subviews[1].layer.cornerRadius = 3
+        levelProgressView.subviews[1].clipsToBounds = true
+        supportProgressView.subviews[1].layer.cornerRadius = 3
+        supportProgressView.subviews[1].clipsToBounds = true
     }
     
     func prepareUI() {
         // Prepare User Info
-        userNameLabel.text = user.name
-        userDescriptionLabel.text = user.description
+        nameLabel.text = user.name
+        descriptionLabel.text = user.description
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
-        userLevelLabel.text = "Level \(user.level.levelNumber)"
-        userLevelProgressLabel.text = user.level.progressDescription
-        userEnergyProgressLabel.text = user.support.progressDescription
-        userImageView.image = user.image
+        levelLabel.text = "Level \(user.level.levelNumber)"
+        levelProgressLabel.text = user.level.progressDescription
+        supportProgressLabel.text = user.support.progressDescription
+        imageView.image = user.image
         
         // Prepare progress views
-        userLevelProgressView.setProgress(0.05, animated: false)
-        userEnergyProgressView.setProgress(0.05, animated: false)
+        levelProgressView.setProgress(0.05, animated: false)
+        supportProgressView.setProgress(0.05, animated: false)
     }
     
     func updatePowerTableView() {
         if let selectedIndexPath = selectedIndexPath, didConfirm == true {
-            userPowerTableView.reloadRows(at: [selectedIndexPath], with: .left)
+            powerTableView.reloadRows(at: [selectedIndexPath], with: .left)
             didConfirm = false
         }
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
@@ -195,26 +195,26 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         switch self.user.level.levelNumberChangeStatus {
         case .increased:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+                self.levelProgressView.setProgress(levelProgress, animated: true)
             })
         case .decreased:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+                self.levelProgressView.setProgress(levelProgress, animated: true)
             })
         case .noChange:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.userLevelProgressView.setProgress(levelProgress, animated: true)
+                self.levelProgressView.setProgress(levelProgress, animated: true)
             })
         }
         
         // Animate support progress view
         
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-            self.userEnergyProgressView.setProgress(energyProgress, animated: true)
+            self.supportProgressView.setProgress(energyProgress, animated: true)
         })
         
         // Animate the text changes
-        userLevelLabel.text = "Level \(user.level.levelNumber)"
+        levelLabel.text = "Level \(user.level.levelNumber)"
         
         let levelProgressDifference = user.level.progress - user.level.previousProgress
         var displayProgress = user.level.previousProgress
@@ -225,9 +225,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
                     timer.invalidate()
                 }
                 
-                self.userLevelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
+                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
                 if displayProgress == self.user.level.progress {
-                    self.userLevelProgressLabel.text = self.user.level.progressDescription
+                    self.levelProgressLabel.text = self.user.level.progressDescription
                 }
                 if levelProgressDifference > 0 {
                     displayProgress += 1
@@ -239,7 +239,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         }
         
         
-        userEnergyProgressLabel.text = user.support.progressDescription
+        supportProgressLabel.text = user.support.progressDescription
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {

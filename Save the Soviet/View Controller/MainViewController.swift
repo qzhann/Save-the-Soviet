@@ -33,8 +33,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var levelNumberLabel: UILabel!
     @IBOutlet weak var levelProgressView: UIProgressView!
     @IBOutlet weak var levelProgressLabel: UILabel!
-    @IBOutlet weak var energyProgressView: UIProgressView!
-    @IBOutlet weak var energyProgressLabel: UILabel!
+    @IBOutlet weak var supportProgressView: UIProgressView!
+    @IBOutlet weak var supportProgressLabel: UILabel!
     
     @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
     
@@ -175,8 +175,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         levelProgressView.layer.cornerRadius = 3
         levelProgressView.clipsToBounds = true
-        energyProgressView.layer.cornerRadius = 3
-        energyProgressView.clipsToBounds = true
+        supportProgressView.layer.cornerRadius = 3
+        supportProgressView.clipsToBounds = true
         
         // Setting round corner for shop background view
         shopBackgroundView.layer.cornerRadius = shopBackgroundView.frame.height / 2
@@ -189,8 +189,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Setting round corner for progress views
         levelProgressView.subviews[1].layer.cornerRadius = 3
         levelProgressView.subviews[1].clipsToBounds = true
-        energyProgressView.subviews[1].layer.cornerRadius = 3
-        energyProgressView.subviews[1].clipsToBounds = true
+        supportProgressView.subviews[1].layer.cornerRadius = 3
+        supportProgressView.subviews[1].clipsToBounds = true
         
         // Setting shadow for user status bar view
         userStatusBarView.layer.masksToBounds = false
@@ -218,10 +218,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let levelProgress = user.level.normalizedProgress
         let energyProgress = user.support.normalizedProgress
         levelProgressView.setProgress(levelProgress, animated: false)
-        energyProgressView.setProgress(energyProgress, animated: false)
+        supportProgressView.setProgress(energyProgress, animated: false)
         levelNumberLabel.text = "\(user.level.levelNumber)"
         levelProgressLabel.text = user.level.progressDescription
-        energyProgressLabel.text = user.support.progressDescription
+        supportProgressLabel.text = user.support.progressDescription
     }
     
     func animateProgressViewsAndLabels() {
@@ -279,11 +279,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Animate support progress view
         
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-            self.energyProgressView.setProgress(energyProgress, animated: true)
+            self.supportProgressView.setProgress(energyProgress, animated: true)
         })
         
         
-        energyProgressLabel.text = user.support.progressDescription
+        supportProgressLabel.text = user.support.progressDescription
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {

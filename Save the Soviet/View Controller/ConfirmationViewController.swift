@@ -10,7 +10,7 @@ import UIKit
 
 class ConfirmationViewController: UIViewController {
     
-    @IBOutlet weak var roundedBackgroundView: UIView!
+    @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
@@ -35,8 +35,8 @@ class ConfirmationViewController: UIViewController {
         guard let consequence = consequence else { return }
         
         // Configure round corners
-        roundedBackgroundView.layer.cornerRadius = 15
-        roundedBackgroundView.clipsToBounds = true
+        backgroundView.layer.cornerRadius = 15
+        backgroundView.clipsToBounds = true
         confirmButton.layer.cornerRadius = confirmButton.frame.height / 2
         confirmButton.clipsToBounds = true
         
@@ -53,7 +53,7 @@ class ConfirmationViewController: UIViewController {
                 cancelButton.setTitle("Cancel", for: .normal)
             }
         case .deleteFriend(let friend):
-            textLabel.text = "Delete \(friend.shortName) ?"
+            textLabel.text = "Execute \(friend.shortName) ?"
             confirmButton.setTitle("Yes", for: .normal)
             cancelButton.setTitle("Maybe not.", for: .normal)
         default:
