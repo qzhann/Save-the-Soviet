@@ -34,7 +34,7 @@
 		42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E221CB2F99007AF7F9 /* User.swift */; };
 		42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E421CB2FBD007AF7F9 /* Friend.swift */; };
 		42ECF9E721CB2FCA007AF7F9 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E621CB2FCA007AF7F9 /* Message.swift */; };
-		42ECF9E921CB2FE0007AF7F9 /* Achievement&Power.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E821CB2FE0007AF7F9 /* Achievement&Power.swift */; };
+		42ECF9E921CB2FE0007AF7F9 /* Power.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E821CB2FE0007AF7F9 /* Power.swift */; };
 		42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */; };
 		42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */; };
 		42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */; };
@@ -72,7 +72,7 @@
 		42ECF9E221CB2F99007AF7F9 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		42ECF9E421CB2FBD007AF7F9 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		42ECF9E621CB2FCA007AF7F9 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		42ECF9E821CB2FE0007AF7F9 /* Achievement&Power.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Achievement&Power.swift"; sourceTree = "<group>"; };
+		42ECF9E821CB2FE0007AF7F9 /* Power.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Power.swift; sourceTree = "<group>"; };
 		42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
 		42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
 		42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultViewController.swift; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 				42ECF9E621CB2FCA007AF7F9 /* Message.swift */,
 				42ECF9E421CB2FBD007AF7F9 /* Friend.swift */,
 				42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */,
-				42ECF9E821CB2FE0007AF7F9 /* Achievement&Power.swift */,
+				42ECF9E821CB2FE0007AF7F9 /* Power.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -273,7 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42ECF9E921CB2FE0007AF7F9 /* Achievement&Power.swift in Sources */,
+				42ECF9E921CB2FE0007AF7F9 /* Power.swift in Sources */,
 				42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */,
 				427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */,
 				42FDD86F228AC2CE007BE38A /* FriendPowerTableViewCell.swift in Sources */,

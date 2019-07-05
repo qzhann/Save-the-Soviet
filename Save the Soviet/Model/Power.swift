@@ -1,5 +1,5 @@
 //
-//  Achievement&Power.swift
+//  Power.swift
 //  Uncommon Application
 //
 //  Created by qizihan  on 12/20/18.
