@@ -51,6 +51,11 @@ class User {
         self.friends = friends
         self.powers = powers
         self.applyAllPowers()
+        // FIXME: Do we start chat for all friends during initialization? Do we reinitialize the User for persistence, thus causing problems?
+        // Trigger begin chat for all friends
+        for friend in self.friends {
+            friend.startChat()
+        }
     }
     
 

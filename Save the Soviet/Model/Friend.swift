@@ -19,15 +19,21 @@ enum ChatEndingState {
 enum ResponseState {
     /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses.
     case willPromptUserWith([OutgoingMessage]?)
+    /// Friend will send an optional
     /// User completed a whole set of responses in a chat.
     case completed
-    /// Chat will begin for the first time using an array of OutgoingMessages to prompt user as choices.
-    case willBeginChatWith([OutgoingMessage])
-    /// Chat will begin for the first time by sending an IncomingMessage from friend.
-    case willBeginChatWithIncomingMessageId(Int)
 }
 
-// MARK: -
+/// Describes how a friend should begin a chat when being a new friend to the user.
+enum ChatStartOption {
+    /// Start chat by prompting user with some choices
+    case promptUserWith([OutgoingMessage])
+    /// Start chat by sending incoming message
+    case sendIncomingMessage(IncomingMessage)
+    /// Does not start chat
+    case none
+}
+
 
 /// A tracker indicating what conditions will allow the user the execute the friend. Useful for controlling the state of the executeFriendButton.
 enum ExecutionRestriction {
@@ -38,6 +44,8 @@ enum ExecutionRestriction {
     /// The friend can never be executed.
     case never
 }
+
+// MARK: -
 
 /**
  A class which holds information about a friend and the chat history with that friend.
@@ -62,6 +70,8 @@ class Friend: Equatable {
     var powers: [Power]
     /// Describes what limitations the user must meet before executing a friend.
     var executionRestriction: ExecutionRestriction
+    /// Describes how the friend should start a chat when startChat() is called
+    var chatStartOption: ChatStartOption
     /// The object responsible for displaying the chat history, typically the ChatViewController.
     weak var chatDelegate: ChatDisplayDelegate?
     /// The object responsible for displaying the new message status of the friend, typically the MainViewController.
@@ -69,7 +79,7 @@ class Friend: Equatable {
     /// chatHistory records all ChatMessage send to and from the Friend. If the chatDelegate did not finish the delayed display of the chatHistory upon dismissal, chatHistory will be copied over to update the chatDelegate when presenting it.
     var chatHistory: [ChatMessage]
     /// This tracks the number of ChatMessages displayed by the chatDelegate. When the chatDelegate was dismissed, this resumes chat from the appropriate message.
-    var displayedMessageCount = 0
+    var displayedMessageCount: Int
     /// Used to show or hide the end chat cell.
     var hasNewMessage = false
     /// When set to false, the friend will update the chat history in the background.
@@ -77,7 +87,7 @@ class Friend: Equatable {
     
     // FIXME: To trigger the beginning of a chat differently, maybe we should use the response status wisely.
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
-    var responseState: ResponseState
+    var responseState: ResponseState = .completed
     /// This tracks whether the chat has ended, useful for resuming chat display in the chatDelegate.
     var chatEndingState: ChatEndingState = .notEnded
     /// The data store for all messages that can be sent to and from a Friend.
@@ -88,7 +98,7 @@ class Friend: Equatable {
     // MARK: - Initializers
     
     /// Full intializer for a Friend, begins chat with sending incoming message.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int, executionRestriction: ExecutionRestriction, introductionMessage: IncomingMessage) {
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], executionRestriction: ExecutionRestriction, introductionMessage: IncomingMessage, startChatUsing chatStartOption: ChatStartOption) {
         self.lastName = lastName
         self.shortTitle = shortTitle
         self.fullTitle = fullTitle
@@ -99,13 +109,13 @@ class Friend: Equatable {
         self.chatHistory = chatHistory
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
-        self.responseState = .willBeginChatWithIncomingMessageId(id)
         self.executionRestriction = executionRestriction
         self.introductionMessageFromOthers = introductionMessage
+        self.chatStartOption = chatStartOption
     }
     
     /// Full initializer for a Friend, begins chat with prompting the user with choices.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage], executionRestriction: ExecutionRestriction, introductionMessage: IncomingMessage) {
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage], executionRestriction: ExecutionRestriction, introductionMessage: IncomingMessage, startChatUsing chatStartOption: ChatStartOption) {
         self.lastName = lastName
         self.shortTitle = shortTitle
         self.fullTitle = fullTitle
@@ -116,9 +126,9 @@ class Friend: Equatable {
         self.chatHistory = chatHistory
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
-        self.responseState = .willBeginChatWith(choices)
         self.executionRestriction = executionRestriction
         self.introductionMessageFromOthers = introductionMessage
+        self.chatStartOption = chatStartOption
     }
     
     
@@ -162,6 +172,23 @@ class Friend: Equatable {
         chatEndingState = .notEnded
         chatHistory.append(contentsOf: message.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: nil, consequences: message.consequences)
+    }
+    
+    /// Starts chat using the corresponding start chat option. This is called when 
+    func startChat() {
+        switch chatStartOption {
+        case .sendIncomingMessage(let message):
+            sendIncomingMessage(message)
+            updateChatHistoryInBackground()
+            hasNewMessage = true
+            statusDisplayDelegate?.updateNewMessageStatusFor(self)
+            responseState = .willPromptUserWith(message.responses)
+        case .promptUserWith(let choices):
+            responseState = .willPromptUserWith(choices)
+        case .none:
+            break
+        }
+        chatStartOption = .none
     }
     
     
@@ -266,12 +293,31 @@ class Friend: Equatable {
     
     // MARK: - Static properties
     
-    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil))
-    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil))
-    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil))
-    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(7), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil))
+    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+        ])))
     
-    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Watch out.", consequences: [.endChatFrom(.incoming)], responses: nil))
+    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+        ])))
+    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil), startChatUsing: .promptUserWith([OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),                                                                                      OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+                         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])]))
+    
+    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(7), introductionMessage: IncomingMessage(texts: "Good luck president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+        ])))
+    
+    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.newTestMessages, executionRestriction: .level(10), introductionMessage: IncomingMessage(texts: "Watch out.", consequences: [.endChatFrom(.incoming)], responses: nil), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+        ])))
     
     static var allPossibleFriends: [Friend] = [
         Friend.dyatlov,
@@ -294,6 +340,30 @@ class Friend: Equatable {
             ]),
         2: IncomingMessage(texts: "Thank you, president Gorbachev.", consequences: [.changeSupportProgressBy(1), .changeLoyaltyProgressBy(2)], responses: [
                 OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
+            ]),
+        3: IncomingMessage(texts: "Certainly... Thank you president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil),
+        
+        
+        
+        
+        
+        100: IncomingMessage(texts: "Good luck President Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil)
+    ]
+    
+    
+    static var newTestMessages: [Int: IncomingMessage] = [
+        0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
+            OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
+            OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+            OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+            ]),
+        1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [
+            OutgoingMessage(description: "Good", texts: "Good.", "I will check on your work later on", "It is an honor working on the job you have now", "people depend on your work", responseMessageId: 2),
+            OutgoingMessage(description: "Wonderful", texts: "Wonderful.", responseMessageId: nil, consequences: nil),
+            OutgoingMessage(description: "OK", texts: "OK.", "Keep it up.", responseMessageId: 3, consequences: [.changeLoyaltyProgressBy(-1)]),
+            ]),
+        2: IncomingMessage(texts: "Thank you, president Gorbachev.", consequences: [.changeSupportProgressBy(1), .changeLoyaltyProgressBy(2)], responses: [
+            OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
             ]),
         3: IncomingMessage(texts: "Certainly... Thank you president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil),
         

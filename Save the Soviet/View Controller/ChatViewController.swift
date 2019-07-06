@@ -427,12 +427,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
         case .willPromptUserWith(let outgoingMessages):
             didAddIncomingMessageWith(responses: outgoingMessages, consequences: nil)
-        // If the Friend will begin chat with an incoming message, send it.
-        case .willBeginChatWithIncomingMessageId(let id):
-            friend.sendIncomingMessageNumbered(id)
-        // If the Friend will begin chat by prompting user with choices, prompt it.
-        case .willBeginChatWith(let choices):
-            didAddIncomingMessageWith(responses: choices, consequences: nil)
         // If the Friend has completed the chat, do nothing
         case .completed:
             break

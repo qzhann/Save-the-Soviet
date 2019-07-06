@@ -53,6 +53,7 @@ struct ConsequenceController {
             if let chatViewController = chatViewController {
                 chatViewController.delayedConsequenceHandlingDelegate.delayedConsequences.append(consequence)
                 chatViewController.newFriend = friend
+                friend.startChat()
                 chatViewController.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
             }
         case .deleteFriend(let friend):
