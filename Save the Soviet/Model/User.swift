@@ -125,7 +125,7 @@ class User {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 990), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 590), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -
@@ -146,6 +146,7 @@ struct Level {
                 previousUpperBound = upperBounds[levelNumber - 1]
                 let rawNormalizedProgress = Float(progress - previousUpperBound) / Float(currentUpperBound - previousUpperBound)
                 normalizedProgress = rawNormalizedProgress * 0.95 + 0.05
+                previousProgress = oldValue
             } else {
                 levelNumber = 10
                 normalizedProgress = 1

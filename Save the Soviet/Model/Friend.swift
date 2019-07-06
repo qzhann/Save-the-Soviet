@@ -29,12 +29,23 @@ enum ResponseStatus {
 
 // MARK: -
 
+/// A tracker indicating what conditions will allow the user the execute the friend. Useful for controlling the state of the executeFriendButton.
+enum ExecutionRestriction {
+    /// No limitation. The friend can be executed at any time.
+    case none
+    /// The friend can only be executed at or above the level number given.
+    case level(Int)
+    /// The friend can never be executed.
+    case never
+}
+
 /**
  A class which holds information about a friend and the chat history with that friend.
  */
 class Friend: Equatable {
     
     // MARK: Instance properties
+    
     var lastName: String
     var shortTitle: String
     var fullTitle: String
@@ -49,6 +60,8 @@ class Friend: Equatable {
     var description: String
     var loyalty: Percentage
     var powers: [Power]
+    /// Describes what limitations the user must meet before executing a friend.
+    var executionRestriction: ExecutionRestriction
     /// The object responsible for displaying the chat history, typically the ChatViewController.
     weak var chatDelegate: ChatDisplayDelegate?
     /// The object responsible for displaying the new message status of the friend, typically the MainViewController.
@@ -73,7 +86,7 @@ class Friend: Equatable {
     // MARK: - Initializers
     
     /// Full intializer for a Friend, begins chat with sending incoming message.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int) {
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithIncomingMessageId id: Int, executionRestriction: ExecutionRestriction) {
         self.lastName = lastName
         self.shortTitle = shortTitle
         self.fullTitle = fullTitle
@@ -85,10 +98,11 @@ class Friend: Equatable {
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
         self.responseStatus = .willBeginChatWithIncomingMessageId(id)
+        self.executionRestriction = executionRestriction
     }
     
     /// Full initializer for a Friend, begins chat with prompting the user with choices.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage]) {
+    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage], executionRestriction: ExecutionRestriction) {
         self.lastName = lastName
         self.shortTitle = shortTitle
         self.fullTitle = fullTitle
@@ -100,6 +114,7 @@ class Friend: Equatable {
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
         self.responseStatus = .willBeginChatWith(choices)
+        self.executionRestriction = executionRestriction
     }
     
     
@@ -241,12 +256,12 @@ class Friend: Equatable {
     
     // MARK: - Static properties
     
-    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
-    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
-    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!)
-    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0)
+    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(10))
+    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 99), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(10))
+    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithPromptingChoices: Friend.allTestMessages[0]!.responses!, executionRestriction: .level(10))
+    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, beginWithIncomingMessageId: 0, executionRestriction: .level(7))
     
-    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0)
+    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: [:], beginWithIncomingMessageId: 0, executionRestriction: .level(10))
     
     static var allPossibleFriends: [Friend] = [
         Friend.dyatlov,

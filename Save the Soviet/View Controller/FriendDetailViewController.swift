@@ -32,6 +32,8 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet weak var tableViewHeader: UIView!
     
     @IBOutlet weak var executeFriendButton: UIButton!
+    @IBOutlet var lockLabel: UILabel!
+    @IBOutlet var lockRestrictionLabel: UILabel!
     
     
     // MARK: - Table View Data Source Methods
@@ -140,8 +142,29 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         loyaltyProgressLabel.text = friend.loyalty.progressDescription
         loyaltyProgressView.setProgress(0.05, animated: false)
         
-        // Update Execute friend button title
+        // Update Execute friend button
         executeFriendButton.setTitle("Execute \(friend.lastName)", for: .normal)
+        executeFriendButton.isEnabled = true
+        lockLabel.alpha = 0
+        lockRestrictionLabel.alpha = 0
+        switch friend.executionRestriction {
+        case .never:
+            // Disable the execute friend button if friend can never be executed
+            executeFriendButton.isEnabled = false
+        case .level(let level):
+            // Show restriction if level is lower, otherwise enable the button
+            if user.level.levelNumber >= level {
+                executeFriendButton.isEnabled = true
+            } else {
+                executeFriendButton.isEnabled = false
+                lockLabel.alpha = 1
+                lockRestrictionLabel.text = "Lv.\(level)"
+                lockRestrictionLabel.alpha = 1
+            }
+        case .none:
+            // No restriction, do nothing
+            break
+        }
     }
     
     func updateUI() {
