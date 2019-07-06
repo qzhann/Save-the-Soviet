@@ -246,6 +246,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - Chat Display Delegate Methods
     
     func didAddIncomingMessageWith(responses: [OutgoingMessage]?, consequences: [Consequence]?) {
+        
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         
@@ -267,6 +268,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func didAddOutgoingMessageWith(responseId: Int?, consequences: [Consequence]?) {
+        
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         
@@ -617,14 +619,18 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: - Unwind Segue
     
+    // FIXME: This needs better implementation.
     /// present the user with some choices after a quiz is done
     @IBAction func unwindToChatViewControllerAfterQuiz(unwindSegue: UIStoryboardSegue) {
         didAddIncomingMessageWith(responses: [OutgoingMessage(text: "How did I do?", responseMessageId: 5)], consequences: nil)
         
     }
     
+    // After a new friend is made, to avoid crashing, we tell the friend to start sending the message the new friend has stored.
     @IBAction func unwindToChatViewControllerAfterNewFriend(unwindSegue: UIStoryboardSegue) {
-        didAddIncomingMessageWith(responses: [OutgoingMessage(description: "(Leave chat)", responseMessageId: nil, consequences: [.endChatFrom(.outgoing)]),], consequences: nil)
+        let newFriendViewController = unwindSegue.source as! NewFriendViewController
+        let newFriend = newFriendViewController.friend
+        friend.sendIncomingMessage(newFriend!.introductionMessageFromOthers)
     }
-
+    
 }

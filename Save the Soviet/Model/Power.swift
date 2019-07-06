@@ -52,6 +52,9 @@ class Power {
     
     func upgrade() {
         guard upgrades.isEmpty == false else { return }
+        // Stop the timer before upgrading
+        stopTimer()
+        
         var newUpgrades = self.upgrades
         let nextLevel = newUpgrades.removeFirst()
         
