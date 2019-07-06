@@ -47,6 +47,7 @@ class QuizViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         expandBackgroundView()
         
+        // FIXME: This needs to change
         // Initialize a quiz with quizLevel
         quiz = Quiz(ofDifficulty: user.level.levelNumber)
         

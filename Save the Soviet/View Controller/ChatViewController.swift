@@ -22,14 +22,14 @@ struct ChatController {
     /// The data source used to display the chat history.
     var displayedChatHistory: [ChatMessage] = []
     /// This tracks the thinking status of the User and the Friend, used to insert and remove the thinking cells in ChatTableView.
-    var thinkingStatus: ThinkingStatus = .completed
-    enum ThinkingStatus {
+    var thinkingState: ThinkingState = .completed
+    enum ThinkingState {
         case incoming
         case outgoing
         case completed
     }
     /// This tracks whether the chat has ended, also serving the data source for the end chat cell section.
-    var chatEndingStatus: ChatEndingStatus = .notEnded
+    var chatEndingState: ChatEndingState = .notEnded
     
     var didMaximizeResponseContainerViewHeight = false {
         didSet {
@@ -139,13 +139,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         case 0: // Chat Cells
             return chatController.displayedChatHistory.count
         case 1: // Thinking Cells
-            if chatController.thinkingStatus == .completed {
+            if chatController.thinkingState == .completed {
                 return 0
             } else {
                 return 1
             }
         case 2: // End Chat Cells
-            switch chatController.chatEndingStatus {
+            switch chatController.chatEndingState {
             case .endedFrom(_):
                 return 1
             default:
@@ -174,12 +174,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 return cell
             }
         case 1: // Thinking Cells
-            if chatController.thinkingStatus == .incoming {
+            if chatController.thinkingState == .incoming {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "LeftThinkingCell", for: indexPath) as! LeftThinkingChatTableViewCell
                 cell.selectionStyle = .none
                 cell.thinkingImage.startAnimating()
                 return cell
-            } else if chatController.thinkingStatus == .outgoing {
+            } else if chatController.thinkingState == .outgoing {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "RightThinkingCell", for: indexPath) as! RightThinkingChatTableViewCell
                 cell.selectionStyle = .none
                 cell.thinkingImage.startAnimating()
@@ -188,7 +188,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 return UITableViewCell()
             }
         case 2: // End Chat Cells
-            switch chatController.chatEndingStatus {
+            switch chatController.chatEndingState {
             case .endedFrom(let direction):
                 let cell = tableView.dequeueReusableCell(withIdentifier: "EndChatCell", for: indexPath) as! EndChatTableViewCell
                 cell.selectionStyle = .none
@@ -320,10 +320,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
                 // Update the thinking status and insert the row for thinking cell
                 switch message.direction {
                 case .incoming:
-                    self.chatController.thinkingStatus = .incoming
+                    self.chatController.thinkingState = .incoming
                     self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .top)
                 case .outgoing:
-                    self.chatController.thinkingStatus = .outgoing
+                    self.chatController.thinkingState = .outgoing
                     self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 1)], with: .top)
                 }
                 self.scrollChatTableViewToBottom()
@@ -332,13 +332,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             let messageAdditionTimer = Timer(timeInterval: messageAdditionTime, repeats: false) { (_) in
                 
                 // If the thinking cell was not added
-                if self.chatController.thinkingStatus == .completed {
+                if self.chatController.thinkingState == .completed {
                     self.chatController.displayedChatHistory.append(message)
                     self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
                     self.scrollChatTableViewToBottom()
                 } else {
                     self.chatTableView.performBatchUpdates({
-                        self.chatController.thinkingStatus = .completed
+                        self.chatController.thinkingState = .completed
                         self.chatTableView.deleteRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
                         self.chatController.displayedChatHistory.append(message)
                         self.chatTableView.insertRows(at: [IndexPath(row: messageIndex, section: 0)], with: animation)
@@ -366,9 +366,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func endChatFrom(_ direction: MessageDirection, withDelay endChatTime: Double = 0.3) {
         
         let endChatTimer = Timer(timeInterval: endChatTime, repeats: false) { (_) in
-            self.chatController.chatEndingStatus = .endedFrom(direction)
-            self.friend.chatEndingStatus = .endedFrom(direction)
-            self.friend.responseStatus = .completed
+            self.chatController.chatEndingState = .endedFrom(direction)
+            self.friend.chatEndingState = .endedFrom(direction)
+            self.friend.responseState = .completed
             self.chatTableView.insertRows(at: [IndexPath(row: 0, section: 2)], with: .top)
             self.scrollChatTableViewToBottom()
         }
@@ -420,10 +420,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         copyChatHistoryUntilChatMessage(count: friend.displayedMessageCount)
         
         // update the chatEndingStatus
-        chatController.chatEndingStatus = friend.chatEndingStatus
+        chatController.chatEndingState = friend.chatEndingState
         
         // Resume chat status using Friend's mostRecentResponse
-        switch friend.responseStatus {
+        switch friend.responseState {
         // If the Friend recorded unresponded IncomingMessage with OutgoingMessages as the most recent response
         case .willPromptUserWith(let outgoingMessages):
             didAddIncomingMessageWith(responses: outgoingMessages, consequences: nil)
@@ -520,7 +520,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func scrollChatTableViewToBottom() {
         
-        switch chatController.chatEndingStatus {
+        switch chatController.chatEndingState {
         case .endedFrom(_):
             chatTableView.scrollToRow(at: IndexPath(row: 0, section: 2), at: .top, animated: true)
             return
@@ -528,7 +528,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             break
         }
         
-        if chatController.thinkingStatus != .completed {
+        if chatController.thinkingState != .completed {
             chatTableView.scrollToRow(at: IndexPath(row: 0, section: 1), at: .top, animated: true)
         } else if chatController.displayedChatHistory.isEmpty == false {
             chatTableView.scrollToRow(at: IndexPath(row: chatController.displayedChatHistory.count - 1, section: 0), at: .top, animated: true)

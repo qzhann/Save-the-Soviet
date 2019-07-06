@@ -70,7 +70,7 @@ class User {
     
     /// Handle the addition of a new friend.
     func makeNewFriend(friend: Friend) {
-        friends.append(friend)
+        friends.insert(friend, at: 0)
         friend.applyAllPowers(to: self, and: friend)
     }
     

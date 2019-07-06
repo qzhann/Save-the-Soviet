@@ -79,10 +79,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - User status display delegate
     
-    func addNewFriendRow() {
-        friendTableView.insertRows(at: [IndexPath(row: user.friends.count - 1, section: 0)], with: .automatic)
-    }
-    
     func updateUserStatus() {
         animateProgressViewsAndLabels()
     }
@@ -320,13 +316,14 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         translateAnimator.startAnimation()
     }
     
+    /// Handles delayed consequences, particularly used for makeNewFriend.
     private func handleDelayedConsequences() {
         for consequence in delayedConsequences {
             switch consequence {
             case .makeNewFriend(let friend):
                 friendTableView.beginUpdates()
                 user.makeNewFriend(friend: friend)
-                friendTableView.insertRows(at: [IndexPath(row: user.friends.count - 1, section: 0)], with: .automatic)
+                friendTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
                 friendTableView.endUpdates()
             default:
                 break

@@ -10,13 +10,13 @@ import Foundation
 import UIKit
 
 /// A tracker for whether the chat has ended, useful for resuming chat display in the chatDelegate.
-enum ChatEndingStatus {
+enum ChatEndingState {
     case notEnded
     case endedFrom(MessageDirection)
 }
 
 /// A tracker for whether the user is expecting choices, just responded, or just began a chat.
-enum ResponseStatus {
+enum ResponseState {
     /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses.
     case willPromptUserWith([OutgoingMessage]?)
     /// User completed a whole set of responses in a chat.
@@ -77,9 +77,9 @@ class Friend: Equatable {
     
     // FIXME: To trigger the beginning of a chat differently, maybe we should use the response status wisely.
     ///  A tracker of the most recent response in the chat history, useful for smoothly resuming chat display in the chatDelegate.
-    var responseStatus: ResponseStatus
+    var responseState: ResponseState
     /// This tracks whether the chat has ended, useful for resuming chat display in the chatDelegate.
-    var chatEndingStatus: ChatEndingStatus = .notEnded
+    var chatEndingState: ChatEndingState = .notEnded
     /// The data store for all messages that can be sent to and from a Friend.
     private var allPossibleMessages: [Int: IncomingMessage]
     /// The message sent by other friends which introduced the user to self
@@ -99,7 +99,7 @@ class Friend: Equatable {
         self.chatHistory = chatHistory
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
-        self.responseStatus = .willBeginChatWithIncomingMessageId(id)
+        self.responseState = .willBeginChatWithIncomingMessageId(id)
         self.executionRestriction = executionRestriction
         self.introductionMessageFromOthers = introductionMessage
     }
@@ -116,7 +116,7 @@ class Friend: Equatable {
         self.chatHistory = chatHistory
         self.displayedMessageCount = displayedMessageCount
         self.allPossibleMessages = allPossibleMessages
-        self.responseStatus = .willBeginChatWith(choices)
+        self.responseState = .willBeginChatWith(choices)
         self.executionRestriction = executionRestriction
         self.introductionMessageFromOthers = introductionMessage
     }
@@ -142,10 +142,10 @@ class Friend: Equatable {
      */
     func sendIncomingMessageNumbered(_ number: Int) {
         guard let incomingMessage = incomingMessageNumbered(number) else { return }
-        chatEndingStatus = .notEnded
+        chatEndingState = .notEnded
         chatHistory.append(contentsOf: incomingMessage.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: incomingMessage.responses, consequences: incomingMessage.consequences)
-        responseStatus = .willPromptUserWith(incomingMessage.responses)
+        responseState = .willPromptUserWith(incomingMessage.responses)
     }
 
     /**
@@ -154,12 +154,12 @@ class Friend: Equatable {
     func respondedWith(_ outgoingMessage: OutgoingMessage) {
         chatHistory.append(contentsOf: outgoingMessage.chatMessages)
         chatDelegate?.didAddOutgoingMessageWith(responseId: outgoingMessage.responseMessageId, consequences: outgoingMessage.consequences)
-        responseStatus = .completed
+        responseState = .completed
     }
     
     /// Directly sends an incoming message. Useful for continue chatting after a quiz or after making a new friend.
     func sendIncomingMessage(_ message: IncomingMessage) {
-        chatEndingStatus = .notEnded
+        chatEndingState = .notEnded
         chatHistory.append(contentsOf: message.chatMessages)
         chatDelegate?.didAddIncomingMessageWith(responses: nil, consequences: message.consequences)
     }
