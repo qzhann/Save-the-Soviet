@@ -17,6 +17,7 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     
     unowned var chatViewController: ChatViewController!
     var footerHeight: CGFloat!
+    unowned var user = User.currentUser
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +48,7 @@ class ResponseTableViewController: UITableViewController, ResponseDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ResponseCell", for: indexPath) as! ResponseTableViewCell
         let choice = responseChoices[indexPath.row]
-        cell.configureUsing(choice, at: indexPath)
+        cell.configureUsing(choice, at: indexPath, for: user)
         cell.responseDelegate = self
         cell.selectionStyle = .none
 

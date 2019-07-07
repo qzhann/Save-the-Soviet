@@ -305,13 +305,13 @@ class Friend: Equatable {
         OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
         ])))
-    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), introductionMessage: Friend.testIntroductionMessage, startChatUsing: .promptUserWith([OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),                                                                                      OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-                         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])]))
+    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 80), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), introductionMessage: Friend.testIntroductionMessage, startChatUsing: .promptUserWith([OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),                                                                                      OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1, levelRestriction: 10),
+                         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeLevelProgressBy(5)])]))
     
     static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 98), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(7), introductionMessage: Friend.testIntroductionMessage, startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
         OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
         OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeLevelProgressBy(5)])
         ])))
     
     static var quizFriend = Friend(lastName: "Friend", shortTitle: "Quiz", fullTitle: "Test Quiz", image: UIImage(named: "Akimov")!, description: "I test the quiz.", loyalty: Percentage(progress: 90), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .never, introductionMessage: Friend.testIntroductionMessage, startChatUsing: .promptUserWith([
@@ -337,7 +337,7 @@ class Friend: Equatable {
         0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
                 OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
                 OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-                OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeLevelProgressBy(5)])
+                OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeLevelProgressBy(5)])
             ]),
         1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [
                 OutgoingMessage(description: "Good", texts: "Good.", "I will check on your work later on", "It is an honor working on the job you have now", "people depend on your work", responseMessageId: 2),

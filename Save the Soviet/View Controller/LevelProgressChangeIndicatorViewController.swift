@@ -22,11 +22,9 @@ class LevelProgressChangeIndicatorViewController: UIViewController {
         case .short:
             imageView.image = change >= 0 ? UIImage(named: "LevelIncrease")! : UIImage(named: "LevelDecrease")!
             label.text = "\(change)"
-            label.textColor = UIColor(red: 130 / 255, green: 37 / 255, blue: 41 / 255, alpha: 1)
         case .long:
             imageView.image = change >= 0 ? UIImage(named: "LevelIncrease")! : UIImage(named: "LevelDecrease")!
             label.text = change >= 0 ? "Level +\(change)" : "Level \(change)"
-            label.textColor = UIColor(red: 130 / 255, green: 37 / 255, blue: 41 / 255, alpha: 1)
         }
     }
     

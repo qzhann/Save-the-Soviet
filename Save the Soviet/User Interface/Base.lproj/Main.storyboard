@@ -668,8 +668,8 @@
                                     <action selector="backButtonTapped:" destination="0le-5q-sGi" eventType="touchUpInside" id="cv7-cd-7ss"/>
                                 </connections>
                             </button>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lJB-Rj-4Fi">
-                                <rect key="frame" x="0.0" y="742" width="375" height="70"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJB-Rj-4Fi">
+                                <rect key="frame" x="0.0" y="634" width="375" height="178"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="ylu-7v-mEg"/>
@@ -729,7 +729,7 @@
             <objects>
                 <tableViewController id="6DJ-m5-0fJ" customClass="ResponseTableViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="70" estimatedRowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" estimatedSectionFooterHeight="30" id="QXE-Cz-T6f">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="178"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -747,20 +747,35 @@
                                             <state key="normal" title="Button">
                                                 <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </state>
+                                            <state key="disabled">
+                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
                                             <connections>
                                                 <action selector="responseButtonTapped:" destination="3z1-6y-X1s" eventType="touchUpInside" id="Nea-TP-qcQ"/>
                                             </connections>
                                         </button>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lv.8" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VNU-GD-Vyf">
+                                            <rect key="frame" x="305" y="31" width="24.666666666666686" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="20" id="G3G-OO-2bv"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="11"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="UPd-A5-Z62" firstAttribute="top" secondItem="AFy-FS-MsE" secondAttribute="top" constant="8" id="1Pf-Gr-aMm"/>
                                         <constraint firstItem="UPd-A5-Z62" firstAttribute="width" secondItem="AFy-FS-MsE" secondAttribute="width" multiplier="0.8" id="5Xz-We-1DP"/>
                                         <constraint firstAttribute="bottom" secondItem="UPd-A5-Z62" secondAttribute="bottom" id="6Hw-Ns-jep"/>
+                                        <constraint firstItem="UPd-A5-Z62" firstAttribute="trailing" secondItem="VNU-GD-Vyf" secondAttribute="trailing" constant="8" id="7p5-ws-e1J"/>
+                                        <constraint firstItem="VNU-GD-Vyf" firstAttribute="centerY" secondItem="UPd-A5-Z62" secondAttribute="centerY" constant="2" id="IXc-0O-B6v"/>
                                         <constraint firstItem="UPd-A5-Z62" firstAttribute="centerX" secondItem="AFy-FS-MsE" secondAttribute="centerX" id="akb-R6-SkW"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
+                                    <outlet property="levelRestrictionLabel" destination="VNU-GD-Vyf" id="5kb-sW-2hU"/>
                                     <outlet property="responseButton" destination="UPd-A5-Z62" id="2Bj-Pt-Uii"/>
                                 </connections>
                             </tableViewCell>
@@ -1808,7 +1823,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fPj-h4-6OJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="467" y="856"/>
+            <point key="canvasLocation" x="464" y="793"/>
         </scene>
     </scenes>
     <resources>
@@ -1824,6 +1839,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="zJq-xZ-mBz"/>
-        <segue reference="MOI-z0-leT"/>
+        <segue reference="VMY-bb-P8k"/>
     </inferredMetricsTieBreakers>
 </document>
