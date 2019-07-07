@@ -75,7 +75,8 @@ struct ConsequenceController {
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)
             confirmationController?.dismiss(animated: true, completion: nil)
-        case .startQuiz:
+        case .startQuizOfCategory(let category):
+            chatViewController?.quizQuestionCategory = category
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         default:
             break

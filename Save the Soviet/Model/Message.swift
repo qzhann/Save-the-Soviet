@@ -181,5 +181,5 @@ enum Consequence {
     case changeSupportProgressBy(Int)
     case changeLoyaltyProgressBy(Int)
     case upgradePower(Power)
-    case startQuiz
+    case startQuizOfCategory(QuizQuestionCategory?)
 }

@@ -74,6 +74,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     var consequenceController: ConsequenceController!
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
     unowned var delayedConsequenceHandlingDelegate: DelayConsequenceHandlingDelegate!
+    var quizQuestionCategory: QuizQuestionCategory?
     
     let hairlineView = UIView()
     
@@ -585,6 +586,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else if segue.identifier == "ShowQuiz" {
             let quizViewController = segue.destination as! QuizViewController
             quizViewController.transitioningDelegate = self
+            quizViewController.quizQuestionCategory = self.quizQuestionCategory
         } else if segue.identifier == "ShowNewFriend" {
             let newFriendViewController = segue.destination as! NewFriendViewController
             newFriendViewController.friend = self.newFriend

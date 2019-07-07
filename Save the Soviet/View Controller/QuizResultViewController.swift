@@ -78,17 +78,14 @@ class QuizResultViewController: UIViewController {
         correctnessLabel.text = "\(Int((correct / total) * 100))% Correctness"
         responseLabel.text = "Bonus + \(responseBonus)"
         
-        let finalAddGrade = progressChange + responseBonus
+        let finalAddExperience = progressChange + responseBonus
         
-        switch finalAddGrade {
-        case 0...20:
-            gradeLabel.text = "Grade + \(finalAddGrade)"
-        case 20...40:
-            gradeLabel.text = "Grade + \(finalAddGrade)!"
-        case 40...100:
-            gradeLabel.text = "Grade + \(finalAddGrade)!!!"
-        default:
-            gradeLabel.text = "Grade - \(abs(finalAddGrade)) :("
+        if finalAddExperience > 0 {
+            gradeLabel.text = "Level + \(finalAddExperience) :)"
+        } else if finalAddExperience < 0 {
+            gradeLabel.text = "Level - \(abs(finalAddExperience)) :("
+        } else {
+            gradeLabel.text = "Level remained :|"
         }
         
         // AnimateUI

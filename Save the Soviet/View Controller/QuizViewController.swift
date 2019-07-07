@@ -31,6 +31,7 @@ class QuizViewController: UIViewController {
     var totalGrade: Int = 0
     var timer = Timer()
     var quiz: Quiz!
+    var quizQuestionCategory: QuizQuestionCategory?
     var hasTimer = false
     var seconds = 5
     var user = User.currentUser
@@ -49,7 +50,7 @@ class QuizViewController: UIViewController {
         
         // FIXME: This needs to change
         // Initialize a quiz with quizLevel
-        quiz = Quiz(ofDifficulty: user.level.levelNumber)
+        quiz = Quiz(ofDifficulty: user.level.levelNumber, category: quizQuestionCategory)
         
         // updateUI with animation
         updateUI()

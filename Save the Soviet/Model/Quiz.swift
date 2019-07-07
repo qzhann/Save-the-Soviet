@@ -150,28 +150,29 @@ struct QuizQuestion {
     }
     
     // MARK: - Static properties
+    static var testQuizQuestion = QuizQuestion(level: 1, category: .facts, text: "Yo", answers: ["Yo1", "Yo2", "Yo3", "Yo4"], correctAnswer: "Yo1", responseTime: 5)
     
     static var allPossibleQuizQuestions: [Int: [QuizQuestionCategory: [QuizQuestion]]] = [
         1: [
-            .facts: [],
-            .history: [],
-            .nuclear: [],
-            .crisis: [],
-            .decision: []
+            .facts: [QuizQuestion.testQuizQuestion],
+            .history: [QuizQuestion.testQuizQuestion],
+            .nuclear: [QuizQuestion.testQuizQuestion],
+            .crisis: [QuizQuestion.testQuizQuestion],
+            .decision: [QuizQuestion.testQuizQuestion],
         ],
         2: [
-            .facts: [],
-            .history: [],
-            .nuclear: [],
-            .crisis: [],
-            .decision: []
+            .facts: [QuizQuestion.testQuizQuestion],
+            .history: [QuizQuestion.testQuizQuestion],
+            .nuclear: [QuizQuestion.testQuizQuestion],
+            .crisis: [QuizQuestion.testQuizQuestion],
+            .decision: [QuizQuestion.testQuizQuestion],
         ],
         3: [
-            .facts: [],
-            .history: [],
-            .nuclear: [],
-            .crisis: [],
-            .decision: []
+            .facts: [QuizQuestion.testQuizQuestion],
+            .history: [QuizQuestion.testQuizQuestion],
+            .nuclear: [QuizQuestion.testQuizQuestion],
+            .crisis: [QuizQuestion.testQuizQuestion],
+            .decision: [QuizQuestion.testQuizQuestion],
         ],
     ]
 }
