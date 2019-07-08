@@ -99,8 +99,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // FIXME: This is commented, might cause problems.
-        //user.applyAllPowers()
         consequenceController = ConsequenceController(for: User.currentUser)
         
     }
@@ -118,6 +116,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             prepareUI()
             didPrepareUI = true
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        user.statusDisplayDelegate = nil
     }
     
     

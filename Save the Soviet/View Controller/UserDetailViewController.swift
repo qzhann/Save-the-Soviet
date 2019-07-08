@@ -118,6 +118,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
             powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
         levelProgressChangeIndicatorView.alpha = 0
+        
+        // Set the status display delegate
+        user.statusDisplayDelegate = self
     }
     
     // Overriding view did appear correctly configures round corners and animates the progress of progress views
@@ -127,6 +130,10 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         configureRoundCorners()
         animateProgressViewsAndLabels()
         updatePowerTableView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        user.statusDisplayDelegate = nil
     }
     
     // MARK: -

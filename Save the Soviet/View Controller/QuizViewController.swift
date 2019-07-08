@@ -36,6 +36,7 @@ class QuizViewController: UIViewController {
     var seconds = 5
     var user = User.currentUser
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    var consequenceController: ConsequenceController!
     
     // The index of the button corresponding to the right answer of currentQuestion
     var correctButton = UIButton()
@@ -63,6 +64,9 @@ class QuizViewController: UIViewController {
         configureRoundCorners()
         resetAllViews()
         levelProgressChangeIndicatorView.alpha = 0
+        
+        // Initialize consequence controller
+        consequenceController = ConsequenceController(for: User.currentUser)
     }
     
     func configureRoundCorners() {
@@ -268,7 +272,7 @@ class QuizViewController: UIViewController {
             self.curvedEdgeBackgroundView.frame = frameZero
         }) { (_) in
             // MARK: Performs segue after the animation completes
-            self.performSegue(withIdentifier: "ShowQuizResults", sender: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
     
@@ -339,11 +343,15 @@ class QuizViewController: UIViewController {
             self.timerLabel.alpha = 0
         })
         
+        let question = quiz.currentQuestion!
+        
         // Visualize the consequence
         if correctness == true {
-            visualizeConsequence(.changeLevelProgressBy(quiz.currentQuestion!.addExperience))
+            consequenceController.handle(.changeLevelProgressBy(question.addExperience))
+            visualizeConsequence(.changeLevelProgressBy(question.addExperience))
         } else {
-            visualizeConsequence(.changeLevelProgressBy(-quiz.currentQuestion!.minusExperience))
+           consequenceController.handle(.changeLevelProgressBy(-question.minusExperience))
+            visualizeConsequence(.changeLevelProgressBy(-question.minusExperience))
         }
         
         // Set the selected answerCorrectness Image View

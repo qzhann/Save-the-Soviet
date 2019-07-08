@@ -9,14 +9,14 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Save the Soviet/View Controller/ResponseTableViewCell.swift"
-            timestampString = "584178851.659499"
+            filePath = "Save the Soviet/Model/User.swift"
+            timestampString = "584273269.465542"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "level"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

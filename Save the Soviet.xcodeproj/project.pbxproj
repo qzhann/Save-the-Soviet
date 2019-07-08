@@ -37,7 +37,6 @@
 		42ECF9E921CB2FE0007AF7F9 /* Power.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9E821CB2FE0007AF7F9 /* Power.swift */; };
 		42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */; };
 		42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */; };
-		42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */; };
 		42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,7 +73,6 @@
 		42ECF9E821CB2FE0007AF7F9 /* Power.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Power.swift; sourceTree = "<group>"; };
 		42ECF9EA21CB2FEE007AF7F9 /* Quiz.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quiz.swift; sourceTree = "<group>"; };
 		42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizViewController.swift; sourceTree = "<group>"; };
-		42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultViewController.swift; sourceTree = "<group>"; };
 		42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,7 +155,6 @@
 				42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */,
 				42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
-				42F5A68421D5F83600A28FAC /* QuizResultViewController.swift */,
 				42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */,
 			);
 			path = "View Controller";
@@ -296,7 +293,6 @@
 				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
 				428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */,
 				42EAC4CF22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift in Sources */,
-				42F5A68521D5F83600A28FAC /* QuizResultViewController.swift in Sources */,
 				4260A66622B0DA9D006BFBDE /* ConfirmationViewController.swift in Sources */,
 				42A9841A22AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift in Sources */,
 			);
