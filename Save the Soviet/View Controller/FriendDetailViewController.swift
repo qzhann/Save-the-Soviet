@@ -221,7 +221,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         } else if segue.identifier == "DeleteFriendConfirmation" {
             let confirmationViewController = segue.destination as! ConfirmationViewController
             confirmationViewController.transitioningDelegate = self
-            confirmationViewController.consequence = .deleteFriend(friend)
+            confirmationViewController.consequence = .executeFriend(friend)
             confirmationViewController.user = user
         }
     }

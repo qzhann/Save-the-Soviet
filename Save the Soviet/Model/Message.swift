@@ -176,7 +176,7 @@ struct OutgoingMessage {
 enum Consequence {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
-    case deleteFriend(Friend)
+    case executeFriend(Friend)
     case changeLevelProgressBy(Int)
     case changeSupportProgressBy(Int)
     case changeLoyaltyProgressBy(Int)

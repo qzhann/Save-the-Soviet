@@ -54,25 +54,26 @@ struct ConsequenceController {
                 chatViewController.delayedConsequenceHandlingDelegate.delayedConsequences.append(consequence)
                 chatViewController.newFriend = friend
                 friend.startChat()
+                user.friendLoyaltyDidChange()
                 chatViewController.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
             }
-        case .deleteFriend(let friend):
+        case .executeFriend(let friend):
             let row = user.friends.firstIndex(of: friend)!
             user.friends.remove(at: row)
             let indexPath = IndexPath(row: row, section: 0)
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
+            user.friendLoyaltyDidChange()
         case .changeLevelProgressBy(let change):
             user.changeLevelBy(progress: change)
-            if user.level.levelNumberChangeState == .increased {
-                
-            }
         case .changeSupportProgressBy(let change):
             user.changeSupportBy(progress: change)
         case .changeLoyaltyProgressBy(let change):
             if let viewController = viewController as? ChatViewController {
                 viewController.friend.changeLoyaltyBy(progress: change)
+                user.friendLoyaltyDidChange()
             } else if let viewController = viewController as? FriendDetailViewController {
                 viewController.friend.changeLoyaltyBy(progress: change)
+                user.friendLoyaltyDidChange()
             }
         case .upgradePower(let power):
             guard canHandle(consequence) == true else { return }
@@ -81,8 +82,6 @@ struct ConsequenceController {
         case .startQuizOfCategory(let category):
             chatViewController?.quizQuestionCategory = category
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
-        default:
-            break
         }
     }
 }

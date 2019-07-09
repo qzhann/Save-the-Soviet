@@ -59,11 +59,7 @@ class User {
         self.friends = friends
         self.powers = powers
         self.applyAllPowers()
-        // FIXME: Do we start chat for all friends during initialization? Do we reinitialize the User for persistence, thus causing problems?
-        // Trigger begin chat for all friends
-        for friend in self.friends {
-            // friend.startChat()
-        }
+        self.friendLoyaltyDidChange()
     }
     
 
@@ -101,6 +97,7 @@ class User {
         }
     }
     
+    // FIXME: Change implementation for loyalty and support
     /// Apply a power to self.
     private func applyPower(_ power: Power) {
         
@@ -179,9 +176,20 @@ class User {
         }
     }
     
+    /// Updates user support when the loyalty of a friend changes or when a new friend is made or deleted.
+    func friendLoyaltyDidChange() {
+        var totalLoyalty = 0
+        for friend in friends {
+            totalLoyalty += friend.loyalty.progress
+        }
+        // The support is calculated as an average of the loyalty across all friends
+        let average = Int(Double(totalLoyalty) / Double(friends.count))
+        self.support.progress = average
+    }
+    
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 50), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 90), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -
@@ -230,7 +238,7 @@ struct Level {
         }
     }
     /// A tracker of the previous level number before the level progress changes
-    var previousLevelNumber: Int = 0
+    private var previousLevelNumber: Int = 0
     /// Status of level number changes, useful for visualizing the level number changes.
     var levelNumberChangeState: LevelNumberChangeState = .noChange
     /// A tracker of the highest level number reached in the past.

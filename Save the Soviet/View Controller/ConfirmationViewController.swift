@@ -52,7 +52,7 @@ class ConfirmationViewController: UIViewController {
                 confirmButton.setTitle("OK...", for: .normal)
                 cancelButton.setTitle("Cancel", for: .normal)
             }
-        case .deleteFriend(let friend):
+        case .executeFriend(let friend):
             textLabel.text = "Execute \(friend.shortName) ?"
             confirmButton.setTitle("Yes", for: .normal)
             cancelButton.setTitle("Maybe not.", for: .normal)
