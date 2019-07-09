@@ -63,6 +63,9 @@ struct ConsequenceController {
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
         case .changeLevelProgressBy(let change):
             user.changeLevelBy(progress: change)
+            if user.level.levelNumberChangeState == .increased {
+                
+            }
         case .changeSupportProgressBy(let change):
             user.changeSupportBy(progress: change)
         case .changeLoyaltyProgressBy(let change):

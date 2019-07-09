@@ -199,7 +199,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         // Animate level progress view
         
         // FIXME: This will be useful for the small animations of consequenceController
-        switch self.user.level.levelNumberChangeStatus {
+        switch self.user.level.levelNumberChangeState {
         case .increased:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
                 self.levelProgressView.setProgress(levelProgress, animated: true)

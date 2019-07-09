@@ -12,6 +12,7 @@ import UIKit
 class User {
     
     // MARK: Instance properties
+    
     var name: String
     /// Description string for displaying on UserDetailViewController
     var description: String
@@ -19,7 +20,14 @@ class User {
     /// User level changes as the game progresses. This is related to the difficulty of the quiz questions and other aspects of the game.
     var level: Level {
         didSet {
+            // Update the user status
             statusDisplayDelegate?.updateUserStatus()
+            
+            // If level increases for the first time
+            if level.levelNumberChangeState == .increased && level.levelNumber > level.highestLevelNumber {
+                // Trigger chat events
+                triggerChatEventsForLevel(level.levelNumber)
+            }
         }
     }
     /// User support rate reprented as percentage. When support drops to 0, the game ends.
@@ -54,7 +62,7 @@ class User {
         // FIXME: Do we start chat for all friends during initialization? Do we reinitialize the User for persistence, thus causing problems?
         // Trigger begin chat for all friends
         for friend in self.friends {
-            friend.startChat()
+            // friend.startChat()
         }
     }
     
@@ -128,9 +136,52 @@ class User {
         }
     }
     
+    /// Upgrade all friends to a specified level. Typically called when a user level increases for the first time.
+    private func upgradeAllFriendsToLevel(_ level: Int) {
+        for friend in friends {
+            friend.upgradeToLevel(level)
+        }
+    }
+    
+    // FIXME: Incomplete implementation
+    /// Trigger chat events
+    private func triggerChatEventsForLevel(_ level: Int) {
+        // Upgrade friends and record the highest level number
+        upgradeAllFriendsToLevel(level)
+        self.level.highestLevelNumber = level
+        
+        // Trigger specified friends to start chat
+        switch level {
+        case 1:
+            Friend.akimov.startChat()
+            Friend.fomin.startChat()
+        case 2:
+            Friend.dyatlov.startChat()
+            Friend.legasov.startChat()
+        case 3:
+            break
+        case 4:
+            break
+        case 5:
+            break
+        case 6:
+            break
+        case 7:
+            break
+        case 8:
+            break
+        case 9:
+            break
+        case 10:
+            break
+        default:
+            break
+        }
+    }
+    
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 590), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 50), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -
@@ -165,20 +216,25 @@ struct Level {
     /// Progress normalized into value from 0 to 1 inclusive, useful for updating progress views.
     var normalizedProgress: Float = 0
     /// Level number represented as an Int.
-    var levelNumber: Int = 0 {
+    var levelNumber: Int {
         didSet {
-            let difference = self.levelNumber - oldValue
+            let difference = self.levelNumber - previousLevelNumber
             if difference > 0 {
-                levelNumberChangeStatus = .increased
+                levelNumberChangeState = .increased
             } else if difference < 0 {
-                levelNumberChangeStatus = .decreased
+                levelNumberChangeState = .decreased
             } else {
-                levelNumberChangeStatus = .noChange
+                levelNumberChangeState = .noChange
             }
+            previousLevelNumber = self.levelNumber
         }
     }
+    /// A tracker of the previous level number before the level progress changes
+    var previousLevelNumber: Int = 0
     /// Status of level number changes, useful for visualizing the level number changes.
-    var levelNumberChangeStatus: LevelNumberChangeStatus = .noChange
+    var levelNumberChangeState: LevelNumberChangeState = .noChange
+    /// A tracker of the highest level number reached in the past.
+    var highestLevelNumber: Int = 0
     /// currentUpperBound, previousUpperBound, and upperBounds are internal data that determines when changes in level number occurs, and what to display on progress labels.
     var currentUpperBound: Int = 100
     private var previousUpperBound: Int = 0
@@ -213,7 +269,7 @@ struct Level {
 // MARK: -
 
 /// States of the changes of level number.
-enum LevelNumberChangeStatus {
+enum LevelNumberChangeState {
     case increased, decreased, noChange
 }
 

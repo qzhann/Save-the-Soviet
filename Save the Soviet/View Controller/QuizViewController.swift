@@ -426,15 +426,7 @@ class QuizViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         // Pass information to QuizResultViewController
-        if segue.identifier == "ShowQuizResults" {
-            let quizResultViewController = segue.destination as! QuizResultViewController
-            quizResultViewController.progressChange = quiz.experienceChange
-            quizResultViewController.correct = quiz.correct
-            quizResultViewController.responseBonus = quiz.responseBonus
-            user.changeLevelBy(progress: quiz.experienceChange)
-        } else if segue.identifier == "StartQuiz" {
-            
-        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+        if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
             self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
         }

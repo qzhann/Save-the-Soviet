@@ -229,7 +229,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Animate level progress view
         
-        switch self.user.level.levelNumberChangeStatus {
+        switch self.user.level.levelNumberChangeState {
         case .increased:
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
                 self.levelProgressView.setProgress(levelProgress, animated: true)
