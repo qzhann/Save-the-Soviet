@@ -668,8 +668,8 @@
                                     <action selector="backButtonTapped:" destination="0le-5q-sGi" eventType="touchUpInside" id="cv7-cd-7ss"/>
                                 </connections>
                             </button>
-                            <containerView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJB-Rj-4Fi">
-                                <rect key="frame" x="0.0" y="634" width="375" height="178"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lJB-Rj-4Fi">
+                                <rect key="frame" x="0.0" y="742" width="375" height="70"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="ylu-7v-mEg"/>
@@ -679,7 +679,7 @@
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SRC-Ia-h7b">
-                                <rect key="frame" x="147.66666666666666" y="477.33333333333331" width="80" height="20"/>
+                                <rect key="frame" x="147.66666666666666" y="770" width="80" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="80" id="mES-iD-PC5"/>
                                     <constraint firstAttribute="height" constant="20" id="oez-ex-oKr"/>
@@ -688,24 +688,38 @@
                                     <segue destination="j8z-Pp-RWu" kind="embed" identifier="EmbedLevelProgressChangeIndicator" id="zJq-xZ-mBz"/>
                                 </connections>
                             </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E01-JN-Eiq">
+                                <rect key="frame" x="147.66666666666666" y="770" width="80" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="7eU-bQ-zMJ"/>
+                                    <constraint firstAttribute="width" constant="80" id="GU1-Bi-oHZ"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="OAE-lv-sex" kind="embed" identifier="EmbedLoyaltyProgressChangeIndicator" id="BJe-rM-oFY"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ZwB-cl-nxU" firstAttribute="top" secondItem="Ynx-Uf-Ree" secondAttribute="top" constant="20" id="0nl-69-zAS"/>
                             <constraint firstItem="Ynx-Uf-Ree" firstAttribute="leading" secondItem="7xX-sY-5pY" secondAttribute="leading" id="3AM-3n-uaD"/>
+                            <constraint firstItem="E01-JN-Eiq" firstAttribute="trailing" secondItem="SRC-Ia-h7b" secondAttribute="trailing" id="9Rg-DQ-Dno"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="bottom" secondItem="ZwB-cl-nxU" secondAttribute="bottom" id="Cl3-aM-1va"/>
+                            <constraint firstAttribute="bottom" secondItem="SRC-Ia-h7b" secondAttribute="bottom" constant="22" id="Gp7-6H-s7x"/>
+                            <constraint firstItem="E01-JN-Eiq" firstAttribute="top" secondItem="SRC-Ia-h7b" secondAttribute="top" id="Hz7-UI-wvX"/>
                             <constraint firstAttribute="bottom" secondItem="lJB-Rj-4Fi" secondAttribute="bottom" id="K9p-WX-pYa"/>
                             <constraint firstItem="lJB-Rj-4Fi" firstAttribute="trailing" secondItem="7xX-sY-5pY" secondAttribute="trailing" id="Oh9-uR-DjE"/>
                             <constraint firstItem="Ynx-Uf-Ree" firstAttribute="trailing" secondItem="7xX-sY-5pY" secondAttribute="trailing" id="OoL-bM-DVA"/>
                             <constraint firstItem="SRC-Ia-h7b" firstAttribute="centerX" secondItem="xZ2-XS-fsX" secondAttribute="centerX" id="UOb-MM-zyj"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="leading" secondItem="ZwB-cl-nxU" secondAttribute="leading" id="Z3T-ef-SxA"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="top" secondItem="ZwB-cl-nxU" secondAttribute="top" id="alq-2o-h5k"/>
+                            <constraint firstItem="E01-JN-Eiq" firstAttribute="bottom" secondItem="SRC-Ia-h7b" secondAttribute="bottom" id="beb-y6-kbt"/>
+                            <constraint firstItem="E01-JN-Eiq" firstAttribute="leading" secondItem="SRC-Ia-h7b" secondAttribute="leading" id="dEg-BC-VIc"/>
                             <constraint firstItem="q9r-JH-4oP" firstAttribute="trailing" secondItem="ZwB-cl-nxU" secondAttribute="trailing" id="dc7-pu-bhZ"/>
                             <constraint firstItem="lJB-Rj-4Fi" firstAttribute="leading" secondItem="7xX-sY-5pY" secondAttribute="leading" id="doe-5e-d1t"/>
                             <constraint firstItem="Ynx-Uf-Ree" firstAttribute="top" secondItem="7xX-sY-5pY" secondAttribute="top" id="hEm-e5-p0P"/>
                             <constraint firstItem="ZwB-cl-nxU" firstAttribute="leading" secondItem="7xX-sY-5pY" secondAttribute="leading" constant="16" id="rff-Xu-5qa"/>
                             <constraint firstAttribute="bottom" secondItem="Ynx-Uf-Ree" secondAttribute="bottom" id="wNL-zD-0p8"/>
-                            <constraint firstItem="SRC-Ia-h7b" firstAttribute="centerY" secondItem="xZ2-XS-fsX" secondAttribute="centerY" multiplier="1.2" id="wbZ-VI-hb6"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7xX-sY-5pY"/>
                     </view>
@@ -715,6 +729,7 @@
                         <outlet property="backButtonBackgroundView" destination="q9r-JH-4oP" id="XNE-ge-oD3"/>
                         <outlet property="chatTableView" destination="Ynx-Uf-Ree" id="LC8-q3-94C"/>
                         <outlet property="levelProgressChangeIndicatorView" destination="SRC-Ia-h7b" id="3B2-mb-WX9"/>
+                        <outlet property="loyaltyProgressChangeIndicatorView" destination="E01-JN-Eiq" id="ANV-3O-JGg"/>
                         <outlet property="responseContainerView" destination="lJB-Rj-4Fi" id="Ulp-kW-pvz"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="ShowQuiz" id="bsn-3e-aW5"/>
                         <segue destination="H7E-0U-FvZ" kind="show" identifier="ShowNewFriend" id="QjH-CJ-cPf"/>
@@ -729,7 +744,7 @@
             <objects>
                 <tableViewController id="6DJ-m5-0fJ" customClass="ResponseTableViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="70" estimatedRowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" estimatedSectionFooterHeight="30" id="QXE-Cz-T6f">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="178"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="70"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -1825,6 +1840,49 @@
             </objects>
             <point key="canvasLocation" x="464" y="793"/>
         </scene>
+        <!--Loyalty Progress Change Indicator View Controller-->
+        <scene sceneID="33j-bi-XeS">
+            <objects>
+                <viewController id="OAE-lv-sex" customClass="LoyaltyProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5pd-S2-33k">
+                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LoyaltyIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="FCw-7H-TJj">
+                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="FCw-7H-TJj" secondAttribute="height" multiplier="1:1" id="YO0-0U-HAd"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWL-VU-YtM">
+                                <rect key="frame" x="20" y="2" width="60" height="18"/>
+                                <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
+                                <color key="textColor" red="0.1077675298" green="0.30285480619999999" blue="0.50178319220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="FCw-7H-TJj" firstAttribute="top" secondItem="5pd-S2-33k" secondAttribute="top" id="37I-0b-guL"/>
+                            <constraint firstAttribute="trailing" secondItem="hWL-VU-YtM" secondAttribute="trailing" id="Fwy-Fv-rIw"/>
+                            <constraint firstAttribute="bottom" secondItem="FCw-7H-TJj" secondAttribute="bottom" id="XTG-yJ-7s8"/>
+                            <constraint firstItem="hWL-VU-YtM" firstAttribute="centerY" secondItem="FCw-7H-TJj" secondAttribute="centerY" constant="1" id="Z3M-mZ-zff"/>
+                            <constraint firstItem="hWL-VU-YtM" firstAttribute="leading" secondItem="FCw-7H-TJj" secondAttribute="trailing" id="mRK-ao-0CO"/>
+                            <constraint firstItem="FCw-7H-TJj" firstAttribute="leading" secondItem="5pd-S2-33k" secondAttribute="leading" id="wBk-7t-rpg"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Tky-sq-p3L"/>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="FCw-7H-TJj" id="CxQ-F8-uvG"/>
+                        <outlet property="label" destination="hWL-VU-YtM" id="8L0-Yn-BKG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="R3c-oH-YOo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="809" y="935"/>
+        </scene>
     </scenes>
     <resources>
         <image name="Again" width="66.666664123535156" height="66.666664123535156"/>
@@ -1834,6 +1892,7 @@
         <image name="Coin" width="30.666666030883789" height="25.333333969116211"/>
         <image name="Dog" width="60" height="60"/>
         <image name="LevelIncrease" width="40" height="58"/>
+        <image name="LoyaltyIncrease" width="13.666666984558105" height="18.666666030883789"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
         <image name="Thinking1" width="40" height="10"/>
     </resources>

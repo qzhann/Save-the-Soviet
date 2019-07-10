@@ -60,6 +60,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var backButtonBackgroundView: UIView!
     @IBOutlet weak var responseContainerView: UIView!
     @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
+    @IBOutlet weak var loyaltyProgressChangeIndicatorView: UIView!
     
     // MARK: Instance properties
     unowned var user = User.currentUser
@@ -73,6 +74,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     var newFriend: Friend?
     var consequenceController: ConsequenceController!
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    unowned var loyaltyProgressChangeIndicatorViewController: LoyaltyProgressChangeIndicatorViewController!
     unowned var delayedConsequenceHandlingDelegate: DelayConsequenceHandlingDelegate!
     var quizQuestionCategory: QuizQuestionCategory?
     
@@ -84,7 +86,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         switch consequence {
         case .changeLevelProgressBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
-            animateLevelProgressChangeIndicatorFor(change: change)
+            animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
+        case .changeLoyaltyProgressBy(let change):
+            loyaltyProgressChangeIndicatorViewController.configureUsing(change: change)
+            animateProgressChangeIndicator(view: loyaltyProgressChangeIndicatorView, forChange: change)
         default:
             break
         }
@@ -411,6 +416,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Hide progress change indicators
         levelProgressChangeIndicatorView.alpha = 0
+        loyaltyProgressChangeIndicatorView.alpha = 0
     }
     
     func resumeChat() {
@@ -530,7 +536,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    private func animateLevelProgressChangeIndicatorFor(change: Int) {
+    /// Animates the designated progress change indicator view.
+    private func animateProgressChangeIndicator(view: UIView, forChange change: Int) {
         var animation: CGAffineTransform!
         if change > 0 {
             // Make it rise from the bar
@@ -544,20 +551,20 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         
         let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 1
+            view.alpha = 1
         }
         let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
-            self.levelProgressChangeIndicatorView.transform = animation
+            view.transform = animation
         }
         let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 0
+            view.alpha = 0
         }
         translateAnimator.addCompletion { (_) in
             disappearAnimator.startAnimation()
         }
         
         disappearAnimator.addCompletion { (_) in
-            self.levelProgressChangeIndicatorView.transform = .identity
+            view.transform = .identity
         }
         
         appearAnimator.startAnimation()
@@ -593,6 +600,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
             self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
+        } else if segue.identifier == "EmbedLoyaltyProgressChangeIndicator" {
+            let loyaltyProgressChangeIndicatorViewController = segue.destination as! LoyaltyProgressChangeIndicatorViewController
+            self.loyaltyProgressChangeIndicatorViewController = loyaltyProgressChangeIndicatorViewController
         }
     }
     

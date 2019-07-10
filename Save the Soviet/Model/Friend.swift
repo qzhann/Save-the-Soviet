@@ -394,7 +394,7 @@ class Friend: Equatable {
     static var allTestMessages: [Int: IncomingMessage] = [
         0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeLoyaltyProgressBy(5)], responses: [
                 OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeLevelProgressBy(-5)]),
-                OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+                OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1, consequences: [.changeLoyaltyProgressBy(5)]),
                 OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeLevelProgressBy(5)])
             ]),
         1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [

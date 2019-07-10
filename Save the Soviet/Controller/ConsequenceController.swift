@@ -68,8 +68,8 @@ struct ConsequenceController {
         case .changeSupportProgressBy(let change):
             user.changeSupportBy(progress: change)
         case .changeLoyaltyProgressBy(let change):
-            if let viewController = viewController as? ChatViewController {
-                viewController.friend.changeLoyaltyBy(progress: change)
+            if let chatViewController = chatViewController {
+                chatViewController.friend.changeLoyaltyBy(progress: change)
                 user.friendLoyaltyDidChange()
             } else if let viewController = viewController as? FriendDetailViewController {
                 viewController.friend.changeLoyaltyBy(progress: change)
