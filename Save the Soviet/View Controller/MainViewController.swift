@@ -21,12 +21,16 @@ protocol UserStatusDisplayDelegate: AnyObject {
     func updateUserStatus()
 }
 
+protocol ConsequenceVisualizationDelegate: AnyObject {
+    func visualizeConsequence(_ consequence: Consequence)
+}
+
 protocol DelayConsequenceHandlingDelegate: AnyObject {
     var delayedConsequences: [Consequence] { get set }
 }
 
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, DelayConsequenceHandlingDelegate {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate {
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -80,10 +84,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - User status display delegate
     
     func updateUserStatus() {
-        animateProgressViewsAndLabels()
+        updateProgressViewsAndLabels()
     }
     
+    
     // MARK: - Consequence visualization delegate
+    
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
         case .changeLevelProgressBy(let change):
@@ -104,7 +110,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // Setting delegates
         user.statusDisplayDelegate = self
+        user.visualizationDelegate = self
+        // Preparing UI
         prepareUI()
         prepareProgressViewsAndLabels()
         handleDelayedConsequences()
@@ -120,6 +129,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewWillDisappear(_ animated: Bool) {
         user.statusDisplayDelegate = nil
+        user.visualizationDelegate = nil
     }
     
     
@@ -222,66 +232,21 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         supportProgressLabel.text = user.support.progressDescription
     }
     
-    func animateProgressViewsAndLabels() {
+    func updateProgressViewsAndLabels() {
         let duration = 1.5
         let levelProgress = user.level.normalizedProgress
         let energyProgress = user.support.normalizedProgress
         
-        // Animate level progress view
-        
-        switch self.user.level.levelNumberChangeState {
-        case .increased:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        case .decreased:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        case .noChange:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        }
-        
         // Animate the text changes
         levelNumberLabel.text = "\(user.level.levelNumber)"
+        levelProgressLabel.text = user.level.progressDescription
+        supportProgressLabel.text = user.support.progressDescription
         
-        let levelProgressDifference = user.level.progress - user.level.previousProgress
-        var displayProgress = user.level.previousProgress
-        
-        // Animate the progress change indicator if change is not zero
-        if levelProgressDifference != 0 {
-            visualizeConsequence(.changeLevelProgressBy(levelProgressDifference))
-            Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
-                if displayProgress >= self.user.level.progress {
-                    timer.invalidate()
-                }
-                
-                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
-                if displayProgress == self.user.level.progress {
-                    self.levelProgressLabel.text = self.user.level.progressDescription
-                }
-                if levelProgressDifference > 0 {
-                    displayProgress += 1
-                } else {
-                    displayProgress -= 1
-                }
-                
-            }
-        }
-        
-        
-        
-        
-        // Animate support progress view
-        
+        // Animate progress view
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+            self.levelProgressView.setProgress(levelProgress, animated: true)
             self.supportProgressView.setProgress(energyProgress, animated: true)
         })
-        
-        
-        supportProgressLabel.text = user.support.progressDescription
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {

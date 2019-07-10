@@ -44,6 +44,8 @@ class User {
     var powers: [Power]
     /// The view controller currently displaying user level and support progress informations.
     unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
+    /// The view controller that should visualize the consequence on the screen.
+    unowned var visualizationDelegate: ConsequenceVisualizationDelegate?
     
     
     // MARK: - Initializers
@@ -62,19 +64,66 @@ class User {
         self.friendLoyaltyDidChange()
     }
     
+    
+    // MARK: - Instance methods
 
     /// Handles changes in level progress.
     func changeLevelBy(progress: Int) {
         // Level progress does not go beyond maximum
         let newProgress = level.progress + progress
-        level.progress = min(newProgress, level.maximumProgress)
+        let correctProgress = min(newProgress, level.maximumProgress)
+        
+        // Guard that progress should change
+        guard level.progress != correctProgress else { return }
+        
+        // Visualize the change
+        visualizationDelegate?.visualizeConsequence(.changeLevelProgressBy(progress))
+        
+        // Schedule timers to change the progress over time
+        if level.progress < correctProgress {
+            // If incrementing the progress
+            let duration = 1.5
+            let increment = duration / Double(correctProgress - level.progress)
+            var delay: Double = 0
+            
+            // Schedule timer for each increment
+            for progress in level.progress ... correctProgress {
+                delay += increment
+                let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { (_) in
+                    self.level.progress = progress
+                }
+                timer.tolerance = 0.1
+            }
+            
+        } else {
+            // If decrementing the progress
+            let duration = 1.5
+            let increment = duration / Double(correctProgress - level.progress)
+            var delay: Double = 0
+            
+            // Schedule timer for each increment
+            for progress in correctProgress ... level.progress {
+                delay += increment
+                let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { (_) in
+                    self.level.progress = progress
+                }
+                timer.tolerance = 0.1
+            }
+        }
+        
     }
     
     /// Handles changes in support progress.
     func changeSupportBy(progress: Int) {
-        // Support progress does not go beyond maximum
-        let newProgress = support.progress + progress
-        support.progress = min(newProgress, support.maximumProgress)
+        // Change the loyalty of each friend to get the effect of changing user support
+        for friend in friends {
+            friend.changeLoyaltyBy(progress: progress)
+        }
+    }
+    
+    /// Handle changes in coins.
+    func changeCoinsBy(number: Int) {
+        coins += number
     }
     
     /// Handle the addition of a new friend.
@@ -97,10 +146,9 @@ class User {
         }
     }
     
-    // FIXME: Change implementation for loyalty and support
-    /// Apply a power to self.
+    // FIXME: Handle userCoins power type.
+    /// Apply a power to self. Note that user does not need to worry about applying friendLoyalty powers.
     private func applyPower(_ power: Power) {
-        
         if let interval = power.effectInterval {
             // Apply power that effects periodically
             switch power.type {
@@ -110,9 +158,10 @@ class User {
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
-            case .userEnergy:
+            case .userSupport:
                 let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
                     self.changeSupportBy(progress: power.strength)
+                    self.friendLoyaltyDidChange()
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
@@ -125,7 +174,7 @@ class User {
             switch power.type {
             case .userLevel:
                 self.changeLevelBy(progress: power.strength)
-            case .userEnergy:
+            case .userSupport:
                 self.changeSupportBy(progress: power.strength)
             default:
                 break
@@ -189,7 +238,7 @@ class User {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 90), support: Percentage(progress: 100), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 90), support: Percentage(progress: 95), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -

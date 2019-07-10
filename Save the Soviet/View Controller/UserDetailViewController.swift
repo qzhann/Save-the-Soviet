@@ -12,7 +12,7 @@ protocol ConfirmationDelegate: AnyObject {
     var didConfirm: Bool { get set }
 }
 
-class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate {
+class UserDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate {
     
     unowned var user = User.currentUser
     weak var selectedPower: Power?
@@ -46,10 +46,11 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     // MARK: - User status display delegate
     
     func updateUserStatus() {
-        animateProgressViewsAndLabels()
+        updateProgressViewsAndLabels()
     }
     
     // MARK: - Consequence visualization delegate
+    
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
         case .changeLevelProgressBy(let change):
@@ -113,14 +114,16 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // Set the delegate
+        user.statusDisplayDelegate = self
+        user.visualizationDelegate = self
+        
         // Deselect selected row of the power table view
         if let selectedIndexPath = selectedIndexPath {
             powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
         levelProgressChangeIndicatorView.alpha = 0
         
-        // Set the status display delegate
-        user.statusDisplayDelegate = self
     }
     
     // Overriding view did appear correctly configures round corners and animates the progress of progress views
@@ -128,12 +131,13 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
-        animateProgressViewsAndLabels()
+        updateProgressViewsAndLabels()
         updatePowerTableView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         user.statusDisplayDelegate = nil
+        user.visualizationDelegate = nil
     }
     
     // MARK: -
@@ -191,62 +195,20 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
-    func animateProgressViewsAndLabels() {
+    func updateProgressViewsAndLabels() {
         let duration = 1.5
-        let levelProgress = self.user.level.normalizedProgress
-        let energyProgress = self.user.support.normalizedProgress
-        
-        // Animate level progress view
-        
-        // FIXME: This will be useful for the small animations of consequenceController
-        switch self.user.level.levelNumberChangeState {
-        case .increased:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        case .decreased:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        case .noChange:
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-                self.levelProgressView.setProgress(levelProgress, animated: true)
-            })
-        }
-        
-        // Animate support progress view
-        
-        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
-            self.supportProgressView.setProgress(energyProgress, animated: true)
-        })
+        let levelProgress = user.level.normalizedProgress
+        let energyProgress = user.support.normalizedProgress
         
         // Animate the text changes
-        levelLabel.text = "Level \(user.level.levelNumber)"
-        
-        let levelProgressDifference = user.level.progress - user.level.previousProgress
-        var displayProgress = user.level.previousProgress
-        if levelProgressDifference != 0 {
-            visualizeConsequence(.changeLevelProgressBy(levelProgressDifference))
-            Timer.scheduledTimer(withTimeInterval: duration / abs(Double(levelProgressDifference)), repeats: true) { (timer) in
-                if displayProgress == self.user.level.progress {
-                    timer.invalidate()
-                }
-                
-                self.levelProgressLabel.text = "\(displayProgress)/\(self.user.level.currentUpperBound)"
-                if displayProgress == self.user.level.progress {
-                    self.levelProgressLabel.text = self.user.level.progressDescription
-                }
-                if levelProgressDifference > 0 {
-                    displayProgress += 1
-                } else {
-                    displayProgress -= 1
-                }
-                
-            }
-        }
-        
-        
+        levelProgressLabel.text = user.level.progressDescription
         supportProgressLabel.text = user.support.progressDescription
+        
+        // Animate progress view
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+            self.levelProgressView.setProgress(levelProgress, animated: true)
+            self.supportProgressView.setProgress(energyProgress, animated: true)
+        })
     }
     
     private func animateLevelProgressChangeIndicatorFor(change: Int) {
