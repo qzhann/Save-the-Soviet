@@ -36,6 +36,20 @@ struct ConsequenceController {
     
     func canHandle(_ consequence: Consequence) -> Bool {
         switch consequence {
+        case .changeUserLevelBy(let change):
+            return user.level.progress + change >= 0
+        case .changeUserSupportBy(let change):
+            return user.support.progress + change >= 0
+        case .changeFriendLoyaltyBy(let change):
+            if let chatViewController = chatViewController {
+                return chatViewController.friend.loyalty.progress + change >= 0
+            } else if let viewController = viewController as? FriendDetailViewController {
+                return viewController.friend.loyalty.progress + change >= 0
+            } else {
+                return true
+            }
+        case .changeUserCoinsBy(let change):
+            return user.coins + change >= 0
         case .upgradePower(let power):
             return user.coins >= power.coinsNeeded
         default:
@@ -63,11 +77,13 @@ struct ConsequenceController {
             let indexPath = IndexPath(row: row, section: 0)
             confirmationController?.performSegue(withIdentifier: "UnwindToMain", sender: indexPath)
             user.friendLoyaltyDidChange()
-        case .changeLevelProgressBy(let change):
+        case .changeUserLevelBy(let change):
             user.changeLevelBy(progress: change)
-        case .changeSupportProgressBy(let change):
+        case .changeUserSupportBy(let change):
             user.changeSupportBy(progress: change)
-        case .changeLoyaltyProgressBy(let change):
+        case .changeUserCoinsBy(let change):
+            user.changeCoinsBy(number: change)
+        case .changeFriendLoyaltyBy(let change):
             if let chatViewController = chatViewController {
                 chatViewController.friend.changeLoyaltyBy(progress: change)
                 user.friendLoyaltyDidChange()

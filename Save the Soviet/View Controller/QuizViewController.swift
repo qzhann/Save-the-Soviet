@@ -286,7 +286,7 @@ class QuizViewController: UIViewController {
     
     private func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
-        case .changeLevelProgressBy(let change):
+        case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
             animateLevelProgressChangeIndicatorFor(change: change)
         default:
@@ -347,11 +347,11 @@ class QuizViewController: UIViewController {
         
         // Visualize the consequence
         if correctness == true {
-            consequenceController.handle(.changeLevelProgressBy(question.addExperience))
-            visualizeConsequence(.changeLevelProgressBy(question.addExperience))
+            consequenceController.handle(.changeUserLevelBy(question.addExperience))
+            visualizeConsequence(.changeUserLevelBy(question.addExperience))
         } else {
-           consequenceController.handle(.changeLevelProgressBy(-question.minusExperience))
-            visualizeConsequence(.changeLevelProgressBy(-question.minusExperience))
+           consequenceController.handle(.changeUserLevelBy(-question.minusExperience))
+            visualizeConsequence(.changeUserLevelBy(-question.minusExperience))
         }
         
         // Set the selected answerCorrectness Image View

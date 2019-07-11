@@ -70,14 +70,14 @@ class User {
     /// Handles changes in level progress.
     func changeLevelBy(progress: Int) {
         // Level progress does not go beyond maximum
-        let newProgress = level.progress + progress
+        let newProgress = level.progress + progress        
         let correctProgress = min(newProgress, level.maximumProgress)
         
         // Guard that progress should change
         guard level.progress != correctProgress else { return }
         
         // Visualize the change
-        visualizationDelegate?.visualizeConsequence(.changeLevelProgressBy(progress))
+        visualizationDelegate?.visualizeConsequence(.changeUserLevelBy(progress))
         
         // Schedule timers to change the progress over time
         if level.progress < correctProgress {
@@ -146,7 +146,6 @@ class User {
         }
     }
     
-    // FIXME: Handle userCoins power type.
     /// Apply a power to self. Note that user does not need to worry about applying friendLoyalty powers.
     private func applyPower(_ power: Power) {
         if let interval = power.effectInterval {
@@ -165,6 +164,12 @@ class User {
                 })
                 timer.tolerance = 0.5
                 power.timer = timer
+            case .userCoins:
+                let timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { (_) in
+                    self.changeCoinsBy(number: power.strength)
+                })
+                timer.tolerance = 0.5
+                power.timer = timer
             default:
                 break
             }
@@ -176,6 +181,8 @@ class User {
                 self.changeLevelBy(progress: power.strength)
             case .userSupport:
                 self.changeSupportBy(progress: power.strength)
+            case .userCoins:
+                self.changeCoinsBy(number: power.strength)
             default:
                 break
             }

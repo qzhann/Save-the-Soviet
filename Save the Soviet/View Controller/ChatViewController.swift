@@ -84,10 +84,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
-        case .changeLevelProgressBy(let change):
+        case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
             animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
-        case .changeLoyaltyProgressBy(let change):
+        case .changeFriendLoyaltyBy(let change):
             loyaltyProgressChangeIndicatorViewController.configureUsing(change: change)
             animateProgressChangeIndicator(view: loyaltyProgressChangeIndicatorView, forChange: change)
         default:

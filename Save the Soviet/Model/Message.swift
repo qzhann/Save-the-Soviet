@@ -177,9 +177,10 @@ enum Consequence {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
     case executeFriend(Friend)
-    case changeLevelProgressBy(Int)
-    case changeSupportProgressBy(Int)
-    case changeLoyaltyProgressBy(Int)
+    case changeUserLevelBy(Int)
+    case changeUserSupportBy(Int)
+    case changeUserCoinsBy(Int)
+    case changeFriendLoyaltyBy(Int)
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory?)
 }

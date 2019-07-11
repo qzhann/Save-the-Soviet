@@ -53,7 +53,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
-        case .changeLevelProgressBy(let change):
+        case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
             animateLevelProgressChangeIndicatorFor(change: change)
         default:
