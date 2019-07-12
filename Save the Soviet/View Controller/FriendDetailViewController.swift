@@ -8,16 +8,20 @@
 
 import UIKit
 
-class FriendDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate {
+class FriendDetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, ConfirmationDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate {
     
     unowned var user = User.currentUser
     unowned var friend: Friend!
     weak var selectedPower: Power?
     var selectedIndexPath: IndexPath?
     var didConfirm = false
+    var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
+    unowned var coinChangeIndicatorViewController: CoinChangeIndicatorViewController!
+    unowned var loyaltyProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
 
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var userCoinsLabel: UILabel!
+    @IBOutlet weak var coinChangeIndicatorView: UIView!
     
     @IBOutlet weak var basicInfoBackgroundView: UIView!
     @IBOutlet weak var imageView: UIImageView!
@@ -27,6 +31,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet weak var loyaltyBackgroundView: UIView!
     @IBOutlet weak var loyaltyProgressView: UIProgressView!
     @IBOutlet weak var loyaltyProgressLabel: UILabel!
+    @IBOutlet weak var loyaltyProgressChangeIndicatorView: UIView!
     
     @IBOutlet weak var powerTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
@@ -36,7 +41,37 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet var lockRestrictionLabel: UILabel!
     
     
-    // MARK: - Table View Data Source Methods
+    // MARK: - Friend status display delegate
+    
+    func updateFriendStatus() {
+        updateProgressViewsAndLabels()
+    }
+    
+    
+    // MARK: - User status display delegate
+    
+    func updateUserStatus() {
+        updateProgressViewsAndLabels()
+    }
+    
+    
+    // MARK: - Consequence visualization delegate
+    
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeUserCoinsBy(let change):
+            coinChangeIndicatorViewController.configureUsing(change: change, style: .short)
+            progressChangeIndicatorController.animate(view: coinChangeIndicatorView, forChange: change)
+        case .changeFriendLoyaltyBy(let change):
+            loyaltyProgressChangeIndicatorViewController.configureUsing(change: change, style: .loyaltyShort)
+            progressChangeIndicatorController.animate(view: loyaltyProgressChangeIndicatorView, forChange: change)
+        default:
+            break
+        }
+    }
+    
+    
+    // MARK: - Table view data source
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friend.powers.count
@@ -91,13 +126,24 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         if let selectedIndexPath = selectedIndexPath {
             powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
+        user.statusDisplayDelegate = self
+        user.visualizationDelegate = self
+        friend.statusDisplayDelegate = self
+        friend.visualizationDelegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
-        animateProgressViews()
+        updateProgressViewsAndLabels()
         updateUI()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        user.statusDisplayDelegate = nil
+        user.visualizationDelegate = nil
+        friend.statusDisplayDelegate = nil
+        friend.visualizationDelegate = nil
     }
     
     
@@ -165,6 +211,10 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
             // No restriction, do nothing
             break
         }
+        
+        // Hide progress change indicators
+        coinChangeIndicatorView.alpha = 0
+        loyaltyProgressChangeIndicatorView.alpha = 0
     }
     
     func updateUI() {
@@ -175,11 +225,18 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         userCoinsLabel.text = "\(user.coins) still left in your pocket."
     }
     
-    func animateProgressViews() {
-        // Animate the progress of progress views
-        UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut, animations: {
-            self.loyaltyProgressView.setProgress(self.friend.loyalty.normalizedProgress, animated: true)
-        }, completion: nil)
+    func updateProgressViewsAndLabels() {
+        let duration = 1.2
+        let loyaltyProgress = friend.loyalty.normalizedProgress
+        
+        // Update labels
+        loyaltyProgressLabel.text = friend.loyalty.progressDescription
+        userCoinsLabel.text = "\(user.coins) still left in your pocket."
+        
+        // Animate progress view
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+            self.loyaltyProgressView.setProgress(loyaltyProgress, animated: true)
+        })
     }
     
     
@@ -223,6 +280,12 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
             confirmationViewController.transitioningDelegate = self
             confirmationViewController.consequence = .executeFriend(friend)
             confirmationViewController.user = user
+        } else if segue.identifier == "EmbedCoinChangeIndicator" {
+            let coinChangeIndicatorViewController = segue.destination as! CoinChangeIndicatorViewController
+            self.coinChangeIndicatorViewController = coinChangeIndicatorViewController
+        } else if segue.identifier == "EmbedLoyaltyProgressChangeIndicator" {
+            let loyaltyProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
+            self.loyaltyProgressChangeIndicatorViewController = loyaltyProgressChangeIndicatorViewController
         }
     }
 }

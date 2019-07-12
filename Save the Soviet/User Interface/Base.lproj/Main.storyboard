@@ -262,7 +262,7 @@
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rHK-Sr-cN4">
                                                 <rect key="frame" x="162.33333333333334" y="72.666666666666657" width="120.33333333333334" height="14"/>
                                                 <connections>
-                                                    <segue destination="OAE-lv-sex" kind="embed" identifier="EmbedSupportProgressChangeIndicator" id="RPc-3k-yHv"/>
+                                                    <segue destination="OAE-lv-sex" kind="embed" identifier="EmbedSupportProgressChangeIndicator" id="YfK-30-jtg"/>
                                                 </connections>
                                             </containerView>
                                         </subviews>
@@ -831,6 +831,15 @@
                                     <outletCollection property="gestureRecognizers" destination="aTh-eJ-9Fe" appends="YES" id="GKM-dN-Ioc"/>
                                 </connections>
                             </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pIP-Qe-y4g">
+                                <rect key="frame" x="93.666666666666686" y="189.33333333333334" width="120" height="11.333333333333343"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="CP5-wC-ByR"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="rwC-Ox-IKG" kind="embed" identifier="EmbedCoinChangeIndicator" id="T23-D2-hlh"/>
+                                </connections>
+                            </containerView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Coin" translatesAutoresizingMaskIntoConstraints="NO" id="HbH-JV-oWs">
                                 <rect key="frame" x="18.666666666666671" y="180" width="30" height="30"/>
                                 <constraints>
@@ -1098,15 +1107,19 @@
                             <constraint firstItem="HbH-JV-oWs" firstAttribute="width" secondItem="HbH-JV-oWs" secondAttribute="height" multiplier="1:1" id="FTM-t8-on4"/>
                             <constraint firstItem="hzW-BR-pMI" firstAttribute="bottom" secondItem="kvx-aP-bCB" secondAttribute="bottom" id="HU3-oJ-uOw"/>
                             <constraint firstItem="2B4-ez-bsh" firstAttribute="width" secondItem="pfG-R4-OMY" secondAttribute="width" id="IiQ-9n-6kE"/>
+                            <constraint firstItem="pIP-Qe-y4g" firstAttribute="height" secondItem="m4f-1H-u1m" secondAttribute="height" id="MmX-dZ-Hav"/>
                             <constraint firstItem="pfG-R4-OMY" firstAttribute="top" secondItem="HbH-JV-oWs" secondAttribute="bottom" constant="4" id="PyD-vs-9sJ"/>
+                            <constraint firstItem="pIP-Qe-y4g" firstAttribute="leading" secondItem="4bg-fr-alf" secondAttribute="trailing" constant="8" id="QCD-Eh-Ayd"/>
                             <constraint firstItem="0Uz-HN-QXK" firstAttribute="centerX" secondItem="Cc3-hv-jBf" secondAttribute="centerX" id="RJG-96-VCB"/>
                             <constraint firstItem="pfG-R4-OMY" firstAttribute="width" secondItem="kvx-aP-bCB" secondAttribute="width" multiplier="0.9" id="Vco-4M-gL4"/>
                             <constraint firstItem="2B4-ez-bsh" firstAttribute="centerX" secondItem="kvx-aP-bCB" secondAttribute="centerX" id="Xrh-83-Kbj"/>
+                            <constraint firstItem="pIP-Qe-y4g" firstAttribute="centerY" secondItem="4bg-fr-alf" secondAttribute="centerY" id="YCc-le-vye"/>
                             <constraint firstItem="khe-c9-8K7" firstAttribute="width" secondItem="pfG-R4-OMY" secondAttribute="width" id="bqg-sE-XIU"/>
                             <constraint firstItem="hzW-BR-pMI" firstAttribute="leading" secondItem="Cc3-hv-jBf" secondAttribute="leading" id="brh-yt-phL"/>
                             <constraint firstItem="mAC-0i-sZu" firstAttribute="width" secondItem="m4f-1H-u1m" secondAttribute="width" id="eQr-RE-Pgi"/>
                             <constraint firstItem="0Uz-HN-QXK" firstAttribute="top" secondItem="khe-c9-8K7" secondAttribute="bottom" constant="8" id="hvd-rV-6Z0"/>
                             <constraint firstItem="4bg-fr-alf" firstAttribute="centerY" secondItem="HbH-JV-oWs" secondAttribute="centerY" id="iBK-xc-OLy"/>
+                            <constraint firstItem="pIP-Qe-y4g" firstAttribute="width" secondItem="m4f-1H-u1m" secondAttribute="width" id="jGI-Uo-gyL"/>
                             <constraint firstItem="mAC-0i-sZu" firstAttribute="height" secondItem="m4f-1H-u1m" secondAttribute="height" id="l2f-nz-bLP"/>
                             <constraint firstItem="khe-c9-8K7" firstAttribute="centerX" secondItem="Cc3-hv-jBf" secondAttribute="centerX" id="nx3-3g-rKM"/>
                             <constraint firstItem="khe-c9-8K7" firstAttribute="top" secondItem="pfG-R4-OMY" secondAttribute="bottom" constant="8" id="oPB-ge-y6G"/>
@@ -1123,6 +1136,7 @@
                     <connections>
                         <outlet property="backgroundView" destination="hzW-BR-pMI" id="Nk7-Zz-RHT"/>
                         <outlet property="basicInfoBackgroundView" destination="pfG-R4-OMY" id="8f1-w8-fxw"/>
+                        <outlet property="coinChangeIndicatorView" destination="pIP-Qe-y4g" id="Yox-0x-huZ"/>
                         <outlet property="descriptionLabel" destination="6Gd-b1-0TZ" id="hwc-Rp-P90"/>
                         <outlet property="imageView" destination="0rC-Rf-Zdx" id="jP8-07-WRx"/>
                         <outlet property="levelBackgroundView" destination="khe-c9-8K7" id="1rl-as-zrz"/>
@@ -1170,11 +1184,23 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iVs-Eo-Uee">
+                                                <rect key="frame" x="131.66666666666666" y="63.333333333333329" width="80" height="20"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="20" id="Yrv-gU-gMG"/>
+                                                    <constraint firstAttribute="width" constant="80" id="jcW-xD-H5f"/>
+                                                </constraints>
+                                                <connections>
+                                                    <segue destination="rwC-Ox-IKG" kind="embed" identifier="EmbedCoinChangeIndicator" id="MAs-Ss-8CR"/>
+                                                </connections>
+                                            </containerView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="EOB-HB-Zko" firstAttribute="centerX" secondItem="RaW-rI-yJ3" secondAttribute="centerX" id="HkP-dN-GJJ"/>
+                                            <constraint firstItem="iVs-Eo-Uee" firstAttribute="top" secondItem="EOB-HB-Zko" secondAttribute="bottom" id="Z3U-gV-i0Q"/>
                                             <constraint firstItem="EOB-HB-Zko" firstAttribute="centerY" secondItem="RaW-rI-yJ3" secondAttribute="centerY" id="iOE-Lm-6Eb"/>
+                                            <constraint firstItem="iVs-Eo-Uee" firstAttribute="centerX" secondItem="EOB-HB-Zko" secondAttribute="centerX" id="r0E-ez-Cj1"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DbL-52-uUD">
@@ -1361,7 +1387,9 @@
                                     </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="iVs-Eo-Uee" firstAttribute="width" secondItem="0ow-ys-AAH" secondAttribute="width" id="9Mq-ZJ-fkL"/>
                                     <constraint firstItem="DbL-52-uUD" firstAttribute="width" secondItem="RaW-rI-yJ3" secondAttribute="height" multiplier="4:1" id="eM4-Zn-TUY"/>
+                                    <constraint firstItem="iVs-Eo-Uee" firstAttribute="height" secondItem="0ow-ys-AAH" secondAttribute="height" id="mjR-er-Z9N"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -1384,6 +1412,7 @@
                         <outlet property="answerCorrectnessImageView2" destination="Rwd-Dh-fZH" id="J5g-gs-AQ4"/>
                         <outlet property="answerCorrectnessImageView3" destination="doH-Ol-UUW" id="tEY-ZL-jY3"/>
                         <outlet property="answerCorrectnessImageView4" destination="DuF-fZ-adO" id="90J-xO-f9y"/>
+                        <outlet property="coinChangeIndicatorView" destination="iVs-Eo-Uee" id="f58-pj-WLQ"/>
                         <outlet property="curvedEdgeBackgroundView" destination="DbL-52-uUD" id="i9n-1f-DiB"/>
                         <outlet property="levelProgressChangeIndicatorView" destination="0ow-ys-AAH" id="5Eg-Pk-sjH"/>
                         <outlet property="questionCategoryLabel" destination="VyH-m0-TO6" id="viH-ag-Kww"/>
@@ -1394,7 +1423,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2810" y="-420"/>
+            <point key="canvasLocation" x="2808.8000000000002" y="-420.44334975369458"/>
         </scene>
         <!--Quiz Result View Controller-->
         <scene sceneID="mSo-Ka-WHl">
@@ -1534,6 +1563,15 @@
                                     <outletCollection property="gestureRecognizers" destination="xdT-iZ-b2E" appends="YES" id="JuR-27-zbd"/>
                                 </connections>
                             </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMs-wD-jio">
+                                <rect key="frame" x="93.666666666666686" y="189.33333333333334" width="120" height="11.333333333333343"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="xQL-Mc-bPY"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="rwC-Ox-IKG" kind="embed" identifier="EmbedCoinChangeIndicator" id="DXw-HQ-mLw"/>
+                                </connections>
+                            </containerView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Coin" translatesAutoresizingMaskIntoConstraints="NO" id="Se0-Ek-goF">
                                 <rect key="frame" x="18.666666666666671" y="180" width="30" height="30"/>
                                 <constraints>
@@ -1623,6 +1661,15 @@
                                     <constraint firstItem="jNP-h1-Su0" firstAttribute="top" secondItem="c9x-U7-AqH" secondAttribute="bottom" constant="3" id="yq8-Hf-U1T"/>
                                 </constraints>
                             </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wsh-GL-wVQ">
+                                <rect key="frame" x="109.33333333333331" y="294.66666666666669" width="120" height="11.666666666666686"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="UGS-2L-Tub"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="OAE-lv-sex" kind="embed" identifier="EmbedLoyaltyProgressChangeIndicator" id="QqD-p7-kd8"/>
+                                </connections>
+                            </containerView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="default" sectionIndexMinimumDisplayRowCount="5" rowHeight="60" estimatedRowHeight="60" sectionHeaderHeight="16" estimatedSectionHeaderHeight="16" sectionFooterHeight="1" translatesAutoresizingMaskIntoConstraints="NO" id="e4z-co-7aR">
                                 <rect key="frame" x="18.666666666666657" y="347.66666666666669" width="337.66666666666674" height="200.00000000000006"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1782,28 +1829,36 @@
                             <constraint firstItem="JK2-UQ-fQs" firstAttribute="leading" secondItem="3Wp-S2-SXu" secondAttribute="trailing" constant="4" id="Tgq-EW-xMI"/>
                             <constraint firstItem="e4z-co-7aR" firstAttribute="centerX" secondItem="Qea-0Q-wMM" secondAttribute="centerX" id="Umo-Pg-fWV"/>
                             <constraint firstItem="LAH-i1-SGP" firstAttribute="leading" secondItem="Qea-0Q-wMM" secondAttribute="leading" id="Vbm-U0-Za3"/>
+                            <constraint firstItem="CMs-wD-jio" firstAttribute="height" secondItem="jNP-h1-Su0" secondAttribute="height" id="XyG-ah-Gvl"/>
                             <constraint firstItem="3Wp-S2-SXu" firstAttribute="centerY" secondItem="oXL-aS-7zU" secondAttribute="centerY" constant="-1" id="aCd-GF-UdJ"/>
                             <constraint firstAttribute="bottom" secondItem="LAH-i1-SGP" secondAttribute="bottom" id="ape-fU-OAS"/>
+                            <constraint firstItem="Wsh-GL-wVQ" firstAttribute="height" secondItem="jNP-h1-Su0" secondAttribute="height" id="bMm-HW-9Yi"/>
                             <constraint firstItem="3Wp-S2-SXu" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="oXL-aS-7zU" secondAttribute="leading" id="c4V-v0-K9S"/>
                             <constraint firstItem="JK2-UQ-fQs" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="oXL-aS-7zU" secondAttribute="trailing" id="d7M-bJ-tJd"/>
+                            <constraint firstItem="Wsh-GL-wVQ" firstAttribute="leading" secondItem="c9x-U7-AqH" secondAttribute="trailing" constant="8" id="deI-FO-Sbn"/>
                             <constraint firstItem="3Wp-S2-SXu" firstAttribute="centerX" secondItem="oXL-aS-7zU" secondAttribute="centerX" multiplier="1.5" id="g5E-F8-y1m"/>
                             <constraint firstItem="wv1-aF-fQQ" firstAttribute="centerY" secondItem="Qea-0Q-wMM" secondAttribute="centerY" constant="-162" id="l2e-aU-5Yp"/>
                             <constraint firstItem="wv1-aF-fQQ" firstAttribute="centerX" secondItem="Qea-0Q-wMM" secondAttribute="centerX" id="mYW-iz-g6e"/>
                             <constraint firstItem="TLi-2J-yMV" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Cki-Ci-mVg" secondAttribute="trailing" constant="16" id="ndX-J6-XVH"/>
                             <constraint firstAttribute="trailing" secondItem="LAH-i1-SGP" secondAttribute="trailing" id="rbO-nR-Mrv"/>
+                            <constraint firstItem="CMs-wD-jio" firstAttribute="centerY" secondItem="Cki-Ci-mVg" secondAttribute="centerY" id="rxv-yp-uZM"/>
+                            <constraint firstItem="Wsh-GL-wVQ" firstAttribute="centerY" secondItem="c9x-U7-AqH" secondAttribute="centerY" id="tDt-3R-OMV"/>
                             <constraint firstItem="wv1-aF-fQQ" firstAttribute="width" secondItem="Qea-0Q-wMM" secondAttribute="width" multiplier="0.9" id="u94-PW-1OK"/>
+                            <constraint firstItem="CMs-wD-jio" firstAttribute="leading" secondItem="Cki-Ci-mVg" secondAttribute="trailing" constant="8" id="w0g-Bt-470"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="TLi-2J-yMV"/>
                     </view>
                     <connections>
                         <outlet property="backgroundView" destination="LAH-i1-SGP" id="tlO-Bv-aVO"/>
                         <outlet property="basicInfoBackgroundView" destination="wv1-aF-fQQ" id="SGh-UD-GKv"/>
+                        <outlet property="coinChangeIndicatorView" destination="CMs-wD-jio" id="20A-68-9ar"/>
                         <outlet property="descriptionLabel" destination="S4R-Bo-Ck6" id="gN0-yq-8DU"/>
                         <outlet property="executeFriendButton" destination="oXL-aS-7zU" id="WbH-pV-tWe"/>
                         <outlet property="imageView" destination="v5D-3Y-ZDI" id="BPY-j4-Fr1"/>
                         <outlet property="lockLabel" destination="3Wp-S2-SXu" id="q9k-HO-DnO"/>
                         <outlet property="lockRestrictionLabel" destination="JK2-UQ-fQs" id="6Hl-cc-dCl"/>
                         <outlet property="loyaltyBackgroundView" destination="bbZ-c1-yt7" id="8bj-83-Jjc"/>
+                        <outlet property="loyaltyProgressChangeIndicatorView" destination="Wsh-GL-wVQ" id="XRO-PH-yIH"/>
                         <outlet property="loyaltyProgressLabel" destination="jly-oP-cxI" id="toQ-qI-25n"/>
                         <outlet property="loyaltyProgressView" destination="jNP-h1-Su0" id="YRb-YC-wo8"/>
                         <outlet property="nameLabel" destination="rGG-pE-xUs" id="wx4-fE-LlS"/>
@@ -1827,17 +1882,17 @@
             <objects>
                 <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
-                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LevelIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
-                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="7fd-th-QSg" secondAttribute="height" multiplier="1:1" id="UKo-as-f6U"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNj-aV-Z2p">
-                                <rect key="frame" x="20" y="2" width="60" height="18"/>
+                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1870,17 +1925,17 @@
             <objects>
                 <viewController id="OAE-lv-sex" customClass="SupportLoyaltyProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5pd-S2-33k">
-                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LoyaltyIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="FCw-7H-TJj">
-                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="SupportLoyaltyIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="FCw-7H-TJj">
+                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="FCw-7H-TJj" secondAttribute="height" multiplier="1:1" id="YO0-0U-HAd"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWL-VU-YtM">
-                                <rect key="frame" x="20" y="2" width="60" height="18"/>
+                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.1077675298" green="0.30285480619999999" blue="0.50178319220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1906,7 +1961,51 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="R3c-oH-YOo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="809" y="935"/>
+            <point key="canvasLocation" x="462" y="950"/>
+        </scene>
+        <!--Coin Change Indicator View Controller-->
+        <scene sceneID="vCE-bN-ltk">
+            <objects>
+                <viewController id="rwC-Ox-IKG" customClass="CoinChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="q3B-Dz-RpJ">
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.333333333333332"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="CoinIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="kak-Em-nJU">
+                                <rect key="frame" x="0.0" y="0.0" width="11.333333333333334" height="11.333333333333334"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="kak-Em-nJU" secondAttribute="height" multiplier="1:1" id="aPR-6c-emw"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="isE-8h-xxp">
+                                <rect key="frame" x="11.333333333333336" y="-2.3333333333333339" width="108.66666666666666" height="18"/>
+                                <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
+                                <color key="textColor" red="0.84712481500000003" green="0.61449187989999998" blue="0.16564798359999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="kak-Em-nJU" secondAttribute="bottom" id="1Or-62-Aav"/>
+                            <constraint firstItem="isE-8h-xxp" firstAttribute="centerY" secondItem="kak-Em-nJU" secondAttribute="centerY" constant="1" id="8wT-Yo-aZU"/>
+                            <constraint firstItem="isE-8h-xxp" firstAttribute="leading" secondItem="kak-Em-nJU" secondAttribute="trailing" id="Byi-Mi-IJc"/>
+                            <constraint firstAttribute="trailing" secondItem="isE-8h-xxp" secondAttribute="trailing" id="tQf-GF-dYf"/>
+                            <constraint firstItem="kak-Em-nJU" firstAttribute="leading" secondItem="q3B-Dz-RpJ" secondAttribute="leading" id="vf2-ud-v4i"/>
+                            <constraint firstItem="kak-Em-nJU" firstAttribute="top" secondItem="q3B-Dz-RpJ" secondAttribute="top" id="xRY-JM-uS3"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="qbd-Bk-vUR"/>
+                    </view>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <connections>
+                        <outlet property="imageView" destination="kak-Em-nJU" id="RAJ-E9-aYY"/>
+                        <outlet property="label" destination="isE-8h-xxp" id="qFv-Au-pP0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OkL-Ej-ffN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="463" y="1059"/>
         </scene>
     </scenes>
     <resources>
@@ -1915,15 +2014,17 @@
         <image name="AnswerWrong" width="138" height="138"/>
         <image name="BackButton" width="58.333332061767578" height="46"/>
         <image name="Coin" width="30.666666030883789" height="25.333333969116211"/>
+        <image name="CoinIncrease" width="13.333333015441895" height="18.666666030883789"/>
         <image name="Dog" width="60" height="60"/>
         <image name="LevelIncrease" width="40" height="58"/>
-        <image name="LoyaltyIncrease" width="13.666666984558105" height="18.666666030883789"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
+        <image name="SupportLoyaltyIncrease" width="13.666666984558105" height="18.666666030883789"/>
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="BJe-rM-oFY"/>
-        <segue reference="zJq-xZ-mBz"/>
-        <segue reference="MOI-z0-leT"/>
+        <segue reference="DXw-HQ-mLw"/>
+        <segue reference="QqD-p7-kd8"/>
+        <segue reference="4kp-yA-NKo"/>
+        <segue reference="D5C-dI-ZN5"/>
     </inferredMetricsTieBreakers>
 </document>

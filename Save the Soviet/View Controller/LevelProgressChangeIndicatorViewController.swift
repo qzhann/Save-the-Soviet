@@ -17,7 +17,7 @@ class LevelProgressChangeIndicatorViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    func configureUsing(change: Int, style: LevelProgressChangeIndicatorDisplayStyle) {
+    func configureUsing(change: Int, style: LevelChangeIndicatorDisplayStyle) {
         switch style {
         case .short:
             imageView.image = change >= 0 ? UIImage(named: "LevelIncrease")! : UIImage(named: "LevelDecrease")!
@@ -31,6 +31,6 @@ class LevelProgressChangeIndicatorViewController: UIViewController {
 
 }
 
-enum LevelProgressChangeIndicatorDisplayStyle {
+enum LevelChangeIndicatorDisplayStyle {
     case short, long
 }

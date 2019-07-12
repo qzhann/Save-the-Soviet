@@ -16,6 +16,7 @@
 		4243AD8A22B235CE00B93B8F /* ConsequenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4243AD8922B235CE00B93B8F /* ConsequenceController.swift */; };
 		42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */; };
 		4254B35422D8A39100B65B5B /* ProgressChangeIndicatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254B35322D8A39100B65B5B /* ProgressChangeIndicatorController.swift */; };
+		4254B35622D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254B35522D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift */; };
 		4260A66622B0DA9D006BFBDE /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */; };
 		42668C5521ED37B10095BDFD /* LeftChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */; };
 		4275B2F522D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */; };
@@ -52,6 +53,7 @@
 		4243AD8922B235CE00B93B8F /* ConsequenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsequenceController.swift; sourceTree = "<group>"; };
 		42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndChatTableViewCell.swift; sourceTree = "<group>"; };
 		4254B35322D8A39100B65B5B /* ProgressChangeIndicatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressChangeIndicatorController.swift; sourceTree = "<group>"; };
+		4254B35522D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinChangeIndicatorViewController.swift; sourceTree = "<group>"; };
 		4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
 		42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftChatTableViewCell.swift; sourceTree = "<group>"; };
 		4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLoyaltyProgressChangeIndicatorViewController.swift; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
 				42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */,
 				4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */,
+				4254B35522D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */,
 				42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */,
 				42ECF9E321CB2F99007AF7F9 /* User.swift in Sources */,
+				4254B35622D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift in Sources */,
 				42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */,
 				42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */,
 				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,

@@ -183,4 +183,5 @@ enum Consequence {
     case changeFriendLoyaltyBy(Int)
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory?)
+    case setChatStartOption(ChatStartOption)
 }

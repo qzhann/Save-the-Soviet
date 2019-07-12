@@ -12,9 +12,13 @@ protocol FriendImageViewTapDelegate: UIViewController {
     func imageTapped(for friend: Friend)
 }
 
-protocol FriendStatusDisplayDelegate: AnyObject {
+protocol FriendMessageStatusDisplayDelegate: AnyObject {
     func updateNewMessageStatusFor(_ friend: Friend)
     func moveCellToTopFor(_ friend: Friend)
+}
+
+protocol FriendStatusDisplayDelegate: AnyObject {
+    func updateFriendStatus()
 }
 
 protocol UserStatusDisplayDelegate: AnyObject {
@@ -30,7 +34,7 @@ protocol DelayConsequenceHandlingDelegate: AnyObject {
 }
 
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendMessageStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate {
     
     // MARK: Instance properties
     
@@ -100,10 +104,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         switch consequence {
         case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
+            progressChangeIndicatorController.animate(view: levelProgressChangeIndicatorView, forChange: change)
         case .changeUserSupportBy(let change):
             supportProgressChangeIndicatorViewController.configureUsing(change: change, style: .support)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: supportProgressChangeIndicatorView, forChange: change)
+            progressChangeIndicatorController.animate(view: supportProgressChangeIndicatorView, forChange: change)
         default:
             break
         }
@@ -159,7 +163,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Configure cell data and appearance
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
         let friend = user.friends[indexPath.row]
-        friend.statusDisplayDelegate = self
+        friend.messageStatusDisplayDelegate = self
         cell.updateCell(with: friend)
         
         // Configure image view tap delegate
@@ -236,7 +240,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     func updateProgressViewsAndLabels() {
-        let duration = 1.5
+        let duration = 1.2
         let levelProgress = user.level.normalizedProgress
         let energyProgress = user.support.normalizedProgress
         

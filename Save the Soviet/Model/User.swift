@@ -20,7 +20,7 @@ class User {
     /// User level changes as the game progresses. This is related to the difficulty of the quiz questions and other aspects of the game.
     var level: Level {
         didSet {
-            // Update the user status
+            // We call update here but not the setter method to achieve incrementing effect on the text
             statusDisplayDelegate?.updateUserStatus()
             
             // If level increases for the first time
@@ -33,16 +33,21 @@ class User {
     /// User support rate reprented as percentage. When support drops to 0, the game ends.
     var support: Percentage {
         didSet {
+            // We call update here but not the setter method to achieve incrementing effect on the text
             statusDisplayDelegate?.updateUserStatus()
         }
     }
     /// Coins can be used to upgrade power for User and Friends.
-    var coins: Int
+    var coins: Int {
+        didSet {
+            statusDisplayDelegate?.updateUserStatus()
+        }
+    }
     /// Friends the user currently has.
     var friends: [Friend]
     /// Powers the user has.
     var powers: [Power]
-    /// The view controller currently displaying user level and support progress informations.
+    /// The view controller currently displaying and visualizing user level and support progress informations
     unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
     /// The view controller that should visualize the consequence on the screen.
     unowned var visualizationDelegate: ConsequenceVisualizationDelegate?
@@ -120,12 +125,51 @@ class User {
             friend.changeLoyaltyBy(progress: progress)
         }
         
+        // Visualize the change
         visualizationDelegate?.visualizeConsequence(.changeUserSupportBy(progress))
     }
     
     /// Handle changes in coins.
     func changeCoinsBy(number: Int) {
-        coins += number
+        // Guard that coins should change
+        guard number != 0 else { return }
+        
+        // Visualize the change
+        visualizationDelegate?.visualizeConsequence(.changeUserCoinsBy(number))
+        
+        let correctCoins = coins + number
+        
+        // Schedule timers to change the coins over time
+        if number > 0 {
+            // If incrementing coins
+            let duration = 1.2
+            let increment = duration / Double(correctCoins - coins)
+            var delay: Double = 0
+            
+            // Schedule timer for each increment
+            for coins in coins ... correctCoins {
+                delay += increment
+                let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { (_) in
+                    self.coins = coins
+                }
+                timer.tolerance = 0.1
+            }
+            
+        } else {
+            // If decrementing the progress
+            let duration = 1.2
+            let increment = duration / Double(coins - correctCoins)
+            var delay: Double = 0
+            
+            // Schedule timer for each increment
+            for coins in correctCoins ... coins {
+                delay += increment
+                let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { (_) in
+                    self.coins = coins
+                }
+                timer.tolerance = 0.1
+            }
+        }
     }
     
     /// Handle the addition of a new friend.
@@ -210,6 +254,7 @@ class User {
         case 1:
             Friend.akimov.startChat()
             Friend.fomin.startChat()
+            Friend.quizFriend.startChat()
         case 2:
             Friend.dyatlov.startChat()
             Friend.legasov.startChat()
@@ -247,7 +292,7 @@ class User {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 90), support: Percentage(progress: 95), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 590), support: Percentage(progress: 95), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
 }
 
 // MARK: -

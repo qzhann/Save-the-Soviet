@@ -10,7 +10,28 @@ import UIKit
 
 class QuizViewController: UIViewController {
     
+    // MARK: Instance variables
+    
+    var totalGrade: Int = 0
+    var timer = Timer()
+    var quiz: Quiz!
+    var quizQuestionCategory: QuizQuestionCategory?
+    var hasTimer = false
+    var seconds = 5
+    var user = User.currentUser
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    unowned var coinChangeIndicatorViewController: CoinChangeIndicatorViewController!
+    var consequenceController: ConsequenceController!
+    var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
+    
+    /// The index of the button corresponding to the right answer of currentQuestion
+    var correctButton = UIButton()
+    var correctAnswerImageView = UIImageView()
+    /// Store the original size of the background View
+    var originalBackgroundFrames: CGRect?
+    
     @IBOutlet weak var timerLabel: UILabel!
+    @IBOutlet weak var coinChangeIndicatorView: UIView!
     @IBOutlet weak var curvedEdgeBackgroundView: UIView!
     
     @IBOutlet weak var questionCategoryLabel: UILabel!
@@ -27,29 +48,40 @@ class QuizViewController: UIViewController {
     @IBOutlet weak var answerCorrectnessImageView3: UIImageView!
     @IBOutlet weak var answerCorrectnessImageView4: UIImageView!
     
-    // Need to be passed by segue
-    var totalGrade: Int = 0
-    var timer = Timer()
-    var quiz: Quiz!
-    var quizQuestionCategory: QuizQuestionCategory?
-    var hasTimer = false
-    var seconds = 5
-    var user = User.currentUser
-    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
-    var consequenceController: ConsequenceController!
     
-    // The index of the button corresponding to the right answer of currentQuestion
-    var correctButton = UIButton()
-    var correctAnswerImageView = UIImageView()
+    // MARK: - Consequence visualization delegate
     
-    // Store the original size of the background View
-    var originalBackgroundFrames: CGRect?
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeUserLevelBy(let change):
+            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
+            progressChangeIndicatorController.animate(view: levelProgressChangeIndicatorView, forChange: change)
+        case .changeUserCoinsBy(let change):
+            coinChangeIndicatorViewController.configureUsing(change: change, style: .longLight)
+            progressChangeIndicatorController.animate(view: coinChangeIndicatorView, forChange: change)
+        default:
+            break
+        }
+    }
+    
+    
+    // MARK: - View controller methods
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Prepare the views
+        configureRoundCorners()
+        prepareUI()
+        
+        // Initialize consequence controller
+        consequenceController = ConsequenceController(for: User.currentUser)
+    }
     
     // Functions inside viewWillAppear will still operate the second time the view controller appears
     override func viewWillAppear(_ animated: Bool) {
         expandBackgroundView()
         
-        // FIXME: This needs to change
         // Initialize a quiz with quizLevel
         quiz = Quiz(ofDifficulty: user.level.levelNumber, category: quizQuestionCategory)
         
@@ -57,17 +89,8 @@ class QuizViewController: UIViewController {
         updateUI()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // Prepare the views
-        configureRoundCorners()
-        resetAllViews()
-        levelProgressChangeIndicatorView.alpha = 0
-        
-        // Initialize consequence controller
-        consequenceController = ConsequenceController(for: User.currentUser)
-    }
+    
+    // MARK: - Instance methods
     
     func configureRoundCorners() {
         // Background view round corners
@@ -90,7 +113,7 @@ class QuizViewController: UIViewController {
         
     }
     
-    func resetAllViews() {
+    func prepareUI() {
         let answerButtons = [answerButton1, answerButton2, answerButton3, answerButton4]
         let imageViews = [answerCorrectnessImageView1, answerCorrectnessImageView2, answerCorrectnessImageView3, answerCorrectnessImageView4]
         
@@ -109,6 +132,11 @@ class QuizViewController: UIViewController {
         // Hide question label and timer
         questionLabel.alpha = 0.0
         timerLabel.alpha = 0.0
+        
+        // Hide progress change indicators
+        levelProgressChangeIndicatorView.alpha = 0
+        coinChangeIndicatorView.alpha = 0
+        
     }
     
     func updateUI() {
@@ -118,7 +146,7 @@ class QuizViewController: UIViewController {
         guard let question = quiz.currentQuestion else { return }
         
         // Reset UI
-        resetAllViews()
+        prepareUI()
         
         // Set categoryString and question label
         questionCategoryLabel.text = question.categoryString
@@ -271,8 +299,11 @@ class QuizViewController: UIViewController {
         UIView.animate(withDuration: 1.0, animations: {
             self.curvedEdgeBackgroundView.frame = frameZero
         }) { (_) in
-            // MARK: Performs segue after the animation completes
-            self.dismiss(animated: true, completion: nil)
+            let chatViewController = self.presentingViewController as? ChatViewController
+            // Performs segue after the animation completes
+            self.dismiss(animated: true, completion: {
+                chatViewController?.friend.startChat()
+            })
         }
     }
     
@@ -284,49 +315,6 @@ class QuizViewController: UIViewController {
         }
     }
     
-    private func visualizeConsequence(_ consequence: Consequence) {
-        switch consequence {
-        case .changeUserLevelBy(let change):
-            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
-            animateLevelProgressChangeIndicatorFor(change: change)
-        default:
-            break
-        }
-    }
-    
-    private func animateLevelProgressChangeIndicatorFor(change: Int) {
-        var animation: CGAffineTransform!
-        if change > 0 {
-            // Make it rise from the bar
-            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
-            animation = CGAffineTransform(translationX: 0, y: -5)
-        } else if change < 0 {
-            animation = CGAffineTransform(translationX: 0, y: 5)
-        } else {
-            animation = CGAffineTransform(translationX: 0, y: 0)
-        }
-        
-        
-        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 1
-        }
-        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
-            self.levelProgressChangeIndicatorView.transform = animation
-        }
-        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 0
-        }
-        translateAnimator.addCompletion { (_) in
-            disappearAnimator.startAnimation()
-        }
-        
-        disappearAnimator.addCompletion { (_) in
-            self.levelProgressChangeIndicatorView.transform = .identity
-        }
-        
-        appearAnimator.startAnimation()
-        translateAnimator.startAnimation()
-    }
     
     @IBAction func answerButtonTapped(_ sender: UIButton) {
 
@@ -347,11 +335,19 @@ class QuizViewController: UIViewController {
         
         // Visualize the consequence
         if correctness == true {
-            consequenceController.handle(.changeUserLevelBy(question.addExperience))
-            visualizeConsequence(.changeUserLevelBy(question.addExperience))
+            // Handle the question consequences
+            let answerConsequence: Consequence = .changeUserLevelBy(question.addExperience)
+            let timeBonusConsequence: Consequence = .changeUserCoinsBy(timeRemaining)
+            consequenceController.handle(answerConsequence)
+            visualizeConsequence(answerConsequence)
+            // Handle the time bonus consequences
+            consequenceController.handle(timeBonusConsequence)
+            visualizeConsequence(timeBonusConsequence)
         } else {
-           consequenceController.handle(.changeUserLevelBy(-question.minusExperience))
-            visualizeConsequence(.changeUserLevelBy(-question.minusExperience))
+            // Handle the question consequences
+            let answerConsequence: Consequence = .changeUserLevelBy(-question.minusExperience)
+            consequenceController.handle(answerConsequence)
+            visualizeConsequence(answerConsequence)
         }
         
         // Set the selected answerCorrectness Image View
@@ -429,6 +425,9 @@ class QuizViewController: UIViewController {
         if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
             self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
+        } else if segue.identifier == "EmbedCoinChangeIndicator" {
+            let coinChangeIndicatorViewController = segue.destination as! CoinChangeIndicatorViewController
+            self.coinChangeIndicatorViewController = coinChangeIndicatorViewController
         }
     }
     

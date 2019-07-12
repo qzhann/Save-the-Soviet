@@ -22,7 +22,7 @@ struct ProgressChangeIndicatorController {
     // MARK: - Instance methods
     
     /// Animates the designated progress change indicator view for some distance.
-    func animateProgressChangeIndicator(view: UIView, forChange change: Int) {
+    func animate(view: UIView, forChange change: Int) {
         var animation: CGAffineTransform!
         if change > 0 {
             // Make it rise from the bar

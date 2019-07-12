@@ -19,12 +19,14 @@ class SupportLoyaltyProgressChangeIndicatorViewController: UIViewController {
     
     func configureUsing(change: Int, style: SupportLoyaltyChangeIndicatorDisplayStyle) {
         switch style {
-        case .support:
-            imageView.image = change >= 0 ? UIImage(named: "LoyaltyIncrease")! : UIImage(named: "LoyaltyDecrease")!
-            label.text = "\(change)"
-        case .loyalty:
-            imageView.image = change >= 0 ? UIImage(named: "LoyaltyIncrease")! : UIImage(named: "LoyaltyDecrease")!
-            label.text = change >= 0 ? "Loyalty +\(change)" : "Loyalty \(change)"
+        case .support, .loyaltyShort:
+            imageView.image = change >= 0 ? UIImage(named: "SupportLoyaltyIncrease")! : UIImage(named: "SupportLoyaltyDecrease")!
+            label.text = "\(change)%"
+            imageView.image = change >= 0 ? UIImage(named: "SupportLoyaltyIncrease")! : UIImage(named: "SupportLoyaltyDecrease")!
+            label.text = "\(change)%"
+        case .loyaltyLong:
+            imageView.image = change >= 0 ? UIImage(named: "SupportLoyaltyIncrease")! : UIImage(named: "SupportLoyaltyDecrease")!
+            label.text = change >= 0 ? "Loyalty +\(change)%" : "Loyalty \(change)%"
         }
         
     }
@@ -32,5 +34,5 @@ class SupportLoyaltyProgressChangeIndicatorViewController: UIViewController {
 }
 
 enum SupportLoyaltyChangeIndicatorDisplayStyle {
-    case support, loyalty
+    case support, loyaltyShort, loyaltyLong
 }

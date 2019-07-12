@@ -80,22 +80,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var loyaltyProgressChangeIndicatorView: UIView!
     
     
-    // MARK: - Consequence visualization delegate
-    
-    func visualizeConsequence(_ consequence: Consequence) {
-        switch consequence {
-        case .changeUserLevelBy(let change):
-            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
-        case .changeFriendLoyaltyBy(let change):
-            loyaltyProgressChangeIndicatorViewController.configureUsing(change: change, style: .loyalty)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: loyaltyProgressChangeIndicatorView, forChange: change)
-        default:
-            break
-        }
-    }
-    
-    
     // MARK: - View Controller Methods
     
     override func viewDidLoad() {
@@ -537,6 +521,19 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    func visualizeConsequence(_ consequence: Consequence) {
+        switch consequence {
+        case .changeUserLevelBy(let change):
+            levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .long)
+            progressChangeIndicatorController.animate(view: levelProgressChangeIndicatorView, forChange: change)
+        case .changeFriendLoyaltyBy(let change):
+            loyaltyProgressChangeIndicatorViewController.configureUsing(change: change, style: .loyaltyLong)
+            progressChangeIndicatorController.animate(view: loyaltyProgressChangeIndicatorView, forChange: change)
+        default:
+            break
+        }
+    }
+    
     
     // MARK: - IB Actions
     
@@ -591,18 +588,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: - Unwind Segue
     
-    // FIXME: This needs better implementation.
-    /// present the user with some choices after a quiz is done
-    @IBAction func unwindToChatViewControllerAfterQuiz(unwindSegue: UIStoryboardSegue) {
-        didAddIncomingMessageWith(responses: [OutgoingMessage(text: "How did I do?", responseMessageId: 5)], consequences: nil)
-        
-    }
-    
     // After a new friend is made, to avoid crashing, we tell the friend to start sending the message the new friend has stored.
     @IBAction func unwindToChatViewControllerAfterNewFriend(unwindSegue: UIStoryboardSegue) {
-        let newFriendViewController = unwindSegue.source as! NewFriendViewController
-        let newFriend = newFriendViewController.friend
-        friend.sendIncomingMessage(newFriend!.introductionMessageFromOthers)
+        friend.startChat()
     }
     
 }

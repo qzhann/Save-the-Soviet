@@ -21,11 +21,13 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     var consequenceController: ConsequenceController!
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
     unowned var supportProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
+    unowned var coinChangeIndicatorViewController: CoinChangeIndicatorViewController!
     var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
     
     @IBOutlet weak var backgroundView: UIView!
     
     @IBOutlet weak var userCoinsLabel: UILabel!
+    @IBOutlet weak var coinChangeIndicatorView: UIView!
     @IBOutlet weak var basicInfoBackgroundView: UIView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
@@ -51,16 +53,20 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         updateProgressViewsAndLabels()
     }
     
+    
     // MARK: - Consequence visualization delegate
     
     func visualizeConsequence(_ consequence: Consequence) {
         switch consequence {
         case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
+            progressChangeIndicatorController.animate(view: levelProgressChangeIndicatorView, forChange: change)
         case .changeUserSupportBy(let change):
             supportProgressChangeIndicatorViewController.configureUsing(change: change, style: .support)
-            progressChangeIndicatorController.animateProgressChangeIndicator(view: supportProgressChangeIndicatorView, forChange: change)
+            progressChangeIndicatorController.animate(view: supportProgressChangeIndicatorView, forChange: change)
+        case .changeUserCoinsBy(let change):
+            coinChangeIndicatorViewController.configureUsing(change: change, style: .short)
+            progressChangeIndicatorController.animate(view: coinChangeIndicatorView, forChange: change)
         default:
             break
         }
@@ -118,7 +124,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        // Set the delegate
+        // Set the delegates
         user.statusDisplayDelegate = self
         user.visualizationDelegate = self
         
@@ -191,6 +197,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         
         levelProgressChangeIndicatorView.alpha = 0
         supportProgressChangeIndicatorView.alpha = 0
+        coinChangeIndicatorView.alpha = 0
     }
     
     func updatePowerTableView() {
@@ -202,13 +209,14 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func updateProgressViewsAndLabels() {
-        let duration = 1.5
+        let duration = 1.2
         let levelProgress = user.level.normalizedProgress
         let energyProgress = user.support.normalizedProgress
         
-        // Animate the text changes
+        // Update labels
         levelProgressLabel.text = user.level.progressDescription
         supportProgressLabel.text = user.support.progressDescription
+        userCoinsLabel.text = "\(user.coins) still left in your pocket."
         
         // Animate progress view
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
@@ -256,6 +264,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         } else if segue.identifier == "EmbedSupportProgressChangeIndicator" {
             let supportProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
             self.supportProgressChangeIndicatorViewController = supportProgressChangeIndicatorViewController
+        } else if segue.identifier == "EmbedCoinChangeIndicator" {
+            let coinChangeIndicatorViewController = segue.destination as! CoinChangeIndicatorViewController
+            self.coinChangeIndicatorViewController = coinChangeIndicatorViewController
         }
     }
 
