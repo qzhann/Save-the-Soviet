@@ -74,7 +74,7 @@ class Power {
 
     // MARK: - Static properties
     static var testPowers: [Power] = [
-        Power(name: "Supporter", image: UIImage(named: "HeartPowerLevel3")!, description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: 1, every: 10.second),
+        Power(name: "Supporter", image: UIImage(named: "HeartPowerLevel3")!, description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
         Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [Power(name: "Lucky Dog", image: UIImage(named: "GiftPowerLevel3")!, description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
         Power(name: "???", image: UIImage(named: "Dog")!, description: "???????????????", affecting: .userCoins, strength: 5, every: 5.second)
     ]

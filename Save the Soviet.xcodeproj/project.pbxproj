@@ -15,9 +15,10 @@
 		42437C822250900D00ED18F4 /* UserDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42437C812250900D00ED18F4 /* UserDetailViewController.swift */; };
 		4243AD8A22B235CE00B93B8F /* ConsequenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4243AD8922B235CE00B93B8F /* ConsequenceController.swift */; };
 		42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */; };
+		4254B35422D8A39100B65B5B /* ProgressChangeIndicatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4254B35322D8A39100B65B5B /* ProgressChangeIndicatorController.swift */; };
 		4260A66622B0DA9D006BFBDE /* ConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */; };
 		42668C5521ED37B10095BDFD /* LeftChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */; };
-		4275B2F522D618C40044300B /* LoyaltyProgressChangeIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4275B2F422D618C40044300B /* LoyaltyProgressChangeIndicatorViewController.swift */; };
+		4275B2F522D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */; };
 		427848AE228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */; };
 		427848B0228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */; };
 		428136182203E7B70046EF11 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428136172203E7B70046EF11 /* ChatViewController.swift */; };
@@ -50,9 +51,10 @@
 		42437C812250900D00ED18F4 /* UserDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailViewController.swift; sourceTree = "<group>"; };
 		4243AD8922B235CE00B93B8F /* ConsequenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsequenceController.swift; sourceTree = "<group>"; };
 		42471E0322B6120500CBB6E8 /* EndChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndChatTableViewCell.swift; sourceTree = "<group>"; };
+		4254B35322D8A39100B65B5B /* ProgressChangeIndicatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressChangeIndicatorController.swift; sourceTree = "<group>"; };
 		4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationViewController.swift; sourceTree = "<group>"; };
 		42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftChatTableViewCell.swift; sourceTree = "<group>"; };
-		4275B2F422D618C40044300B /* LoyaltyProgressChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoyaltyProgressChangeIndicatorViewController.swift; sourceTree = "<group>"; };
+		4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportLoyaltyProgressChangeIndicatorViewController.swift; sourceTree = "<group>"; };
 		427848AD228A6B4A0019D4E0 /* PageSheetModalPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalPresentationAnimationController.swift; sourceTree = "<group>"; };
 		427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageSheetModalDismissalAnimationController.swift; sourceTree = "<group>"; };
 		428136172203E7B70046EF11 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				4243AD8922B235CE00B93B8F /* ConsequenceController.swift */,
+				4254B35322D8A39100B65B5B /* ProgressChangeIndicatorController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -158,7 +161,7 @@
 				42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */,
 				42ECF9EE21CC7CCC007AF7F9 /* QuizViewController.swift */,
 				42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */,
-				4275B2F422D618C40044300B /* LoyaltyProgressChangeIndicatorViewController.swift */,
+				4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -286,13 +289,14 @@
 				42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */,
 				4243AD8A22B235CE00B93B8F /* ConsequenceController.swift in Sources */,
 				42ECF9CF21CB2EC4007AF7F9 /* AppDelegate.swift in Sources */,
+				4254B35422D8A39100B65B5B /* ProgressChangeIndicatorController.swift in Sources */,
 				42668C5521ED37B10095BDFD /* LeftChatTableViewCell.swift in Sources */,
 				42ECF9EF21CC7CCC007AF7F9 /* QuizViewController.swift in Sources */,
 				427848B0228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift in Sources */,
 				42ECF9EB21CB2FEE007AF7F9 /* Quiz.swift in Sources */,
 				42ECF9E721CB2FCA007AF7F9 /* Message.swift in Sources */,
 				42060E6A22917F63002E1C64 /* RightChatTableViewCell.swift in Sources */,
-				4275B2F522D618C40044300B /* LoyaltyProgressChangeIndicatorViewController.swift in Sources */,
+				4275B2F522D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift in Sources */,
 				42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */,
 				423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */,
 				428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */,

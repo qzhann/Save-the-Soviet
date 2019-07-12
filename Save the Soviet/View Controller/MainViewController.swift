@@ -32,16 +32,29 @@ protocol DelayConsequenceHandlingDelegate: AnyObject {
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate {
     
+    // MARK: Instance properties
+    
+    unowned var user: User = User.currentUser
+    var currentFriend: Friend!
+    var deletedIndexPath: IndexPath?
+    var consequenceController: ConsequenceController!
+    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
+    unowned var supportProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
+    var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
+    private var didPrepareUI = false
+    var delayedConsequences: [Consequence] = []
+    
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
+    
     @IBOutlet weak var levelNumberLabel: UILabel!
     @IBOutlet weak var levelProgressView: UIProgressView!
     @IBOutlet weak var levelProgressLabel: UILabel!
-    @IBOutlet weak var supportProgressView: UIProgressView!
-    @IBOutlet weak var supportProgressLabel: UILabel!
-    
     @IBOutlet weak var levelProgressChangeIndicatorView: UIView!
     
+    @IBOutlet weak var supportProgressView: UIProgressView!
+    @IBOutlet weak var supportProgressLabel: UILabel!
+    @IBOutlet weak var supportProgressChangeIndicatorView: UIView!
     
     @IBOutlet weak var friendTableView: UITableView!
     
@@ -49,13 +62,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBOutlet weak var coinImageView: UIImageView!
     @IBOutlet weak var shopButton: UIButton!
     
-    unowned var user: User = User.currentUser
-    var currentFriend: Friend!
-    var deletedIndexPath: IndexPath?
-    var consequenceController: ConsequenceController!
-    unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
-    private var didPrepareUI = false
-    var delayedConsequences: [Consequence] = []
     
     // MARK: - Friend Image View Tap Delegate Method
     
@@ -94,7 +100,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         switch consequence {
         case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
-            animateLevelProgressChangeIndicatorFor(change: change)
+            progressChangeIndicatorController.animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
+        case .changeUserSupportBy(let change):
+            supportProgressChangeIndicatorViewController.configureUsing(change: change, style: .support)
+            progressChangeIndicatorController.animateProgressChangeIndicator(view: supportProgressChangeIndicatorView, forChange: change)
         default:
             break
         }
@@ -115,7 +124,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         user.visualizationDelegate = self
         // Preparing UI
         prepareUI()
-        prepareProgressViewsAndLabels()
         handleDelayedConsequences()
     }
     
@@ -125,6 +133,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             prepareUI()
             didPrepareUI = true
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        updateProgressViewsAndLabels()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -217,19 +229,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         // Reset coin image view
         coinImageView.alpha = 1
-    }
-    
-    func prepareProgressViewsAndLabels() {
-        levelProgressChangeIndicatorView.alpha = 0
         
-        // Prepare progress views and labels
-        let levelProgress = user.level.normalizedProgress
-        let energyProgress = user.support.normalizedProgress
-        levelProgressView.setProgress(levelProgress, animated: false)
-        supportProgressView.setProgress(energyProgress, animated: false)
-        levelNumberLabel.text = "\(user.level.levelNumber)"
-        levelProgressLabel.text = user.level.progressDescription
-        supportProgressLabel.text = user.support.progressDescription
+        // Hide progress change indicators
+        levelProgressChangeIndicatorView.alpha = 0
+        supportProgressChangeIndicatorView.alpha = 0
     }
     
     func updateProgressViewsAndLabels() {
@@ -247,40 +250,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             self.levelProgressView.setProgress(levelProgress, animated: true)
             self.supportProgressView.setProgress(energyProgress, animated: true)
         })
-    }
-    
-    private func animateLevelProgressChangeIndicatorFor(change: Int) {
-        var animation: CGAffineTransform!
-        if change > 0 {
-            // Make it rise from the bar
-            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
-            animation = CGAffineTransform(translationX: 0, y: -5)
-        } else if change < 0 {
-            animation = CGAffineTransform(translationX: 0, y: 5)
-        } else {
-            animation = CGAffineTransform(translationX: 0, y: 0)
-        }
-        
-        
-        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 1
-        }
-        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
-            self.levelProgressChangeIndicatorView.transform = animation
-        }
-        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 0
-        }
-        translateAnimator.addCompletion { (_) in
-            disappearAnimator.startAnimation()
-        }
-        
-        disappearAnimator.addCompletion { (_) in
-            self.levelProgressChangeIndicatorView.transform = .identity
-        }
-        
-        appearAnimator.startAnimation()
-        translateAnimator.startAnimation()
     }
     
     /// Handles delayed consequences, particularly used for makeNewFriend.
@@ -345,12 +314,15 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             chatViewController.friend = currentFriend
             chatViewController.delayedConsequenceHandlingDelegate = self
             friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)
-        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
-            let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
-            self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
         } else if segue.identifier == "ShowNewFriend" {
             let newFriendViewController = segue.destination as! NewFriendViewController
             newFriendViewController.friend = user.friends.last
+        } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
+            let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
+            self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
+        } else if segue.identifier == "EmbedSupportProgressChangeIndicator" {
+            let supportProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
+            self.supportProgressChangeIndicatorViewController = supportProgressChangeIndicatorViewController
         }
     }
     

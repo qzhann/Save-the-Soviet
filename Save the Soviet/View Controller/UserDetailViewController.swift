@@ -20,7 +20,8 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     var didConfirm = false
     var consequenceController: ConsequenceController!
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
-    
+    unowned var supportProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
+    var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
     
     @IBOutlet weak var backgroundView: UIView!
     
@@ -39,6 +40,7 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     @IBOutlet weak var supportBackgroundView: UIView!
     @IBOutlet weak var supportProgressView: UIProgressView!
     @IBOutlet weak var supportProgressLabel: UILabel!
+    @IBOutlet weak var supportProgressChangeIndicatorView: UIView!
     
     @IBOutlet weak var powerTableView: UITableView!
     @IBOutlet weak var tableViewHeader: UIView!
@@ -55,7 +57,10 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         switch consequence {
         case .changeUserLevelBy(let change):
             levelProgressChangeIndicatorViewController.configureUsing(change: change, style: .short)
-            animateLevelProgressChangeIndicatorFor(change: change)
+            progressChangeIndicatorController.animateProgressChangeIndicator(view: levelProgressChangeIndicatorView, forChange: change)
+        case .changeUserSupportBy(let change):
+            supportProgressChangeIndicatorViewController.configureUsing(change: change, style: .support)
+            progressChangeIndicatorController.animateProgressChangeIndicator(view: supportProgressChangeIndicatorView, forChange: change)
         default:
             break
         }
@@ -101,7 +106,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     
-    
     // MARK: - View Controller Methods
     
     override func viewDidLoad() {
@@ -122,7 +126,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         if let selectedIndexPath = selectedIndexPath {
             powerTableView.deselectRow(at: selectedIndexPath, animated: true)
         }
-        levelProgressChangeIndicatorView.alpha = 0
         
     }
     
@@ -185,6 +188,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         // Prepare progress views
         levelProgressView.setProgress(0.05, animated: false)
         supportProgressView.setProgress(0.05, animated: false)
+        
+        levelProgressChangeIndicatorView.alpha = 0
+        supportProgressChangeIndicatorView.alpha = 0
     }
     
     func updatePowerTableView() {
@@ -211,39 +217,6 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
         })
     }
     
-    private func animateLevelProgressChangeIndicatorFor(change: Int) {
-        var animation: CGAffineTransform!
-        if change > 0 {
-            // Make it rise from the bar
-            levelProgressChangeIndicatorView.transform = CGAffineTransform(translationX: 0, y: 5)
-            animation = CGAffineTransform(translationX: 0, y: -5)
-        } else if change < 0 {
-            animation = CGAffineTransform(translationX: 0, y: 5)
-        } else {
-            animation = CGAffineTransform(translationX: 0, y: 0)
-        }
-        
-        
-        let appearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 1
-        }
-        let translateAnimator = UIViewPropertyAnimator(duration: 1, curve: .easeOut) {
-            self.levelProgressChangeIndicatorView.transform = animation
-        }
-        let disappearAnimator = UIViewPropertyAnimator(duration: 0.2, curve: .linear) {
-            self.levelProgressChangeIndicatorView.alpha = 0
-        }
-        translateAnimator.addCompletion { (_) in
-            disappearAnimator.startAnimation()
-        }
-        
-        disappearAnimator.addCompletion { (_) in
-            self.levelProgressChangeIndicatorView.transform = .identity
-        }
-        
-        appearAnimator.startAnimation()
-        translateAnimator.startAnimation()
-    }
     
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
         dismiss(animated: true, completion: nil)
@@ -280,6 +253,9 @@ class UserDetailViewController: UIViewController, UITableViewDataSource, UITable
             confirmationViewController.user = user
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             self.levelProgressChangeIndicatorViewController = segue.destination as? LevelProgressChangeIndicatorViewController
+        } else if segue.identifier == "EmbedSupportProgressChangeIndicator" {
+            let supportProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
+            self.supportProgressChangeIndicatorViewController = supportProgressChangeIndicatorViewController
         }
     }
 

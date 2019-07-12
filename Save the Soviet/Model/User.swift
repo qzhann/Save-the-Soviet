@@ -119,6 +119,8 @@ class User {
         for friend in friends {
             friend.changeLoyaltyBy(progress: progress)
         }
+        
+        visualizationDelegate?.visualizeConsequence(.changeUserSupportBy(progress))
     }
     
     /// Handle changes in coins.
