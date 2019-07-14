@@ -9,14 +9,17 @@
 import Foundation
 import UIKit
 
-class User {
+class User: Codable {
     
     // MARK: Instance properties
     
     var name: String
     /// Description string for displaying on UserDetailViewController
     var description: String
-    var image: UIImage
+    var imageName: String
+    var image: UIImage {
+        return UIImage(named: imageName)!
+    }
     /// User level changes as the game progresses. This is related to the difficulty of the quiz questions and other aspects of the game.
     var level: Level {
         didSet {
@@ -52,14 +55,53 @@ class User {
     /// The view controller that should visualize the consequence on the screen.
     unowned var visualizationDelegate: ConsequenceVisualizationDelegate?
     
+    // MARK: - Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case name
+        case description
+        case imageName
+        case level
+        case support
+        case coins
+        case friends
+        case powers
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(description, forKey: .description)
+        try container.encode(imageName, forKey: .imageName)
+        try container.encode(level, forKey: .level)
+        try container.encode(support, forKey: .support)
+        try container.encode(coins, forKey: .coins)
+        try container.encode(friends, forKey: .friends)
+        try container.encode(powers, forKey: .powers)
+    }
+    
+    required convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decode(String.self, forKey: .name)
+        let description = try container.decode(String.self, forKey: .description)
+        let imageName = try container.decode(String.self, forKey: .imageName)
+        let level = try container.decode(Level.self, forKey: .level)
+        let support = try container.decode(Percentage.self, forKey: .support)
+        let coins = try container.decode(Int.self, forKey: .coins)
+        let friends = try container.decode(Array<Friend>.self, forKey: .friends)
+        let powers = try container.decode(Array<Power>.self, forKey: .powers)
+        
+        self.init(name: name, description: description, imageName: imageName, level: level, support: support, coins: coins, friends: friends, powers: powers)
+    }
+    
     
     // MARK: - Initializers
     
     /// Full initializer.
-    init(name: String, description: String, image: UIImage, level: Level, support: Percentage, coins: Int, friends: [Friend], powers: [Power]) {
+    init(name: String, description: String, imageName: String, level: Level, support: Percentage, coins: Int, friends: [Friend], powers: [Power]) {
         self.name = name
         self.description = description
-        self.image = image
+        self.imageName = imageName
         self.level = level
         self.support = support
         self.coins = coins
@@ -242,22 +284,32 @@ class User {
         }
     }
     
+    /// Calls start chat on the friend with the given name.
+    private func startChatForFriendNamed(_ name: String) {
+        let friend = friends.first { $0.lastName == name }
+        friend?.startChat()
+    }
+    
     // FIXME: Incomplete implementation
     /// Trigger chat events
     private func triggerChatEventsForLevel(_ level: Int) {
+        
         // Upgrade friends and record the highest level number
         upgradeAllFriendsToLevel(level)
         self.level.highestLevelNumber = level
         
+        // FIXME: Delete this
+        
+        
         // Trigger specified friends to start chat
         switch level {
         case 1:
-            Friend.akimov.startChat()
-            Friend.fomin.startChat()
-            Friend.quizFriend.startChat()
+            startChatForFriendNamed(Friend.akimov)
+            startChatForFriendNamed(Friend.fomin)
+            startChatForFriendNamed(Friend.quizFriend)
         case 2:
-            Friend.dyatlov.startChat()
-            Friend.legasov.startChat()
+            startChatForFriendNamed(Friend.dyatlov)
+            startChatForFriendNamed(Friend.legasov)
         case 3:
             break
         case 4:
@@ -292,13 +344,50 @@ class User {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", image: UIImage(named: "Gorbachev")!, level: Level(progress: 590), support: Percentage(progress: 95), coins: 100, friends: Friend.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    
+    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    
+    
+    // MARK: - Static methods
+    
+    /// Saves the user data to file.
+    static func saveToFile(user: User) {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let archiveURL = documentDirectory.appendingPathComponent("user_data").appendingPathExtension("plist")
+        let propertyListEncoder = PropertyListEncoder()
+        let data = try? propertyListEncoder.encode(user)
+        try? data?.write(to: archiveURL, options: .noFileProtection)
+    }
+    
+    /// Loads the user data from file.
+    static func loadFromFile() {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let archiveURL = documentDirectory.appendingPathComponent("user_data").appendingPathExtension("plist")
+        let propertyListDecoder = PropertyListDecoder()
+        if let data = try? Data(contentsOf: archiveURL), let decodedUser = try? propertyListDecoder.decode(User.self, from: data) {
+            currentUser = decodedUser
+        } else {
+            currentUser = testUser
+        }
+        
+        // FIXME: Debugging only
+        // try? FileManager().removeItem(at: archiveURL)
+    }
+    
+    static func clearFile() {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let archiveURL = documentDirectory.appendingPathComponent("user_data").appendingPathExtension("plist")
+        let propertyListEncoder = PropertyListEncoder()
+        let data = try? propertyListEncoder.encode("")
+        try? data?.write(to: archiveURL, options: .noFileProtection)
+    }
 }
 
 // MARK: -
 
 /// A progress tracker which tracks level number and progress. Level number changes as progress increases or decreases.
-struct Level {
+struct Level: Codable {
     
     // MARK: Instance properties
     
@@ -380,14 +469,14 @@ struct Level {
 // MARK: -
 
 /// States of the changes of level number.
-enum LevelNumberChangeState {
+enum LevelNumberChangeState: String, Codable {
     case increased, decreased, noChange
 }
 
 // MARK: -
 
 /// A progress tracker which represents progress in percentage. Does not have a level property.
-struct Percentage {
+struct Percentage: Codable {
     
     // MARK: Instance properties
     
@@ -420,4 +509,60 @@ struct Percentage {
         self.progress = progress
         normalizedProgress = Float(progress) / Float(maximumProgress)
     }
+}
+
+
+extension User {
+    
+    // MARK: - Static properties
+    static var dyatlov = Friend(lastName: "Dyatlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
+        ])), upgrades:
+        [:])
+    
+    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", imageName: "Legasov", description: "Science is the truth.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
+        ])),
+                                upgrades:
+        [:])
+    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", imageName: "Fomin", description: "Promotion is on the way.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .promptUserWith(
+        [OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
+         OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1, levelRestriction: 10),
+         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeUserLevelBy(5)])]),
+                              upgrades:
+        [:])
+    
+    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", imageName: "Akimov", description: "Love being a engineer.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(7), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeUserLevelBy(5)])
+        ])),
+                               upgrades:
+        [:])
+    
+    static var quizFriend = Friend(lastName: "Friend", shortTitle: "Quiz", fullTitle: "Test Quiz", imageName: "Akimov", description: "I test the quiz.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.quizFriendMessages, executionRestriction: .never, startChatUsing: .promptUserWith([
+        OutgoingMessage(description: "(Start Quiz)", consequences: [.setChatStartOption(.promptUserWith([OutgoingMessage(text: "How about that", responseMessageId: 0)])), .startQuizOfCategory(nil)])
+        ]),
+                                   upgrades:
+        [7: FriendUpgrade(shortTitle: "New Quiz", description: "Something new.", chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "Whatss up", responses: [OutgoingMessage(description: "Lets do quiz", consequences: [.startQuizOfCategory(nil)])])))])
+    
+    static var testNewFriend = Friend(lastName: "Dyatlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.newTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
+        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
+        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
+        ])),
+                                      upgrades:
+        [:])
+    
+    static var allPossibleFriends: [Friend] = [
+        User.dyatlov,
+        User.legasov,
+        User.fomin,
+        User.akimov,
+        User.quizFriend
+    ]
 }

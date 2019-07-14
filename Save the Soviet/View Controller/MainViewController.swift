@@ -38,7 +38,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: Instance properties
     
-    unowned var user: User = User.currentUser
+    var user: User!
     var currentFriend: Friend!
     var deletedIndexPath: IndexPath?
     var consequenceController: ConsequenceController!
@@ -118,7 +118,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: User.currentUser)
+        user = User.currentUser
+        consequenceController = ConsequenceController(for: user)
         
     }
     
@@ -146,6 +147,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewWillDisappear(_ animated: Bool) {
         user.statusDisplayDelegate = nil
         user.visualizationDelegate = nil
+        
+        // FIXME: Delete this
+        User.saveToFile(user: user)
     }
     
     

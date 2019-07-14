@@ -10,43 +10,160 @@ import Foundation
 import UIKit
 
 /// A tracker for whether the chat has ended, useful for resuming chat display in the chatDelegate.
-enum ChatEndingState {
+enum ChatEndingState: Codable {
     case notEnded
     case endedFrom(MessageDirection)
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case notEnded
+        case endedFrom
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .notEnded:
+            try container.encode("", forKey: .notEnded)
+        case .endedFrom(let direction):
+            try container.encode(direction, forKey: .endedFrom)
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let direction = try? container.decode(MessageDirection.self, forKey: .endedFrom) {
+            self = .endedFrom(direction)
+        } else {
+            self = .notEnded
+        }
+    }
 }
+
+// MARK: -
 
 /// A tracker for whether the user is expecting choices, just responded, or just began a chat.
-enum ResponseState {
+enum ResponseState: Codable {
     /// Friend is expecting an optional array of OutgoingMessage instances as response. If not nil, then ChatViewController should prompt the user for responses.
     case willPromptUserWith([OutgoingMessage]?)
-    /// Friend will send an optional
     /// User completed a whole set of responses in a chat.
     case completed
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case willPromptUserWith
+        case completed
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .willPromptUserWith(let choices):
+            try container.encode(choices, forKey: .willPromptUserWith)
+        case .completed:
+            try container.encode("", forKey: .completed)
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let choices = try? container.decode(Optional<Array<OutgoingMessage>>.self, forKey: .willPromptUserWith) {
+            self = .willPromptUserWith(choices)
+        } else {
+            self = .completed
+        }
+    }
 }
 
+// MARK: -
+
 /// Describes how a friend should begin a chat when being a new friend to the user.
-enum ChatStartOption {
+enum ChatStartOption: Codable {
     /// Start chat by prompting user with some choices
     case promptUserWith([OutgoingMessage])
     /// Start chat by sending incoming message
     case sendIncomingMessage(IncomingMessage)
     /// Does not start chat
     case none
+    
+    // MARK: Codable
+    enum CodingKeys: String, CodingKey {
+        case promptUserWith = " "
+        case sendIncomingMessage
+        case none
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .promptUserWith(let choices):
+            try container.encode(choices, forKey: .promptUserWith)
+        case .sendIncomingMessage(let message):
+            try container.encode(message, forKey: .sendIncomingMessage)
+        case .none:
+            try container.encode("", forKey: .none)
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let choices = try? container.decode(Array<OutgoingMessage>.self, forKey: .promptUserWith) {
+            self = .promptUserWith(choices)
+        } else if let message = try? container.decode(IncomingMessage.self, forKey: .sendIncomingMessage) {
+            self = .sendIncomingMessage(message)
+        } else {
+            self = .none
+        }
+    }
+    
 }
 
+// MARK: -
 
 /// A tracker indicating what conditions will allow the user the execute the friend. Useful for controlling the state of the executeFriendButton.
-enum ExecutionRestriction {
+enum ExecutionRestriction: Codable {
     /// No limitation. The friend can be executed at any time.
     case none
     /// The friend can only be executed at or above the level number given.
     case level(Int)
     /// The friend can never be executed.
     case never
+    
+    // MARK: Codable
+    enum CodingKeys: String, CodingKey {
+        case none
+        case level
+        case never
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .none:
+            try container.encode("", forKey: .none)
+        case .level(let level):
+            try container.encode(level, forKey: .level)
+        case .never:
+            try container.encode("", forKey: .never)
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if (try? container.decode(String.self, forKey: .none)) != nil {
+            self = .none
+        } else if let level = try? container.decode(Int.self, forKey: .level) {
+            self = .level(level)
+        } else {
+            self = .never
+        }
+    }
 }
 
 /// Stores the upgrade information for a friend. Each property is of an optional type. A nil value indicates no need for upgrade for that particular property.
-struct FriendUpgrade {
+struct FriendUpgrade: Codable {
     var shortTitle: String?
     var fullTitle: String?
     var description: String?
@@ -65,9 +182,12 @@ struct FriendUpgrade {
 /**
  A class which holds information about a friend and the chat history with that friend.
  */
-class Friend: Equatable {
+class Friend: Equatable, Codable {
     
     // MARK: Instance properties
+    
+    // FIXME: Delete this
+    var id = UUID()
     
     var lastName: String
     var shortTitle: String
@@ -78,7 +198,10 @@ class Friend: Equatable {
     var fullName: String {
         return "\(fullTitle) \(lastName)"
     }
-    var image: UIImage
+    var imageName: String
+    var image: UIImage {
+        return UIImage(named: imageName)!
+    }
     /// The description displayed on FriendDetailViewController
     var description: String
     var loyalty: Percentage {
@@ -116,31 +239,81 @@ class Friend: Equatable {
     /// The object responsible for visualizing changes in friend status, typically the FriendDetailViewController.
     weak var visualizationDelegate: ConsequenceVisualizationDelegate?
     
+    // MARK: - Codable
+    
+    enum PropertyKeys: String, CodingKey {
+        case lastName
+        case shortTitle
+        case fullTitle
+        case imageName
+        case description
+        case loyalty
+        case powers
+        case executionRestriction
+        case chatHistory
+        case displayedMessageCount
+        case hasNewMessage
+        case isChatting
+        case responseState
+        case chatEndState
+        case allPossibleMessages
+        case chatStartOption
+        case upgrades
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: PropertyKeys.self)
+        try container.encode(lastName, forKey: .lastName)
+        try container.encode(shortTitle, forKey: .shortTitle)
+        try container.encode(fullTitle, forKey: .fullTitle)
+        try container.encode(imageName, forKey: .imageName)
+        try container.encode(description, forKey: .description)
+        try container.encode(loyalty, forKey: .loyalty)
+        try container.encode(powers, forKey: .powers)
+        try container.encode(executionRestriction, forKey: .executionRestriction)
+        try container.encode(chatHistory, forKey: .chatHistory)
+        try container.encode(displayedMessageCount, forKey: .displayedMessageCount)
+        try container.encode(hasNewMessage, forKey: .hasNewMessage)
+        try container.encode(isChatting, forKey: .isChatting)
+        try container.encode(responseState, forKey: .responseState)
+        try container.encode(chatEndingState, forKey: .chatEndState)
+        try container.encode(allPossibleMessages, forKey: PropertyKeys.allPossibleMessages)
+        try container.encode(chatStartOption, forKey: .chatStartOption)
+        try container.encode(upgrades, forKey: .upgrades)
+    }
+    
+    required convenience init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: PropertyKeys.self)
+        let lastName = try container.decode(String.self, forKey: .lastName)
+        let shortTitle = try container.decode(String.self, forKey: .shortTitle)
+        let fullTitle = try container.decode(String.self, forKey: .fullTitle)
+        let imageName = try container.decode(String.self, forKey: .imageName)
+        let description = try container.decode(String.self, forKey: .description)
+        let loyalty = try container.decode(Percentage.self, forKey: .loyalty)
+        let powers = try container.decode(Array<Power>.self, forKey: .powers)
+        let chatHistory = try container.decode(Array<ChatMessage>.self, forKey: .chatHistory)
+        let displayedMessageCount = try container.decode(Int.self, forKey: .displayedMessageCount)
+        let allPossibleMessages = try container.decode(Dictionary<Int, IncomingMessage>.self, forKey: .allPossibleMessages)
+        let executionRestriction = try container.decode(ExecutionRestriction.self, forKey: .executionRestriction)
+        let chatStartOption = try container.decode(ChatStartOption.self, forKey: .chatStartOption)
+        let upgrades = try container.decode(Dictionary<Int, FriendUpgrade>.self, forKey: .upgrades)
+        self.init(lastName: lastName, shortTitle: shortTitle, fullTitle: fullTitle, imageName: imageName, description: description, loyalty: loyalty, powers: powers, chatHistory: chatHistory, displayedMessageCount: displayedMessageCount, allPossibleMessages: allPossibleMessages, executionRestriction: executionRestriction, startChatUsing: chatStartOption, upgrades: upgrades)
+        
+        hasNewMessage = try container.decode(Bool.self, forKey: .hasNewMessage)
+        isChatting = try container.decode(Bool.self, forKey: .hasNewMessage)
+        responseState = try container.decode(ResponseState.self, forKey: .responseState)
+        chatEndingState = try container.decode(ChatEndingState.self, forKey: .chatEndState)
+    }
+    
+    
     // MARK: - Initializers
     
     /// Full intializer for a Friend, begins chat with sending incoming message.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], executionRestriction: ExecutionRestriction, startChatUsing chatStartOption: ChatStartOption, upgrades: [Int: FriendUpgrade]) {
+    init(lastName: String, shortTitle: String, fullTitle: String, imageName: String, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], executionRestriction: ExecutionRestriction, startChatUsing chatStartOption: ChatStartOption, upgrades: [Int: FriendUpgrade]) {
         self.lastName = lastName
         self.shortTitle = shortTitle
         self.fullTitle = fullTitle
-        self.image = image
-        self.description = description
-        self.loyalty = loyalty
-        self.powers = powers
-        self.chatHistory = chatHistory
-        self.displayedMessageCount = displayedMessageCount
-        self.allPossibleMessages = allPossibleMessages
-        self.executionRestriction = executionRestriction
-        self.chatStartOption = chatStartOption
-        self.upgrades = upgrades
-    }
-    
-    /// Full initializer for a Friend, begins chat with prompting the user with choices.
-    init(lastName: String, shortTitle: String, fullTitle: String, image: UIImage, description: String, loyalty: Percentage, powers: [Power], chatHistory: [ChatMessage], displayedMessageCount: Int, allPossibleMessages: [Int: IncomingMessage], beginWithPromptingChoices choices: [OutgoingMessage], executionRestriction: ExecutionRestriction, startChatUsing chatStartOption: ChatStartOption, upgrades: [Int: FriendUpgrade]) {
-        self.lastName = lastName
-        self.shortTitle = shortTitle
-        self.fullTitle = fullTitle
-        self.image = image
+        self.imageName = imageName
         self.description = description
         self.loyalty = loyalty
         self.powers = powers
@@ -156,7 +329,7 @@ class Friend: Equatable {
     // MARK: - Equatable
     
     static func == (lhs: Friend, rhs: Friend) -> Bool {
-        return lhs.fullName == rhs.fullName && lhs.description == rhs.description
+        return lhs.lastName == rhs.lastName && lhs.description == rhs.description
     }
     
     // MARK: - Chat status control methods
@@ -350,57 +523,12 @@ class Friend: Equatable {
     
     
     // MARK: - Static properties
-    static var dyatlov = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
-        ])),
-        upgrades:
-        [:])
     
-    static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", image: UIImage(named: "Legasov")!, description: "Science is the truth.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
-        ])),
-        upgrades:
-        [:])
-    static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", image: UIImage(named: "Fomin")!, description: "Promotion is on the way.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(10), startChatUsing: .promptUserWith(
-        [OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-         OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1, levelRestriction: 10),
-         OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeUserLevelBy(5)])]),
-        upgrades:
-        [:])
-    
-    static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", image: UIImage(named: "Akimov")!, description: "Love being a engineer.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.allTestMessages, executionRestriction: .level(7), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeUserLevelBy(5)])
-        ])),
-        upgrades:
-        [:])
-    
-    static var quizFriend = Friend(lastName: "Friend", shortTitle: "Quiz", fullTitle: "Test Quiz", image: UIImage(named: "Akimov")!, description: "I test the quiz.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.quizFriendMessages, executionRestriction: .never, startChatUsing: .promptUserWith([
-            OutgoingMessage(description: "(Start Quiz)", consequences: [.setChatStartOption(.promptUserWith([OutgoingMessage(text: "How about that", responseMessageId: 0)])), .startQuizOfCategory(nil)])
-        ]),
-        upgrades:
-        [7: FriendUpgrade(shortTitle: "New Quiz", description: "Something new.", chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "Whatss up", responses: [OutgoingMessage(description: "Lets do quiz", consequences: [.startQuizOfCategory(nil)])])))])
-    
-    static var testNewFriend = Friend(lastName: "Dytlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer 2", image: UIImage(named: "Dyatlov")!, description: "I hate Fomin.", loyalty: Percentage(progress: 50), powers: Power.testPowers, chatHistory: [], displayedMessageCount: 0, allPossibleMessages: Friend.newTestMessages, executionRestriction: .level(10), startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-        OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-        OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-        OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
-        ])),
-        upgrades:
-        [:])
-    
-    static var allPossibleFriends: [Friend] = [
-        Friend.dyatlov,
-        Friend.legasov,
-        Friend.fomin,
-        Friend.akimov,
-        Friend.quizFriend
-    ]
+    static let akimov = "Akimov"
+    static let legasov = "Legasov"
+    static let dyatlov = "Dyatlov"
+    static let fomin = "Fomin"
+    static let quizFriend = "Friend"
     
     static var allTestMessages: [Int: IncomingMessage] = [
         0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
@@ -410,7 +538,7 @@ class Friend: Equatable {
             ]),
         1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [
                 OutgoingMessage(description: "Good", texts: "Good.", "I will check on your work later on", "It is an honor working on the job you have now", "people depend on your work", responseMessageId: 2),
-                OutgoingMessage(description: "Wonderful", texts: "Wonderful.", responseMessageId: nil, consequences: [.setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "Good job.", consequences: [.endChatFrom(.incoming)], responses: nil))), .makeNewFriend(Friend.testNewFriend)]),
+                OutgoingMessage(description: "Wonderful", texts: "Wonderful.", responseMessageId: nil, consequences: [.setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "Good job.", consequences: [.endChatFrom(.incoming)], responses: nil))), .makeNewFriend(User.testNewFriend)]),
                 OutgoingMessage(description: "OK", texts: "OK.", "Keep it up.", responseMessageId: 3, consequences: [.changeFriendLoyaltyBy(-1)]),
             ]),
         2: IncomingMessage(texts: "Thank you, president Gorbachev.", consequences: [.changeUserSupportBy(1), .changeFriendLoyaltyBy(2)], responses: [

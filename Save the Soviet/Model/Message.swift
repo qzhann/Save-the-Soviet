@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum MessageDirection {
+enum MessageDirection: String, Codable {
     /// ChatMessage sent by the User.
     case outgoing
     /// ChatMessage sent by a Friend.
@@ -20,7 +20,7 @@ enum MessageDirection {
 
 
 /// The data model held by a Friend in its chatHistory.
-class ChatMessage: Equatable, CustomStringConvertible {
+class ChatMessage: Equatable, CustomStringConvertible, Codable {
     
     // MARK: Equatable
     static func ==(lhs: ChatMessage, rhs: ChatMessage) -> Bool{
@@ -73,7 +73,7 @@ class ChatMessage: Equatable, CustomStringConvertible {
 /**
  A struct that holds texts, optional OutgoingMessage array as responses, and optional Consequence array as consequences.
  */
-struct IncomingMessage {
+struct IncomingMessage: Codable {
     // MARK: Instance properties
     /// An array of String that will be texted in sequence by a Friend when sending the IncomingMessage.
     var texts: [String]
@@ -108,7 +108,7 @@ struct IncomingMessage {
 /**
  A struct that holds description, texts, optional Int useful for the response IncomingMessage, and optional Consequence array as consequences. Different from IncomingMessage, OutgoingMessage has an additional optional levelRestriction.
  */
-struct OutgoingMessage {
+struct OutgoingMessage: Codable {
     // MARK: Instance properties
     /// The String displayed for each response choice.
     var description: String
@@ -173,7 +173,7 @@ struct OutgoingMessage {
 // MARK: -
 
 /// Consequences of a IncomingMessage or an OutgoingMessage, represented with enums.
-enum Consequence {
+enum Consequence: Codable {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
     case executeFriend(Friend)
@@ -184,4 +184,80 @@ enum Consequence {
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory?)
     case setChatStartOption(ChatStartOption)
+    case other
+    
+    // MARK: Codable
+    
+    enum CodingKeys: String, CodingKey {
+        case endChatFrom
+        case makeNewFriend
+        case executeFriend
+        case changeUserLevelBy
+        case changeUserSupportBy
+        case changeUserCoinsBy
+        case changeFriendLoyaltyBy
+        case upgradePower
+        case startQuizOfCategory
+        case setChatStartOption
+        case other
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        switch self {
+        case .endChatFrom(let direction):
+            try container.encode(direction, forKey: .endChatFrom)
+        case .makeNewFriend(let friend):
+            try container.encode(friend, forKey: .makeNewFriend)
+        case .executeFriend(let friend):
+            try container.encode(friend, forKey: .executeFriend)
+        case .changeUserLevelBy(let change):
+            try container.encode(change, forKey: .changeUserLevelBy)
+        case .changeUserSupportBy(let change):
+            try container.encode(change, forKey: .changeUserSupportBy)
+        case .changeUserCoinsBy(let change):
+            try container.encode(change, forKey: .changeUserCoinsBy)
+        case .changeFriendLoyaltyBy(let change):
+            try container.encode(change, forKey: .changeFriendLoyaltyBy)
+        case .upgradePower(let power):
+            try container.encode(power, forKey: .upgradePower)
+        case .startQuizOfCategory(let category):
+            try container.encode(category, forKey: .startQuizOfCategory)
+        case .setChatStartOption(let option):
+            try container.encode(option, forKey: .setChatStartOption)
+        case .other:
+            try container.encode("", forKey: .other)
+        }
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let direction = try? container.decode(MessageDirection.self, forKey: .endChatFrom) {
+            self = .endChatFrom(direction)
+        } else if let friend = try? container.decode(Friend.self, forKey: .makeNewFriend) {
+            self = .makeNewFriend(friend)
+        } else if let friend = try? container.decode(Friend.self, forKey: .executeFriend) {
+            self = .executeFriend(friend)
+        } else if let change = try? container.decode(Int.self, forKey: .changeUserLevelBy) {
+            self = .changeUserLevelBy(change)
+        } else if let change = try? container.decode(Int.self, forKey: .changeUserSupportBy) {
+            self = .changeUserSupportBy(change)
+        } else if let change = try? container.decode(Int.self, forKey: .changeUserCoinsBy) {
+            self = .changeUserCoinsBy(change)
+        } else if let change = try? container.decode(Int.self, forKey: .changeFriendLoyaltyBy) {
+            self = .changeFriendLoyaltyBy(change)
+        } else if let power = try? container.decode(Power.self, forKey: .upgradePower) {
+            self = .upgradePower(power)
+        } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {
+            self = .startQuizOfCategory(category)
+        } else if let option = try? container.decode(ChatStartOption.self, forKey: .setChatStartOption) {
+            self = .setChatStartOption(option)
+        } else {
+            self = .other
+        }
+    }
+}
+
+enum CodingError: Error {
+    case decoding(String)
 }

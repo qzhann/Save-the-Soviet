@@ -9,7 +9,7 @@
 import Foundation
 
 /// Holds the QuizQuestions used during a quiz.
-class Quiz {
+class Quiz: Codable {
     
     // MARK: Instance properties
     
@@ -88,7 +88,7 @@ class Quiz {
 
 // MARK: -
 
-enum QuizQuestionCategory: String, CaseIterable {
+enum QuizQuestionCategory: String, CaseIterable, Codable {
     /// Factutal questions
     case facts = "Facts"
     /// Historic questions
@@ -107,7 +107,7 @@ enum QuizQuestionCategory: String, CaseIterable {
 
 // MARK: -
 
-struct QuizQuestion {
+struct QuizQuestion: Codable {
     
     // MARK: Instance properties
     
