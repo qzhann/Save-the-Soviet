@@ -54,7 +54,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     // MARK: Instance properties
     
-    unowned var user = User.currentUser
+    unowned var user: User!
     unowned var friend: Friend!
     var chatController = ChatController()
     /// The TableViewController responsible for handling the display and selection of response choices
@@ -67,7 +67,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
     unowned var loyaltyProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
     unowned var delayedConsequenceHandlingDelegate: DelayConsequenceHandlingDelegate!
-    var quizQuestionCategory: QuizQuestionCategory?
+    var quizQuestionCategory: QuizQuestionCategory = .all
     var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 8)
     
     let hairlineView = UIView()
@@ -84,7 +84,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: User.currentUser, chatViewController: self)
+        consequenceController = ConsequenceController(for: user, chatViewController: self)
         prepareUI()
         resumeChat()
 

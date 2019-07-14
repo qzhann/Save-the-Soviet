@@ -182,9 +182,8 @@ enum Consequence: Codable {
     case changeUserCoinsBy(Int)
     case changeFriendLoyaltyBy(Int)
     case upgradePower(Power)
-    case startQuizOfCategory(QuizQuestionCategory?)
+    case startQuizOfCategory(QuizQuestionCategory)
     case setChatStartOption(ChatStartOption)
-    case other
     
     // MARK: Codable
     
@@ -199,7 +198,6 @@ enum Consequence: Codable {
         case upgradePower
         case startQuizOfCategory
         case setChatStartOption
-        case other
     }
     
     func encode(to encoder: Encoder) throws {
@@ -225,8 +223,6 @@ enum Consequence: Codable {
             try container.encode(category, forKey: .startQuizOfCategory)
         case .setChatStartOption(let option):
             try container.encode(option, forKey: .setChatStartOption)
-        case .other:
-            try container.encode("", forKey: .other)
         }
     }
     
@@ -248,12 +244,12 @@ enum Consequence: Codable {
             self = .changeFriendLoyaltyBy(change)
         } else if let power = try? container.decode(Power.self, forKey: .upgradePower) {
             self = .upgradePower(power)
-        } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {
-            self = .startQuizOfCategory(category)
         } else if let option = try? container.decode(ChatStartOption.self, forKey: .setChatStartOption) {
             self = .setChatStartOption(option)
+        } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {
+            self = .startQuizOfCategory(category)
         } else {
-            self = .other
+            throw CodingError.decoding("Shit")
         }
     }
 }

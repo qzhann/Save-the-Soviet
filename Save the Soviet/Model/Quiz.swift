@@ -32,7 +32,7 @@ class Quiz: Codable {
     // MARK: - Initializers
     
     /// Initialize a Quiz using difficulty and category. If category is nil, randomly select category and questions inside the categories from that difficulty.
-    init(ofDifficulty difficulty: Int, category: QuizQuestionCategory? = nil) {
+    init(ofDifficulty difficulty: Int, category: QuizQuestionCategory) {
         // Difficulty does not go beyond range
         var currentDifficulty = difficulty
         if difficulty > QuizQuestion.allPossibleQuizQuestions.count - 1 {
@@ -41,7 +41,7 @@ class Quiz: Codable {
         
         questions = []
         
-        if let category = category {
+        if category != .all {
             // Add random questions of the category at current difficulty
             for index in 0 ..< 5 {
                 questions.append((QuizQuestion.allPossibleQuizQuestions[currentDifficulty]?[category]?.randomElement())!)
@@ -99,9 +99,11 @@ enum QuizQuestionCategory: String, CaseIterable, Codable {
     case crisis = "Crisis"
     /// Questions that are in the form of making decisions.
     case decision = "Decision"
+    /// Questions from all categories, generated randomly
+    case all = "All"
     
     static var random: QuizQuestionCategory {
-        return self.allCases.randomElement()!
+        return [.facts, .history, .nuclear, .crisis, .decision].randomElement()!
     }
 }
 

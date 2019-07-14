@@ -111,7 +111,7 @@ class Power: Codable {
     static var testPowers: [Power] = [
         Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
         Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .userCoins, strength: 5, every: 5.second)
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
     ]
 }
 

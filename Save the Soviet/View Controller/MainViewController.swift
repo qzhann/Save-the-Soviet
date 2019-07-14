@@ -317,6 +317,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             friendDetailViewController.friend = currentFriend
         } else if segue.identifier == "ShowChat" {
             let chatViewController = segue.destination as! ChatViewController
+            chatViewController.user = user
             chatViewController.transitioningDelegate = self
             currentFriend.isChatting = true
             chatViewController.friend = currentFriend

@@ -22,7 +22,7 @@ class ConfirmationViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        consequenceController = ConsequenceController(for: User.currentUser, confirmationViewController: self)
+        consequenceController = ConsequenceController(for: user, confirmationViewController: self)
     }
     
     override func viewDidLayoutSubviews() {

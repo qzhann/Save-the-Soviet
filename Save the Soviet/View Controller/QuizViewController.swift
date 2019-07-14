@@ -15,7 +15,7 @@ class QuizViewController: UIViewController {
     var totalGrade: Int = 0
     var timer = Timer()
     var quiz: Quiz!
-    var quizQuestionCategory: QuizQuestionCategory?
+    var quizQuestionCategory: QuizQuestionCategory = .all
     var hasTimer = false
     var seconds = 5
     var user = User.currentUser
