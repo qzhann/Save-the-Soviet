@@ -177,6 +177,7 @@ enum Consequence: Codable {
     case endChatFrom(MessageDirection)
     case makeNewFriend(Friend)
     case executeFriend(Friend)
+    case friendIsExecuted(Friend)
     case changeUserLevelBy(Int)
     case changeUserSupportBy(Int)
     case changeUserCoinsBy(Int)
@@ -184,6 +185,7 @@ enum Consequence: Codable {
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory)
     case setChatStartOption(ChatStartOption)
+    case userLevelIncreasedTo(Int)
     
     // MARK: Codable
     
@@ -191,6 +193,7 @@ enum Consequence: Codable {
         case endChatFrom
         case makeNewFriend
         case executeFriend
+        case friendIsExecuted
         case changeUserLevelBy
         case changeUserSupportBy
         case changeUserCoinsBy
@@ -198,6 +201,7 @@ enum Consequence: Codable {
         case upgradePower
         case startQuizOfCategory
         case setChatStartOption
+        case userLevelIncreasedTo
     }
     
     func encode(to encoder: Encoder) throws {
@@ -209,6 +213,8 @@ enum Consequence: Codable {
             try container.encode(friend, forKey: .makeNewFriend)
         case .executeFriend(let friend):
             try container.encode(friend, forKey: .executeFriend)
+        case .friendIsExecuted(let friend):
+            try container.encode(friend, forKey: .friendIsExecuted)
         case .changeUserLevelBy(let change):
             try container.encode(change, forKey: .changeUserLevelBy)
         case .changeUserSupportBy(let change):
@@ -223,6 +229,8 @@ enum Consequence: Codable {
             try container.encode(category, forKey: .startQuizOfCategory)
         case .setChatStartOption(let option):
             try container.encode(option, forKey: .setChatStartOption)
+        case .userLevelIncreasedTo(let level):
+            try container.encode(level, forKey: .userLevelIncreasedTo)
         }
     }
     
@@ -234,6 +242,8 @@ enum Consequence: Codable {
             self = .makeNewFriend(friend)
         } else if let friend = try? container.decode(Friend.self, forKey: .executeFriend) {
             self = .executeFriend(friend)
+        } else if let friend = try? container.decode(Friend.self, forKey: .friendIsExecuted) {
+            self = .friendIsExecuted(friend)
         } else if let change = try? container.decode(Int.self, forKey: .changeUserLevelBy) {
             self = .changeUserLevelBy(change)
         } else if let change = try? container.decode(Int.self, forKey: .changeUserSupportBy) {
@@ -248,6 +258,8 @@ enum Consequence: Codable {
             self = .setChatStartOption(option)
         } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {
             self = .startQuizOfCategory(category)
+        } else if let level = try? container.decode(Int.self, forKey: .userLevelIncreasedTo) {
+            self = .userLevelIncreasedTo(level)
         } else {
             throw CodingError.decoding("Shit")
         }

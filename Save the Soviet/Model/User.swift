@@ -12,7 +12,6 @@ import UIKit
 class User: Codable {
     
     // MARK: Instance properties
-    
     var name: String
     /// Description string for displaying on UserDetailViewController
     var description: String
@@ -28,6 +27,8 @@ class User: Codable {
             
             // If level increases for the first time
             if level.levelNumberChangeState == .increased && level.levelNumber > level.highestLevelNumber {
+                // Handle level up
+                levelUpHandlingDelegate?.userLevelIncreasedTo(level.levelNumber)
                 // Trigger chat events
                 triggerChatEventsForLevel(level.levelNumber)
             }
@@ -54,6 +55,8 @@ class User: Codable {
     unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
     /// The view controller that should visualize the consequence on the screen.
     unowned var visualizationDelegate: ConsequenceVisualizationDelegate?
+    /// The view controller that handles level up, typically MainViewController.
+    unowned var levelUpHandlingDelegate: LevelUpHandlingDelegate?
     
     // MARK: - Codable
     
@@ -342,9 +345,9 @@ class User: Codable {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 590), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
-    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 590), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
     
     // MARK: - Static methods

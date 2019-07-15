@@ -19,6 +19,7 @@ class ConfirmationViewController: UIViewController {
     var consequence: Consequence!
     var consequenceController: ConsequenceController!
     unowned var confirmationDelegate: ConfirmationDelegate?
+    weak var executedFriend: Friend?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +41,9 @@ class ConfirmationViewController: UIViewController {
         confirmButton.layer.cornerRadius = confirmButton.frame.height / 2
         confirmButton.clipsToBounds = true
         
+        // Show cancel button
+        showCancelButton()
+        
         // Set texts
         switch consequence {
         case .upgradePower(let power):
@@ -50,12 +54,21 @@ class ConfirmationViewController: UIViewController {
             } else {
                 textLabel.text = "Not enough coins :("
                 confirmButton.setTitle("OK...", for: .normal)
-                cancelButton.setTitle("Cancel", for: .normal)
+                hideCancelButton()
             }
         case .executeFriend(let friend):
             textLabel.text = "Execute \(friend.shortName) ?"
             confirmButton.setTitle("Yes", for: .normal)
             cancelButton.setTitle("Maybe not.", for: .normal)
+            executedFriend = friend
+        case .friendIsExecuted(let friend):
+            textLabel.text = "\(friend.shortName) is executed."
+            confirmButton.setTitle("OK", for: .normal)
+            hideCancelButton()
+        case .userLevelIncreasedTo(let level):
+            textLabel.text = "You have reached level \(level)!"
+            confirmButton.setTitle("Nice", for: .normal)
+            hideCancelButton()
         default:
             break
         }
@@ -63,14 +76,33 @@ class ConfirmationViewController: UIViewController {
     }
     
     
+    // MARK: - Instance methods
+    
+    func hideCancelButton() {
+        cancelButton.alpha = 0
+        cancelButton.isHidden = true
+        confirmButton.transform = CGAffineTransform(translationX: 0, y: 5)
+    }
+    
+    func showCancelButton() {
+        cancelButton.alpha = 1
+        cancelButton.isHidden = false
+        confirmButton.transform = .identity
+    }
+    
+    
     // MARK: - IB actions
     
     @IBAction func confirmButtonTapped(_ sender: UIButton) {
-        consequenceController.handle(consequence)
-        confirmationDelegate?.didConfirm = true
+        if consequenceController.canHandle(consequence) {
+            consequenceController.handle(consequence)
+            confirmationDelegate?.didConfirm = true
+        }
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func cancelButtonTapped(_ sender: UIButton) {
+        executedFriend = nil
         dismiss(animated: true, completion: nil)
     }
     
@@ -87,6 +119,7 @@ class ConfirmationViewController: UIViewController {
         if segue.identifier == "UnwindToMain" {
             let mainViewController = segue.destination as! MainViewController
             mainViewController.deletedIndexPath = sender as? IndexPath
+            mainViewController.executedFriend = executedFriend
         }
     }
 

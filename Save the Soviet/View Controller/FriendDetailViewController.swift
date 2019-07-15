@@ -136,7 +136,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         // Calls configure round corners again to ensure that round corners are rendered correctly after transition
         configureRoundCorners()
         updateProgressViewsAndLabels()
-        updateUI()
+        updatePowerTableView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -217,7 +217,7 @@ class FriendDetailViewController: UIViewController, UITableViewDataSource, UITab
         loyaltyProgressChangeIndicatorView.alpha = 0
     }
     
-    func updateUI() {
+    func updatePowerTableView() {
         if let selectedIndexPath = selectedIndexPath, didConfirm == true {
             powerTableView.reloadRows(at: [selectedIndexPath], with: .left)
             didConfirm = false

@@ -94,12 +94,13 @@ struct ConsequenceController {
         case .upgradePower(let power):
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)
-            confirmationController?.dismiss(animated: true, completion: nil)
         case .startQuizOfCategory(let category):
             chatViewController?.quizQuestionCategory = category
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         case .setChatStartOption(let option):
             chatViewController?.friend.chatStartOption = option
+        default:
+            break
         }
     }
 }

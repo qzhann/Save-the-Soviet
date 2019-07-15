@@ -33,20 +33,27 @@ protocol DelayConsequenceHandlingDelegate: AnyObject {
     var delayedConsequences: [Consequence] { get set }
 }
 
+protocol LevelUpHandlingDelegate: AnyObject {
+    func userLevelIncreasedTo(_ level: Int)
+}
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendMessageStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate {
+
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendMessageStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate, LevelUpHandlingDelegate {
     
     // MARK: Instance properties
     
     var user: User!
     var currentFriend: Friend!
     var deletedIndexPath: IndexPath?
+    weak var executedFriend: Friend?
     var consequenceController: ConsequenceController!
     unowned var levelProgressChangeIndicatorViewController: LevelProgressChangeIndicatorViewController!
     unowned var supportProgressChangeIndicatorViewController: SupportLoyaltyProgressChangeIndicatorViewController!
     var progressChangeIndicatorController = ProgressChangeIndicatorController(withAnimationDistance: 5)
     private var didPrepareUI = false
     var delayedConsequences: [Consequence] = []
+    var isDisplaying = false
+    var newLevel: Int?
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -113,6 +120,28 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
     }
     
+    // MARK: - Level up handling delegate
+    
+    func userLevelIncreasedTo(_ level: Int) {
+        // If there is already new level on record, update if needed. Otherwise set the new level
+        if let newLevel = newLevel {
+            if level > newLevel {
+                self.newLevel = level
+                handleNewLevel()
+            }
+        } else {
+            self.newLevel = level
+            handleNewLevel()
+        }
+        
+    }
+    
+    func handleNewLevel() {
+        if newLevel != nil && isDisplaying == true {
+            performSegue(withIdentifier: "ConfirmLevelUp", sender: nil)
+        }
+    }
+    
     
     // MARK: - View Controller Methods
     
@@ -120,7 +149,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidLoad()
         user = User.currentUser
         consequenceController = ConsequenceController(for: user)
-        
+        user.levelUpHandlingDelegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -128,11 +157,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         user.statusDisplayDelegate = self
         user.visualizationDelegate = self
         // Preparing UI
+        isDisplaying = true
         prepareUI()
         handleDelayedConsequences()
     }
     
-    // We call prepareUI in viewDidLayoutSubviews so that the dimentions of the subviews can be calculated correctly
+    // We call prepareUI in viewDidLayoutSubviews so that the dimensions of the subviews can be calculated correctly
     override func viewDidLayoutSubviews() {
         if didPrepareUI == false {
             prepareUI()
@@ -142,12 +172,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     override func viewDidAppear(_ animated: Bool) {
         updateProgressViewsAndLabels()
+        handleNewLevel()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         user.statusDisplayDelegate = nil
         user.visualizationDelegate = nil
-        
+        isDisplaying = false
         // FIXME: Delete this
         User.saveToFile(user: user)
     }
@@ -269,6 +300,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 user.makeNewFriend(friend: friend)
                 friendTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
                 friendTableView.endUpdates()
+            case .userLevelIncreasedTo(let level):
+                newLevel = level
+                performSegue(withIdentifier: "ConfirmLevelUp", sender: nil)
             default:
                 break
             }
@@ -332,6 +366,18 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "EmbedSupportProgressChangeIndicator" {
             let supportProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
             self.supportProgressChangeIndicatorViewController = supportProgressChangeIndicatorViewController
+        } else if segue.identifier == "ConfirmLevelUp" {
+            let confirmationViewController = segue.destination as! ConfirmationViewController
+            confirmationViewController.user = user
+            confirmationViewController.consequence = .userLevelIncreasedTo(newLevel!)
+            confirmationViewController.transitioningDelegate = self
+            newLevel = nil
+        } else if segue.identifier == "ConfirmExecuteFriend" {
+            let confirmationViewController = segue.destination as! ConfirmationViewController
+            confirmationViewController.user = user
+            confirmationViewController.consequence = .friendIsExecuted(executedFriend!)
+            confirmationViewController.transitioningDelegate = self
+            executedFriend = nil
         }
     }
     
@@ -339,7 +385,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     // MARK: - View Controller Transitioning Delegate Methods
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if presented is UserDetailViewController || presented is FriendDetailViewController {
+        if presented is UserDetailViewController || presented is FriendDetailViewController || presented is ConfirmationViewController {
             return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
         } else if presented is ChatViewController {
             return PushPresentationAnimationController()
@@ -365,6 +411,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             if let deletedPath = self.deletedIndexPath {
                 self.friendTableView.deleteRows(at: [deletedPath], with: .top)
+                self.performSegue(withIdentifier: "ConfirmExecuteFriend", sender: nil)
             }
         }
     }
