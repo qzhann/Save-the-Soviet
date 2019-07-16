@@ -20,6 +20,7 @@ class ConfirmationViewController: UIViewController {
     var consequenceController: ConsequenceController!
     unowned var confirmationDelegate: ConfirmationDelegate?
     weak var executedFriend: Friend?
+    weak var introducingFriend: Friend?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,10 +58,14 @@ class ConfirmationViewController: UIViewController {
                 hideCancelButton()
             }
         case .executeFriend(let friend):
-            textLabel.text = "Execute \(friend.shortName) ?"
+            textLabel.text = "Execute \(friend.shortName)?"
             confirmButton.setTitle("Yes", for: .normal)
             cancelButton.setTitle("Maybe not.", for: .normal)
             executedFriend = friend
+        case .makeNewFriend(let friend):
+            textLabel.text = "You can now chat with \(friend.lastName)!"
+            confirmButton.setTitle("OK!", for: .normal)
+            hideCancelButton()
         case .friendIsExecuted(let friend):
             textLabel.text = "\(friend.shortName) is executed."
             confirmButton.setTitle("OK", for: .normal)
@@ -98,7 +103,12 @@ class ConfirmationViewController: UIViewController {
             consequenceController.handle(consequence)
             confirmationDelegate?.didConfirm = true
         }
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            if let introducingFriend = self.introducingFriend {
+                introducingFriend.startChat()
+                self.introducingFriend = nil
+            }
+        }
     }
     
     @IBAction func cancelButtonTapped(_ sender: UIButton) {

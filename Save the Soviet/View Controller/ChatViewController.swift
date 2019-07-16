@@ -557,9 +557,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             let quizViewController = segue.destination as! QuizViewController
             quizViewController.transitioningDelegate = self
             quizViewController.quizQuestionCategory = self.quizQuestionCategory
-        } else if segue.identifier == "ShowNewFriend" {
-            let newFriendViewController = segue.destination as! NewFriendViewController
-            newFriendViewController.friend = self.newFriend
+        } else if segue.identifier == "ConfirmNewFriend" {
+            let confirmationViewController = segue.destination as! ConfirmationViewController
+            confirmationViewController.transitioningDelegate = self
+            confirmationViewController.user = user
+            confirmationViewController.introducingFriend = friend
+            confirmationViewController.consequence = .makeNewFriend(newFriend!)
+            newFriend = nil
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
             self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
@@ -573,6 +577,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if presented is QuizViewController {
             return PushPresentationAnimationController()
+        } else if presented is ConfirmationViewController {
+            return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
         }
         
         return nil
@@ -581,16 +587,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if dismissed is QuizViewController {
             return PushDismissalAnimationController()
+        } else if dismissed is ConfirmationViewController {
+            return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         }
         
         return nil
-    }
-    
-    // MARK: - Unwind Segue
-    
-    // After a new friend is made, to avoid crashing, we tell the friend to start sending the message the new friend has stored.
-    @IBAction func unwindToChatViewControllerAfterNewFriend(unwindSegue: UIStoryboardSegue) {
-        friend.startChat()
     }
     
 }

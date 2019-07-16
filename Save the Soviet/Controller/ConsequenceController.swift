@@ -69,7 +69,7 @@ struct ConsequenceController {
                 chatViewController.newFriend = friend
                 friend.startChat()
                 user.friendLoyaltyDidChange()
-                chatViewController.performSegue(withIdentifier: "ShowNewFriend", sender: nil)
+                chatViewController.performSegue(withIdentifier: "ConfirmNewFriend", sender: nil)
             }
         case .executeFriend(let friend):
             let row = user.friends.firstIndex(of: friend)!
