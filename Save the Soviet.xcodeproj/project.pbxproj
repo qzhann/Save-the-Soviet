@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		42060E6A22917F63002E1C64 /* RightChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */; };
-		422ECC5A22C3AB4100422A63 /* NewFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */; };
+		422ECC5A22C3AB4100422A63 /* RestartGameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422ECC5922C3AB4100422A63 /* RestartGameViewController.swift */; };
 		42366B4A22443777008B6DC8 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4922443777008B6DC8 /* MainViewController.swift */; };
 		42366B4C22443846008B6DC8 /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */; };
 		423B5CCC2257FCF30080E5CA /* PowerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */; };
@@ -26,6 +26,7 @@
 		428F62AD228C7A1500F9CACB /* PushDismissalAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */; };
 		42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */; };
 		42A9841A22AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A9841922AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift */; };
+		42C301C422DE1EA1007F1230 /* FadeAnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C301C322DE1EA1007F1230 /* FadeAnimationController.swift */; };
 		42D492FD22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D492FC22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift */; };
 		42D5333822A67E05002F1E2E /* ResponseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */; };
 		42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */; };
@@ -45,7 +46,7 @@
 
 /* Begin PBXFileReference section */
 		42060E6922917F63002E1C64 /* RightChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightChatTableViewCell.swift; sourceTree = "<group>"; };
-		422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendViewController.swift; sourceTree = "<group>"; };
+		422ECC5922C3AB4100422A63 /* RestartGameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestartGameViewController.swift; sourceTree = "<group>"; };
 		42366B4922443777008B6DC8 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		42366B4B22443846008B6DC8 /* FriendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
 		423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerTableViewCell.swift; sourceTree = "<group>"; };
@@ -63,6 +64,7 @@
 		428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushDismissalAnimationController.swift; sourceTree = "<group>"; };
 		42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPresentationAnimationController.swift; sourceTree = "<group>"; };
 		42A9841922AAD28800ABF1BA /* RightThinkingChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightThinkingChatTableViewCell.swift; sourceTree = "<group>"; };
+		42C301C322DE1EA1007F1230 /* FadeAnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeAnimationController.swift; sourceTree = "<group>"; };
 		42D492FC22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftThinkingChatTableViewCell.swift; sourceTree = "<group>"; };
 		42D5333722A67E05002F1E2E /* ResponseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewController.swift; sourceTree = "<group>"; };
 		42D5333922A6815C002F1E2E /* ResponseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseTableViewCell.swift; sourceTree = "<group>"; };
@@ -151,7 +153,6 @@
 				42437C812250900D00ED18F4 /* UserDetailViewController.swift */,
 				42FDD86C228AC2AA007BE38A /* FriendDetailViewController.swift */,
 				423B5CCB2257FCF30080E5CA /* PowerTableViewCell.swift */,
-				422ECC5922C3AB4100422A63 /* NewFriendViewController.swift */,
 				4260A66522B0DA9D006BFBDE /* ConfirmationViewController.swift */,
 				428136172203E7B70046EF11 /* ChatViewController.swift */,
 				42668C5421ED37B10095BDFD /* LeftChatTableViewCell.swift */,
@@ -165,6 +166,7 @@
 				42EAC4CE22C7A90900781A38 /* LevelProgressChangeIndicatorViewController.swift */,
 				4275B2F422D618C40044300B /* SupportLoyaltyProgressChangeIndicatorViewController.swift */,
 				4254B35522D8B13C00B65B5B /* CoinChangeIndicatorViewController.swift */,
+				422ECC5922C3AB4100422A63 /* RestartGameViewController.swift */,
 			);
 			path = "View Controller";
 			sourceTree = "<group>";
@@ -176,6 +178,7 @@
 				427848AF228A6B8B0019D4E0 /* PageSheetModalDismissalAnimationController.swift */,
 				42A96285228BE96E00A534E7 /* PushPresentationAnimationController.swift */,
 				428F62AC228C7A1500F9CACB /* PushDismissalAnimationController.swift */,
+				42C301C322DE1EA1007F1230 /* FadeAnimationController.swift */,
 			);
 			path = "Animation Controller";
 			sourceTree = "<group>";
@@ -286,8 +289,9 @@
 				42471E0422B6120600CBB6E8 /* EndChatTableViewCell.swift in Sources */,
 				42A96286228BE96E00A534E7 /* PushPresentationAnimationController.swift in Sources */,
 				428136182203E7B70046EF11 /* ChatViewController.swift in Sources */,
-				422ECC5A22C3AB4100422A63 /* NewFriendViewController.swift in Sources */,
+				422ECC5A22C3AB4100422A63 /* RestartGameViewController.swift in Sources */,
 				42D492FD22AACA69002FC6B9 /* LeftThinkingChatTableViewCell.swift in Sources */,
+				42C301C422DE1EA1007F1230 /* FadeAnimationController.swift in Sources */,
 				42ECF9E521CB2FBD007AF7F9 /* Friend.swift in Sources */,
 				42D5333A22A6815C002F1E2E /* ResponseTableViewCell.swift in Sources */,
 				42FDD86D228AC2AA007BE38A /* FriendDetailViewController.swift in Sources */,

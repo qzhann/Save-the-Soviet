@@ -12,6 +12,7 @@ import UIKit
 class User: Codable {
     
     // MARK: Instance properties
+    var id = UUID()
     var name: String
     /// Description string for displaying on UserDetailViewController
     var description: String
@@ -34,11 +35,18 @@ class User: Codable {
             }
         }
     }
-    /// User support rate reprented as percentage. When support drops to 0, the game ends.
-    var support: Percentage {
+    /// User support rate reprented as percentage. When support drops to 0, the game ends. Note that support is automatically calculated as the average of the friend loyalty.
+    var support: Percentage = Percentage(progress: 1) {
         didSet {
             // We call update here but not the setter method to achieve incrementing effect on the text
             statusDisplayDelegate?.updateUserStatus()
+            
+            if support.progress == 0 {
+                restartGameHandlingDelegate?.restartGameWith(winState: false)
+            } else if support.progress == support.maximumProgress {
+                restartGameHandlingDelegate?.restartGameWith(winState: true)
+            }
+            
         }
     }
     /// Coins can be used to upgrade power for User and Friends.
@@ -57,6 +65,8 @@ class User: Codable {
     unowned var visualizationDelegate: ConsequenceVisualizationDelegate?
     /// The view controller that handles level up, typically MainViewController.
     unowned var levelUpHandlingDelegate: LevelUpHandlingDelegate?
+    /// The view controller responsible for trigger the segue to the RestartGameViewController, typically MainViewController.
+    unowned var restartGameHandlingDelegate: RestartGameHandlingDelegate?
     
     // MARK: - Codable
     
@@ -65,7 +75,6 @@ class User: Codable {
         case description
         case imageName
         case level
-        case support
         case coins
         case friends
         case powers
@@ -77,7 +86,6 @@ class User: Codable {
         try container.encode(description, forKey: .description)
         try container.encode(imageName, forKey: .imageName)
         try container.encode(level, forKey: .level)
-        try container.encode(support, forKey: .support)
         try container.encode(coins, forKey: .coins)
         try container.encode(friends, forKey: .friends)
         try container.encode(powers, forKey: .powers)
@@ -89,24 +97,22 @@ class User: Codable {
         let description = try container.decode(String.self, forKey: .description)
         let imageName = try container.decode(String.self, forKey: .imageName)
         let level = try container.decode(Level.self, forKey: .level)
-        let support = try container.decode(Percentage.self, forKey: .support)
         let coins = try container.decode(Int.self, forKey: .coins)
         let friends = try container.decode(Array<Friend>.self, forKey: .friends)
         let powers = try container.decode(Array<Power>.self, forKey: .powers)
         
-        self.init(name: name, description: description, imageName: imageName, level: level, support: support, coins: coins, friends: friends, powers: powers)
+        self.init(name: name, description: description, imageName: imageName, level: level, coins: coins, friends: friends, powers: powers)
     }
     
     
     // MARK: - Initializers
     
     /// Full initializer.
-    init(name: String, description: String, imageName: String, level: Level, support: Percentage, coins: Int, friends: [Friend], powers: [Power]) {
+    init(name: String, description: String, imageName: String, level: Level, coins: Int, friends: [Friend], powers: [Power]) {
         self.name = name
         self.description = description
         self.imageName = imageName
         self.level = level
-        self.support = support
         self.coins = coins
         self.friends = friends
         self.powers = powers
@@ -345,9 +351,9 @@ class User: Codable {
     
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 20), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
-    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 90), support: Percentage(progress: 50), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 20), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
     
     // MARK: - Static methods

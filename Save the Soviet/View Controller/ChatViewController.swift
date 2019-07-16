@@ -576,7 +576,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - View controller transitioning delegate
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if presented is QuizViewController {
-            return PushPresentationAnimationController()
+            return FadeAnimationController(withDuration: 0.5)
         } else if presented is ConfirmationViewController {
             return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
         }
@@ -586,7 +586,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         if dismissed is QuizViewController {
-            return PushDismissalAnimationController()
+            return FadeAnimationController(withDuration: 0.5)
         } else if dismissed is ConfirmationViewController {
             return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         }

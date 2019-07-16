@@ -37,8 +37,12 @@ protocol LevelUpHandlingDelegate: AnyObject {
     func userLevelIncreasedTo(_ level: Int)
 }
 
+protocol RestartGameHandlingDelegate: AnyObject {
+    func restartGameWith(winState win: Bool)
+}
 
-class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendMessageStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate, LevelUpHandlingDelegate {
+
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerTransitioningDelegate, FriendImageViewTapDelegate, FriendMessageStatusDisplayDelegate, UserStatusDisplayDelegate, ConsequenceVisualizationDelegate, DelayConsequenceHandlingDelegate, LevelUpHandlingDelegate, RestartGameHandlingDelegate {
     
     // MARK: Instance properties
     
@@ -54,6 +58,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var delayedConsequences: [Consequence] = []
     var isDisplaying = false
     var newLevel: Int?
+    var win: Bool?
     
     @IBOutlet weak var userStatusBarView: UIView!
     @IBOutlet weak var userImageView: UIImageView!
@@ -143,13 +148,31 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     
+    // MARK: - Restart game handling delegate
+    
+    func restartGameWith(winState win: Bool) {
+        self.win = win
+        handleRestartGame()
+    }
+    
+    func handleRestartGame() {
+        if win != nil && isDisplaying == true {
+            performSegue(withIdentifier: "EndGame", sender: nil)
+        }
+    }
+    
+    
     // MARK: - View Controller Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
         user = User.currentUser
         consequenceController = ConsequenceController(for: user)
+        print("\(user.id): \(user.support.progress)")
+        print("\(User.currentUser.id): \(User.currentUser.support.progress)")
+        print("\(User.testUser.id): \(User.testUser.support.progress)")
         user.levelUpHandlingDelegate = self
+        user.restartGameHandlingDelegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -173,6 +196,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     override func viewDidAppear(_ animated: Bool) {
         updateProgressViewsAndLabels()
         handleNewLevel()
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -284,11 +308,32 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         levelProgressLabel.text = user.level.progressDescription
         supportProgressLabel.text = user.support.progressDescription
         
+        if user.level.progressDescription == "MAX" {
+            scaleProgressLabelForMax(levelProgressLabel)
+        }
+        if user.support.progressDescription == "MAX" {
+            scaleProgressLabelForMax(supportProgressLabel)
+        }
+        
         // Animate progress view
         UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
             self.levelProgressView.setProgress(levelProgress, animated: true)
             self.supportProgressView.setProgress(energyProgress, animated: true)
         })
+    }
+    
+    /// At maximum progress, scale the progress labels.
+    private func scaleProgressLabelForMax(_ label: UILabel) {
+        let scaleLarge = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        
+        let scaleAnimator = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut) {
+            label.transform = scaleLarge
+        }
+        scaleAnimator.addAnimations({
+            label.transform = .identity
+        }, delayFactor: 0.25)
+        
+        scaleAnimator.startAnimation()
     }
     
     /// Handles delayed consequences, particularly used for makeNewFriend.
@@ -357,9 +402,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             chatViewController.friend = currentFriend
             chatViewController.delayedConsequenceHandlingDelegate = self
             friendTableView.deselectRow(at: friendTableView.indexPathForSelectedRow!, animated: true)
-        } else if segue.identifier == "ShowNewFriend" {
-            let newFriendViewController = segue.destination as! NewFriendViewController
-            newFriendViewController.friend = user.friends.last
         } else if segue.identifier == "EmbedLevelProgressChangeIndicator" {
             let levelProgressChangeIndicatorViewController = segue.destination as! LevelProgressChangeIndicatorViewController
             self.levelProgressChangeIndicatorViewController = levelProgressChangeIndicatorViewController
@@ -378,6 +420,11 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             confirmationViewController.consequence = .friendIsExecuted(executedFriend!)
             confirmationViewController.transitioningDelegate = self
             executedFriend = nil
+        } else if segue.identifier == "EndGame" {
+            let restartGameViewController = segue.destination as! RestartGameViewController
+            restartGameViewController.win = win!
+            restartGameViewController.transitioningDelegate = self
+            win = nil
         }
     }
     
@@ -389,6 +436,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
         } else if presented is ChatViewController {
             return PushPresentationAnimationController()
+        } else if presented is RestartGameViewController {
+            return FadeAnimationController(withDuration: 5)
         } else {
             return nil
         }
@@ -399,6 +448,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         } else if dismissed is ChatViewController {
             return PushDismissalAnimationController()
+        } else if dismissed is RestartGameViewController {
+            return FadeAnimationController(withDuration: 1)
         } else {
             return nil
         }

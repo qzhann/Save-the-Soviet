@@ -102,37 +102,25 @@
             </objects>
             <point key="canvasLocation" x="1094" y="1331"/>
         </scene>
-        <!--New Friend View Controller-->
+        <!--Restart Game View Controller-->
         <scene sceneID="bEA-vZ-gqH">
             <objects>
-                <viewController id="H7E-0U-FvZ" customClass="NewFriendViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="H7E-0U-FvZ" customClass="RestartGameViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wUC-xF-hwm">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You can now chat with..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ntq-Ds-pX0">
-                                <rect key="frame" x="86.000000000000014" y="91.666666666666671" width="203.33333333333337" height="60.000000000000014"/>
-                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="30"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label autoresizesSubviews="NO" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lucia" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d3O-xf-oNk">
-                                <rect key="frame" x="8" y="454" width="359" height="50"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Soviet Union is saved under your leadership." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ntq-Ds-pX0">
+                                <rect key="frame" x="44.666666666666657" y="119" width="286" height="87"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="im0-Rn-J8N"/>
+                                    <constraint firstAttribute="height" constant="87" id="h7U-iG-Bhf"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="32"/>
+                                <fontDescription key="fontDescription" name="Rockwell-Bold" family="Rockwell" pointSize="28"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVD-yN-zlW">
-                                <rect key="frame" x="8" y="504" width="359" height="18"/>
-                                <fontDescription key="fontDescription" name="Avenir-Book" family="Avenir" pointSize="13"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LAg-ll-hZc">
-                                <rect key="frame" x="103" y="240.33333333333337" width="169" height="169"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="GameWin" translatesAutoresizingMaskIntoConstraints="NO" id="LAg-ll-hZc">
+                                <rect key="frame" x="75" y="293.66666666666669" width="225" height="225.00000000000006"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="LAg-ll-hZc" secondAttribute="height" multiplier="1:1" id="Ags-Bz-pFH"/>
                                 </constraints>
@@ -146,43 +134,44 @@
                                 </state>
                                 <connections>
                                     <action selector="confirmButtonTapped:" destination="H7E-0U-FvZ" eventType="touchUpInside" id="1Mk-y0-CFd"/>
-                                    <segue destination="T0Y-u8-LuV" kind="unwind" unwindAction="unwindToChatViewControllerAfterNewFriendWithUnwindSegue:" id="Okl-yd-4Pq"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SovietStar" translatesAutoresizingMaskIntoConstraints="NO" id="KeF-rI-hRW">
+                                <rect key="frame" x="165" y="301.66666666666669" width="45" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="KeF-rI-hRW" secondAttribute="height" multiplier="1:1" id="wVi-Db-jki"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="BvF-Z4-rZ6" firstAttribute="trailing" secondItem="d3O-xf-oNk" secondAttribute="trailing" constant="8" id="9QX-Ay-itP"/>
-                            <constraint firstItem="jVD-yN-zlW" firstAttribute="leading" secondItem="BvF-Z4-rZ6" secondAttribute="leading" constant="8" id="HVx-c6-chH"/>
+                            <constraint firstItem="KeF-rI-hRW" firstAttribute="centerX" secondItem="LAg-ll-hZc" secondAttribute="centerX" id="69h-NN-Peq"/>
                             <constraint firstItem="uhy-U8-OOP" firstAttribute="width" secondItem="wUC-xF-hwm" secondAttribute="width" multiplier="0.82" id="Jdx-BN-t5L"/>
-                            <constraint firstItem="LAg-ll-hZc" firstAttribute="width" secondItem="wUC-xF-hwm" secondAttribute="width" multiplier="0.45" id="R2J-iY-6Zx"/>
-                            <constraint firstItem="BvF-Z4-rZ6" firstAttribute="trailing" secondItem="jVD-yN-zlW" secondAttribute="trailing" constant="8" id="S9F-dF-AdM"/>
+                            <constraint firstItem="LAg-ll-hZc" firstAttribute="width" secondItem="wUC-xF-hwm" secondAttribute="width" multiplier="0.6" id="R2J-iY-6Zx"/>
                             <constraint firstItem="uhy-U8-OOP" firstAttribute="height" secondItem="wUC-xF-hwm" secondAttribute="height" multiplier="0.1" id="SOr-it-Jdd"/>
-                            <constraint firstItem="ntq-Ds-pX0" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="0.3" id="WWu-O5-hh6"/>
-                            <constraint firstItem="jVD-yN-zlW" firstAttribute="top" secondItem="d3O-xf-oNk" secondAttribute="bottom" id="Yj7-xn-RDB"/>
+                            <constraint firstItem="ntq-Ds-pX0" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="0.4" id="WWu-O5-hh6"/>
                             <constraint firstItem="uhy-U8-OOP" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="aP7-NH-CCl"/>
                             <constraint firstItem="LAg-ll-hZc" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="d7S-Zn-I0h"/>
-                            <constraint firstItem="d3O-xf-oNk" firstAttribute="leading" secondItem="BvF-Z4-rZ6" secondAttribute="leading" constant="8" id="deq-LQ-gPq"/>
-                            <constraint firstItem="LAg-ll-hZc" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="0.8" id="ejD-cL-5ft"/>
-                            <constraint firstItem="d3O-xf-oNk" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="1.18" id="fut-wH-62h"/>
+                            <constraint firstItem="LAg-ll-hZc" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" id="ejD-cL-5ft"/>
                             <constraint firstItem="ntq-Ds-pX0" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="wUC-xF-hwm" secondAttribute="leading" constant="16" id="ggD-RO-M9B"/>
                             <constraint firstItem="ntq-Ds-pX0" firstAttribute="centerX" secondItem="wUC-xF-hwm" secondAttribute="centerX" id="hTZ-NC-5GN"/>
                             <constraint firstItem="uhy-U8-OOP" firstAttribute="centerY" secondItem="wUC-xF-hwm" secondAttribute="centerY" multiplier="1.6" id="i7B-Kz-hcY"/>
+                            <constraint firstItem="KeF-rI-hRW" firstAttribute="top" secondItem="LAg-ll-hZc" secondAttribute="top" constant="8" id="l0m-3R-auN"/>
+                            <constraint firstItem="KeF-rI-hRW" firstAttribute="width" secondItem="LAg-ll-hZc" secondAttribute="width" multiplier="0.2" id="xFQ-6O-pjF"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ntq-Ds-pX0" secondAttribute="trailing" constant="16" id="yAT-Ch-2KC"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BvF-Z4-rZ6"/>
                     </view>
                     <connections>
-                        <outlet property="confirmButton" destination="uhy-U8-OOP" id="Ima-TB-uyy"/>
-                        <outlet property="descriptionLabel" destination="jVD-yN-zlW" id="hNi-Kn-syf"/>
-                        <outlet property="friendImageView" destination="LAg-ll-hZc" id="cfm-9Z-DES"/>
-                        <outlet property="nameLabel" destination="d3O-xf-oNk" id="Neh-UB-85S"/>
+                        <outlet property="imageView" destination="LAg-ll-hZc" id="cfm-9Z-DES"/>
+                        <outlet property="restartButton" destination="uhy-U8-OOP" id="Ima-TB-uyy"/>
+                        <outlet property="starImageView" destination="KeF-rI-hRW" id="H9q-UL-Q8C"/>
+                        <outlet property="textLabel" destination="ntq-Ds-pX0" id="jbJ-JN-gtb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="smJ-IG-zyA" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="T0Y-u8-LuV" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="2809" y="500"/>
+            <point key="canvasLocation" x="2808.8000000000002" y="849.7536945812808"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="FgZ-fu-FHa">
@@ -489,6 +478,7 @@
                         <segue destination="0le-5q-sGi" kind="presentation" identifier="ShowChat" id="vjn-Gt-kpe"/>
                         <segue destination="dtG-v6-iBK" kind="show" identifier="ConfirmLevelUp" id="eKj-pb-30L"/>
                         <segue destination="dtG-v6-iBK" kind="show" identifier="ConfirmExecuteFriend" id="Qtz-9s-DRb"/>
+                        <segue destination="H7E-0U-FvZ" kind="show" identifier="EndGame" id="yG7-Uh-kzw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NRR-2p-cEs" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -645,7 +635,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0tG-al-u97">
-                                                    <rect key="frame" x="168.66666666666666" y="11.666666666666666" width="38" height="20.666666666666671"/>
+                                                    <rect key="frame" x="168.66666666666666" y="11.666666666666664" width="38" height="21"/>
                                                     <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="15"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -1884,17 +1874,17 @@
             <objects>
                 <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
-                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120.33333333333333" height="13.666666666666666"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LevelIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
-                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                <rect key="frame" x="0.0" y="0.0" width="13.666666666666666" height="13.666666666666666"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="7fd-th-QSg" secondAttribute="height" multiplier="1:1" id="UKo-as-f6U"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNj-aV-Z2p">
-                                <rect key="frame" x="20" y="2" width="60" height="18"/>
+                                <rect key="frame" x="13.666666666666664" y="-1.333333333333333" width="106.66666666666669" height="18.333333333333332"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1927,17 +1917,17 @@
             <objects>
                 <viewController id="OAE-lv-sex" customClass="SupportLoyaltyProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5pd-S2-33k">
-                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120.33333333333333" height="14"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="SupportLoyaltyIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="FCw-7H-TJj">
-                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                <rect key="frame" x="0.0" y="0.0" width="14" height="14"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="FCw-7H-TJj" secondAttribute="height" multiplier="1:1" id="YO0-0U-HAd"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWL-VU-YtM">
-                                <rect key="frame" x="20" y="2" width="60" height="18"/>
+                                <rect key="frame" x="13.999999999999993" y="-1" width="106.33333333333331" height="18"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.1077675298" green="0.30285480619999999" blue="0.50178319220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -2018,15 +2008,17 @@
         <image name="Coin" width="30.666666030883789" height="25.333333969116211"/>
         <image name="CoinIncrease" width="13.333333015441895" height="18.666666030883789"/>
         <image name="Dog" width="60" height="60"/>
+        <image name="GameWin" width="216.66667175292969" height="216.66667175292969"/>
         <image name="LevelIncrease" width="40" height="58"/>
         <image name="NoNewMessage" width="22.666666030883789" height="17.666666030883789"/>
+        <image name="SovietStar" width="228.33332824707031" height="194"/>
         <image name="SupportLoyaltyIncrease" width="13.666666984558105" height="18.666666030883789"/>
         <image name="Thinking1" width="40" height="10"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="DXw-HQ-mLw"/>
-        <segue reference="BJe-rM-oFY"/>
-        <segue reference="zJq-xZ-mBz"/>
-        <segue reference="dcs-tn-K6x"/>
+        <segue reference="YfK-30-jtg"/>
+        <segue reference="UJk-et-5UX"/>
+        <segue reference="Qtz-9s-DRb"/>
     </inferredMetricsTieBreakers>
 </document>
