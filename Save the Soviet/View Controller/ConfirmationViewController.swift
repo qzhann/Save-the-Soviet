@@ -117,7 +117,12 @@ class ConfirmationViewController: UIViewController {
     }
     
     @IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            if let introducingFriend = self.introducingFriend {
+                introducingFriend.startChat()
+                self.introducingFriend = nil
+            }
+        }
     }
     
     
