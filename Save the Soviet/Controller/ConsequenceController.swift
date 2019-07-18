@@ -99,6 +99,11 @@ struct ConsequenceController {
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         case .setChatStartOption(let option):
             chatViewController?.friend.chatStartOption = option
+        case .startGame:
+            if let chatViewController = chatViewController {
+                chatViewController.startGame()
+            }
+        // FIXME:
         default:
             break
         }

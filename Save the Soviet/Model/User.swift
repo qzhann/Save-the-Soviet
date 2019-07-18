@@ -12,7 +12,6 @@ import UIKit
 class User: Codable {
     
     // MARK: Instance properties
-    var id = UUID()
     var name: String
     /// Description string for displaying on UserDetailViewController
     var description: String
@@ -57,8 +56,24 @@ class User: Codable {
     }
     /// Friends the user currently has.
     var friends: [Friend]
+    /// Retursn a value copy of the friends, useful for initializing a new user using the copy initializer.
+    var friendCopies: [Friend] {
+        var result = [Friend]()
+        for friend in friends {
+            result.append(Friend(copyOf: friend))
+        }
+        return result
+    }
     /// Powers the user has.
     var powers: [Power]
+    /// Returns a value copy of the powers, useful for initializing a new user using the copy initializer.
+    var powerCopies: [Power] {
+        var result = [Power]()
+        for power in powers {
+            result.append(Power(copyOf: power))
+        }
+        return result
+    }
     /// The view controller currently displaying and visualizing user level and support progress informations
     unowned var statusDisplayDelegate: UserStatusDisplayDelegate?
     /// The view controller that should visualize the consequence on the screen.
@@ -67,6 +82,8 @@ class User: Codable {
     unowned var levelUpHandlingDelegate: LevelUpHandlingDelegate?
     /// The view controller responsible for trigger the segue to the RestartGameViewController, typically MainViewController.
     unowned var restartGameHandlingDelegate: RestartGameHandlingDelegate?
+    /// Tracks whether the user is new. A true value will trigger tutorial.
+    var isNewUser: Bool
     
     // MARK: - Codable
     
@@ -78,6 +95,7 @@ class User: Codable {
         case coins
         case friends
         case powers
+        case isNewUser
     }
     
     func encode(to encoder: Encoder) throws {
@@ -89,6 +107,7 @@ class User: Codable {
         try container.encode(coins, forKey: .coins)
         try container.encode(friends, forKey: .friends)
         try container.encode(powers, forKey: .powers)
+        try container.encode(isNewUser, forKey: .isNewUser)
     }
     
     required convenience init(from decoder: Decoder) throws {
@@ -100,24 +119,52 @@ class User: Codable {
         let coins = try container.decode(Int.self, forKey: .coins)
         let friends = try container.decode(Array<Friend>.self, forKey: .friends)
         let powers = try container.decode(Array<Power>.self, forKey: .powers)
+        let isNewUser = try container.decode(Bool.self, forKey: .isNewUser)
         
-        self.init(name: name, description: description, imageName: imageName, level: level, coins: coins, friends: friends, powers: powers)
+        self.init(name: name, description: description, imageName: imageName, isNewUser: isNewUser, level: level, coins: coins, friends: friends, powers: powers)
     }
     
     
     // MARK: - Initializers
     
     /// Full initializer.
-    init(name: String, description: String, imageName: String, level: Level, coins: Int, friends: [Friend], powers: [Power]) {
+    init(name: String, description: String, imageName: String, isNewUser: Bool, level: Level, coins: Int, friends: [Friend], powers: [Power]) {
         self.name = name
         self.description = description
         self.imageName = imageName
+        self.isNewUser = isNewUser
         self.level = level
         self.coins = coins
         self.friends = friends
         self.powers = powers
         self.applyAllPowers()
         self.friendLoyaltyDidChange()
+    }
+    
+    /// Initialize a value copy of another user, typically useful for
+    init(copyOf other: User) {
+        self.name = other.name
+        self.description = other.description
+        self.imageName = other.imageName
+        self.isNewUser = other.isNewUser
+        self.level = other.level
+        self.coins = other.coins
+        self.friends = other.friendCopies
+        self.powers = other.powerCopies
+        self.applyAllPowers()
+        self.friendLoyaltyDidChange()
+    }
+    
+    /// Initialize sample user.
+    init(sampleUserNamed name: String, description: String, imageName: String, isNewUser: Bool, level: Level, coins: Int, friends: [Friend], powers: [Power]) {
+        self.name = name
+        self.description = description
+        self.imageName = imageName
+        self.isNewUser = isNewUser
+        self.level = level
+        self.coins = coins
+        self.friends = friends
+        self.powers = powers
     }
     
     
@@ -225,8 +272,10 @@ class User: Codable {
     
     /// Handle the addition of a new friend.
     func makeNewFriend(friend: Friend) {
+        // Add the friend, apply the powers, and then immediately start chat.
         friends.insert(friend, at: 0)
         friend.applyAllPowers(to: self, and: friend)
+        friend.startChat()
     }
     
     /// Handle the upgrade of a power.
@@ -293,9 +342,12 @@ class User: Codable {
         }
     }
     
+    func friendWithLastName(_ name: String) -> Friend? {
+        return friends.first { $0.lastName == name }
+    }
+    
     /// Calls start chat on the friend with the given name.
-    private func startChatForFriendWithLastName(_ name: String) {
-        let friend = friends.first { $0.lastName == name }
+    private func startChatForFriend(_ friend: Friend?) {
         friend?.startChat()
     }
     
@@ -310,13 +362,13 @@ class User: Codable {
         // Trigger specified friends to start chat
         switch level {
         case 1:
-            startChatForFriendWithLastName(Friend.akimov.lastName)
-            startChatForFriendWithLastName(Friend.fomin.lastName)
-            startChatForFriendWithLastName(Friend.quizFriend.lastName)
+            startChatForFriend(friendWithLastName(Friend.akimov.lastName))
+            startChatForFriend(friendWithLastName(Friend.fomin.lastName))
+            startChatForFriend(friendWithLastName(Friend.quizFriend.lastName))
         case 2:
-            startChatForFriendWithLastName(Friend.dyatlov.lastName)
-            startChatForFriendWithLastName(Friend.legasov.lastName)
-            startChatForFriendWithLastName(Friend.quizFriend.lastName)
+            startChatForFriend(friendWithLastName(Friend.dyatlov.lastName))
+            startChatForFriend(friendWithLastName(Friend.legasov.lastName))
+            startChatForFriend(friendWithLastName(Friend.quizFriend.lastName))
         case 3:
             break
         case 4:
@@ -349,11 +401,34 @@ class User: Codable {
         self.support.progress = average
     }
     
+    /// Stop all timers on user's powers and the friends' powers.
+    func stopTimers() {
+        for power in powers {
+            power.stopTimer()
+        }
+        
+        for friend in friends {
+            for power in friend.powers {
+                power.stopTimer()
+            }
+        }
+    }
+    
+    /// Start updating chat history for all friends, typically called when the user reenters the app.
+    func updateChatHistoryForFriends() {
+        for friend in friends {
+            friend.updateChatHistoryInBackground()
+        }
+    }
+    
     // MARK: - Static properties
     
-    static var currentUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 20), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    /// currentUser will be modified during the game.
+    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
     
-    static var testUser = User(name: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", level: Level(progress: 20), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
+    
+    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
     
     
     // MARK: - Static methods
@@ -375,7 +450,8 @@ class User: Codable {
         if let data = try? Data(contentsOf: archiveURL), let decodedUser = try? propertyListDecoder.decode(User.self, from: data) {
             currentUser = decodedUser
         } else {
-            currentUser = testUser
+            // If there was really NOTHING, then use the new user.
+            currentUser = User(copyOf: User.newUser)
         }
         
         // FIXME: Debugging only
@@ -386,8 +462,23 @@ class User: Codable {
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentDirectory.appendingPathComponent("user_data").appendingPathExtension("plist")
         let propertyListEncoder = PropertyListEncoder()
-        let data = try? propertyListEncoder.encode("")
+        let data = try? propertyListEncoder.encode(User.sampleUser)
         try? data?.write(to: archiveURL, options: .noFileProtection)
+    }
+    
+    static func startGame() {
+        User.currentUser.applyAllPowers()
+        User.currentUser.friendLoyaltyDidChange()
+        User.currentUser.isNewUser = false
+    }
+    
+    static func stopGame() {
+        User.currentUser.stopTimers()
+    }
+    
+    static func restartGame() {
+        clearFile()
+        loadFromFile()
     }
 }
 
@@ -520,9 +611,6 @@ struct Percentage: Codable {
 
 
 extension User {
-    
-    
-    
     static var allPossibleFriends: [Friend] = [
         Friend.dyatlov,
         Friend.legasov,

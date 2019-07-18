@@ -168,9 +168,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidLoad()
         user = User.currentUser
         consequenceController = ConsequenceController(for: user)
-        print("\(user.id): \(user.support.progress)")
-        print("\(User.currentUser.id): \(User.currentUser.support.progress)")
-        print("\(User.testUser.id): \(User.testUser.support.progress)")
         user.levelUpHandlingDelegate = self
         user.restartGameHandlingDelegate = self
     }
@@ -182,7 +179,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         // Preparing UI
         isDisplaying = true
         prepareUI()
-        handleDelayedConsequences()
     }
     
     // We call prepareUI in viewDidLayoutSubviews so that the dimensions of the subviews can be calculated correctly
@@ -194,9 +190,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        if user.isNewUser {
+            startTutorial()
+        }
         updateProgressViewsAndLabels()
         handleNewLevel()
-        
+        handleDelayedConsequences()
+        handleRestartGame()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -355,6 +355,13 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         delayedConsequences = []
     }
     
+    
+    /// Starts tutorial if the user is new user.
+    func startTutorial() {
+        guard user.isNewUser == true else { return }
+        performSegue(withIdentifier: "ShowTutorial", sender: nil)
+    }
+    
     // MARK: - IB Actions
     
     @IBAction func statusBarViewTapped(_ sender: UITapGestureRecognizer) {
@@ -425,6 +432,12 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             restartGameViewController.win = win!
             restartGameViewController.transitioningDelegate = self
             win = nil
+        } else if segue.identifier == "ShowTutorial" {
+            let chatViewController = segue.destination as! ChatViewController
+            chatViewController.friend = Friend.tutorialFriend
+            chatViewController.transitioningDelegate = self
+            chatViewController.user = user
+            chatViewController.friend.startChat()
         }
     }
     
@@ -437,7 +450,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if presented is ChatViewController {
             return PushPresentationAnimationController()
         } else if presented is RestartGameViewController {
-            return FadeAnimationController(withDuration: 5)
+            return FadeAnimationController(withDuration: 2.5)
         } else {
             return nil
         }
@@ -448,8 +461,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             return PageSheetModalDismissalAnimationController(darkenBy: 0.8)
         } else if dismissed is ChatViewController {
             return PushDismissalAnimationController()
-        } else if dismissed is RestartGameViewController {
-            return FadeAnimationController(withDuration: 1)
         } else {
             return nil
         }

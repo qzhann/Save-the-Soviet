@@ -20,7 +20,7 @@ class Power: Codable {
     }
     var description: String
     var coinsNeeded: Int
-    private var upgrades: [Power] = []
+    private var upgrades: [PowerUpgrade] = []
     var hasUpgrade: Bool {
         return !upgrades.isEmpty
     }
@@ -60,7 +60,7 @@ class Power: Codable {
         imageName = try container.decode(String.self, forKey: .imageName)
         description = try container.decode(String.self, forKey: .description)
         coinsNeeded = try container.decode(Int.self, forKey: .coinsNeeded)
-        upgrades = try container.decode(Array<Power>.self, forKey: .upgrades)
+        upgrades = try container.decode(Array<PowerUpgrade>.self, forKey: .upgrades)
         type = try container.decode(PowerType.self, forKey: .type)
         strength = try container.decode(Int.self, forKey: .strength)
         effectInterval = try container.decode(Double?.self, forKey: .effectInterval)
@@ -71,7 +71,7 @@ class Power: Codable {
      Initializes a fully functional power. Power instances initialized using this initializer should support upgrading.
      - Important: The max power in the series of power upgrades should have a nil value for coinsNeeded, while any other power in the upgrade series should have a non-nil value for coinsNeeded.
      */
-    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil, upgrades: [Power] = []) {
+    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil, upgrades: [PowerUpgrade] = []) {
         self.name = name
         self.imageName = imageName
         self.description = description
@@ -80,6 +80,18 @@ class Power: Codable {
         self.type = type
         self.strength = strength
         self.effectInterval = interval
+    }
+    
+    /// Initialize a copy of another power.
+    init(copyOf other: Power) {
+        self.name = other.name
+        self.imageName = other.imageName
+        self.description = other.description
+        self.coinsNeeded = other.coinsNeeded
+        self.upgrades = other.upgrades
+        self.type = other.type
+        self.strength = other.strength
+        self.effectInterval = other.effectInterval
     }
     
     
@@ -109,10 +121,30 @@ class Power: Codable {
 
     // MARK: - Static properties
     static var testPowers: [Power] = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: 1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
         Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
     ]
+}
+
+struct PowerUpgrade: Codable {
+    var name: String
+    var imageName: String
+    var description: String
+    var coinsNeeded: Int
+    var type: PowerType
+    var strength: Int
+    var effectInterval: Double?
+    
+    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil) {
+        self.name = name
+        self.imageName = imageName
+        self.description = description
+        self.coinsNeeded = coinsNeeded
+        self.type = type
+        self.strength = strength
+        self.effectInterval = interval
+    }
 }
 
 

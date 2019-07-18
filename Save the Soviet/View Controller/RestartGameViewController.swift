@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RestartGameViewController: UIViewController {
+class RestartGameViewController: UIViewController, UIViewControllerTransitioningDelegate {
     
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var imageView: UIImageView!
@@ -20,6 +20,7 @@ class RestartGameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateUI()
+        stopGame()
     }
     
     override func viewDidLayoutSubviews() {
@@ -68,9 +69,37 @@ class RestartGameViewController: UIViewController {
         }
     }
     
+    func stopGame() {
+        User.stopGame()
+    }
+    
     @IBAction func confirmButtonTapped(_ sender: UIButton) {
-        // FIXME: Restart the game.
-        dismiss(animated: true, completion: nil)
+        performSegue(withIdentifier: "RestartGame", sender: nil)
+    }
+    
+    
+    // MARK: - View controller transitioning delegate
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if presented is MainViewController {
+            return FadeAnimationController(withDuration: 1.0)
+        } else {
+            return nil
+        }
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return nil
+    }
+    
+    
+    // MARK: - Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "RestartGame" {
+            User.restartGame()
+            let mainViewController = segue.destination as! MainViewController
+            mainViewController.transitioningDelegate = self
+        }
     }
 
 }

@@ -76,11 +76,11 @@ class ChatMessage: Equatable, CustomStringConvertible, Codable {
 struct IncomingMessage: Codable {
     // MARK: Instance properties
     /// An array of String that will be texted in sequence by a Friend when sending the IncomingMessage.
-    var texts: [String]
+    let texts: [String]
     /// An optional array of OutgoingMessage. If not nil, the user will be prompted to choose from the responses, otherwise the IncomingMessage should trigger the end of a chat.
-    var responses: [OutgoingMessage]?
+    let responses: [OutgoingMessage]?
     /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-    var consequences: [Consequence]?
+    let consequences: [Consequence]?
     /// A get-only property that returns the corresponding ChatMessages using texts.
     var chatMessages: [ChatMessage] {
         get {
@@ -111,15 +111,15 @@ struct IncomingMessage: Codable {
 struct OutgoingMessage: Codable {
     // MARK: Instance properties
     /// The String displayed for each response choice.
-    var description: String
+    let description: String
     /// An array of String that will be texted in sequence by the User when sending the OutgoingMessage.
-    var texts: [String]
+    let texts: [String]
     /// If not nil, the Friend will send a IncomingMessage using the responseMessageId, otherwise the OutgoingMessage should trigger the end of a chat.
     var responseMessageId: Int?
     /// If not nil, the OutgoingMessage will be disabled as an option if the User's level is lower than levelRestriction.
-    var levelRestriction: Int?
+    let levelRestriction: Int?
     /// An optional array of ChatConsequences. If not nil, the chatDelegate of the friend should be responsible for delivering the consequences.
-    var consequences: [Consequence]?
+    let consequences: [Consequence]?
     /// A get-only property that returns the corresponding ChatMessages using texts.
     var chatMessages: [ChatMessage] {
         get {
@@ -186,6 +186,7 @@ enum Consequence: Codable {
     case startQuizOfCategory(QuizQuestionCategory)
     case setChatStartOption(ChatStartOption)
     case userLevelIncreasedTo(Int)
+    case startGame
     
     // MARK: Codable
     
@@ -202,6 +203,7 @@ enum Consequence: Codable {
         case startQuizOfCategory
         case setChatStartOption
         case userLevelIncreasedTo
+        case startGame
     }
     
     func encode(to encoder: Encoder) throws {
@@ -231,6 +233,8 @@ enum Consequence: Codable {
             try container.encode(option, forKey: .setChatStartOption)
         case .userLevelIncreasedTo(let level):
             try container.encode(level, forKey: .userLevelIncreasedTo)
+        case .startGame:
+            try container.encode("", forKey: .startGame)
         }
     }
     
@@ -261,11 +265,7 @@ enum Consequence: Codable {
         } else if let level = try? container.decode(Int.self, forKey: .userLevelIncreasedTo) {
             self = .userLevelIncreasedTo(level)
         } else {
-            throw CodingError.decoding("Shit")
+            self = .startGame
         }
     }
-}
-
-enum CodingError: Error {
-    case decoding(String)
 }

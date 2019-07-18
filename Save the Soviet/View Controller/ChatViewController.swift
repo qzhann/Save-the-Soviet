@@ -402,6 +402,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Hide progress change indicators
         levelProgressChangeIndicatorView.alpha = 0
         loyaltyProgressChangeIndicatorView.alpha = 0
+        
+        // Hide back button for tutorial friend
+        if user.isNewUser {
+            backButton.isHidden = true
+            backButtonBackgroundView.isHidden = true
+        }
     }
     
     func resumeChat() {
@@ -534,6 +540,12 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    /// Start the game for new user.
+    func startGame() {
+        User.startGame()
+        performSegue(withIdentifier: "StartGame", sender: nil)
+    }
+    
     
     // MARK: - IB Actions
     
@@ -570,6 +582,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else if segue.identifier == "EmbedLoyaltyProgressChangeIndicator" {
             let loyaltyProgressChangeIndicatorViewController = segue.destination as! SupportLoyaltyProgressChangeIndicatorViewController
             self.loyaltyProgressChangeIndicatorViewController = loyaltyProgressChangeIndicatorViewController
+        } else if segue.identifier == "StartGame" {
+            let mainViewController = segue.destination as! MainViewController
+            mainViewController.transitioningDelegate = self
         }
     }
     
@@ -579,6 +594,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             return FadeAnimationController(withDuration: 0.5)
         } else if presented is ConfirmationViewController {
             return PageSheetModalPresentationAnimationController(darkenBy: 0.8)
+        } else if presented is MainViewController {
+            return FadeAnimationController(withDuration: 1)
         }
         
         return nil
