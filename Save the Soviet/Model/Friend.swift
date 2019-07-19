@@ -519,6 +519,7 @@ class Friend: Equatable, Codable {
             default:
                 break
             }
+            power.strength = 0
         }
     }
     
@@ -613,8 +614,12 @@ class Friend: Equatable, Codable {
         allPossibleMessages: Friend.quizFriendMessages
     )
     
-    static var tutorialFriend = Friend(lastName: "Gorbachev", shortTitle: "Mrs", fullTitle: "Mrs", imageName: "Gorbachev", description: "I am the wife.", loyalty: Percentage(progress: 100), powers: [], chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
-        upgrades: [:],
+    static var tutorialFriend = Friend(lastName: "Gorbachev", shortTitle: "Mrs", fullTitle: "Mrs", imageName: "Gorbachev", description: "I am the wife.", loyalty: Percentage(progress: 99), powers: [], chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
+        upgrades: [
+        1: FriendUpgrade(chatStartOption: .promptUserWith([
+            OutgoingMessage(text: "Yo", responseMessageId: nil)
+            ]))
+        ],
         startChatUsing: .sendIncomingMessage(
             IncomingMessage(texts: "My Darling...", "Now that you have become the president of the Soviet Union", "There are a few things you need to keep in mind before you set off for Moscow...", responses: [OutgoingMessage(text: "Yes?", responseMessageId: 1)])
         ),

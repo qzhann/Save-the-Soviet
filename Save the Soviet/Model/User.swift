@@ -151,8 +151,6 @@ class User: Codable {
         self.coins = other.coins
         self.friends = other.friendCopies
         self.powers = other.powerCopies
-        self.applyAllPowers()
-        self.friendLoyaltyDidChange()
     }
     
     /// Initialize sample user.
@@ -285,10 +283,13 @@ class User: Codable {
         applyPower(power)
     }
     
-    /// Apply all powers. This is called when the user is initialized.
+    /// Apply all powers, called when the user is initialized from file, or when the new user starts game.
     func applyAllPowers() {
         for power in powers {
             applyPower(power)
+        }
+        for friend in friends {
+            friend.applyAllPowers(to: self, and: friend)
         }
     }
     
@@ -332,6 +333,7 @@ class User: Codable {
             default:
                 break
             }
+            power.strength = 0
         }
     }
     
@@ -365,6 +367,7 @@ class User: Codable {
             startChatForFriend(friendWithLastName(Friend.akimov.lastName))
             startChatForFriend(friendWithLastName(Friend.fomin.lastName))
             startChatForFriend(friendWithLastName(Friend.quizFriend.lastName))
+            startChatForFriend(friendWithLastName(Friend.tutorialFriend.lastName))
         case 2:
             startChatForFriend(friendWithLastName(Friend.dyatlov.lastName))
             startChatForFriend(friendWithLastName(Friend.legasov.lastName))
@@ -434,11 +437,11 @@ class User: Codable {
     // MARK: - Static methods
     
     /// Saves the user data to file.
-    static func saveToFile(user: User) {
+    static func saveToFile() {
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let archiveURL = documentDirectory.appendingPathComponent("user_data").appendingPathExtension("plist")
         let propertyListEncoder = PropertyListEncoder()
-        let data = try? propertyListEncoder.encode(user)
+        let data = try? propertyListEncoder.encode(User.currentUser)
         try? data?.write(to: archiveURL, options: .noFileProtection)
     }
     
@@ -474,6 +477,18 @@ class User: Codable {
     
     static func stopGame() {
         User.currentUser.stopTimers()
+    }
+    
+    static func pauseGame() {
+         User.currentUser.stopTimers()
+    }
+    
+    static func resumeGame() {
+        if User.currentUser.isNewUser == false {
+            User.currentUser.applyAllPowers()
+        }
+        
+        User.currentUser.friendLoyaltyDidChange()
     }
     
     static func restartGame() {

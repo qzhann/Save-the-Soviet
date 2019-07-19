@@ -93,6 +93,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.view.addSubview(hairlineView)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        scrollChatTableViewToBottom()
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         hairlineView.removeFromSuperview()
     }
@@ -543,6 +547,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     /// Start the game for new user.
     func startGame() {
         User.startGame()
+        friend.willDismissChatDelegateWithChatHistoryCount(chatController.displayedChatHistory.count)
         performSegue(withIdentifier: "StartGame", sender: nil)
     }
     

@@ -203,8 +203,6 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         user.statusDisplayDelegate = nil
         user.visualizationDelegate = nil
         isDisplaying = false
-        // FIXME: Delete this
-        User.saveToFile(user: user)
     }
     
     
@@ -434,9 +432,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
             win = nil
         } else if segue.identifier == "ShowTutorial" {
             let chatViewController = segue.destination as! ChatViewController
-            chatViewController.friend = Friend.tutorialFriend
-            chatViewController.transitioningDelegate = self
             chatViewController.user = user
+            chatViewController.friend = user.friendWithLastName(Friend.tutorialFriend.lastName)
+            chatViewController.transitioningDelegate = self
             chatViewController.friend.startChat()
         }
     }
