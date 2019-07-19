@@ -167,7 +167,7 @@ struct OutgoingMessage: Codable {
         self.levelRestriction = levelRestriction
         self.consequences = consequences
     }
-
+    
 }
 
 // MARK: -
@@ -187,6 +187,7 @@ enum Consequence: Codable {
     case setChatStartOption(ChatStartOption)
     case userLevelIncreasedTo(Int)
     case startGame
+    case askForNotificationPermission
     
     // MARK: Codable
     
@@ -204,6 +205,7 @@ enum Consequence: Codable {
         case setChatStartOption
         case userLevelIncreasedTo
         case startGame
+        case askForNotificationPermission
     }
     
     func encode(to encoder: Encoder) throws {
@@ -235,6 +237,8 @@ enum Consequence: Codable {
             try container.encode(level, forKey: .userLevelIncreasedTo)
         case .startGame:
             try container.encode("", forKey: .startGame)
+        case .askForNotificationPermission:
+            try container.encode("", forKey: .askForNotificationPermission)
         }
     }
     
@@ -264,8 +268,10 @@ enum Consequence: Codable {
             self = .startQuizOfCategory(category)
         } else if let level = try? container.decode(Int.self, forKey: .userLevelIncreasedTo) {
             self = .userLevelIncreasedTo(level)
-        } else {
+        } else if let _ = try? container.decode(String.self, forKey: .startGame) {
             self = .startGame
+        } else {
+            self = .askForNotificationPermission
         }
     }
 }

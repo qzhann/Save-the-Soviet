@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 struct ConsequenceController {
     
@@ -15,7 +16,7 @@ struct ConsequenceController {
     unowned let user: User
     unowned var confirmationController: ConfirmationViewController?
     unowned var chatViewController: ChatViewController?
-    unowned var viewController: UIViewController?    
+    unowned var viewController: UIViewController?
     
     // MARK: - Initializers
     
@@ -102,6 +103,11 @@ struct ConsequenceController {
         case .startGame:
             if let chatViewController = chatViewController {
                 chatViewController.startGame()
+            }
+        case .askForNotificationPermission:
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
+                if error != nil { print("Something went wrong.") }
             }
         // FIXME:
         default:

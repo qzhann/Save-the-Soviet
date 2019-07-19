@@ -121,14 +121,51 @@ class Power: Codable {
 
     // MARK: - Static properties
     static var testPowers: [Power] = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 13.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 12.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
         Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
     ]
     
     static var testPowerCopies: [Power] = [
         Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
         Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    
+    static var testPowers1 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    
+    static var testPowers2 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    static var testPowers3 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    static var testPowers4 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    static var testPowers5 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    static var testPowers6 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
+        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+    ]
+    static var testPowers7 = [
+        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
+        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
         Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
     ]
 }

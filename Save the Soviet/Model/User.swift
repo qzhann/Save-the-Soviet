@@ -6,8 +6,8 @@
 //  Copyright © 2018 qzhann. All rights reserved.
 //
 
-import Foundation
 import UIKit
+import UserNotifications
 
 class User: Codable {
     
@@ -167,11 +167,11 @@ class User: Codable {
     
     
     // MARK: - Instance methods
-
+    
     /// Handles changes in level progress.
     func changeLevelBy(progress: Int) {
         // Level progress does not go beyond maximum
-        let newProgress = level.progress + progress        
+        let newProgress = level.progress + progress
         let correctProgress = min(newProgress, level.maximumProgress)
         
         // Guard that progress should change
@@ -288,9 +288,11 @@ class User: Codable {
         for power in powers {
             applyPower(power)
         }
+        
         for friend in friends {
             friend.applyAllPowers(to: self, and: friend)
         }
+ 
     }
     
     /// Apply a power to self. Note that user does not need to worry about applying friendLoyalty powers.
@@ -360,7 +362,7 @@ class User: Codable {
         // Upgrade friends and record the highest level number
         upgradeAllFriendsToLevel(level)
         self.level.highestLevelNumber = level
-
+        
         // Trigger specified friends to start chat
         switch level {
         case 1:
@@ -427,11 +429,11 @@ class User: Codable {
     // MARK: - Static properties
     
     /// currentUser will be modified during the game.
-    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
+    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
-    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
+    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
-    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.tutorialFriend], powers: Power.testPowers)
+    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
     
     
     // MARK: - Static methods
@@ -457,8 +459,8 @@ class User: Codable {
             currentUser = User(copyOf: User.newUser)
         }
         
-        // FIXME: Debugging only
-        // try? FileManager().removeItem(at: archiveURL)
+        // FIXME: To debug as a new user, build the app twice in a row quickly. To debug as continuing user, build the app, then enter background.
+        try? FileManager().removeItem(at: archiveURL)
     }
     
     static func clearFile() {
@@ -477,18 +479,6 @@ class User: Codable {
     
     static func stopGame() {
         User.currentUser.stopTimers()
-    }
-    
-    static func pauseGame() {
-         User.currentUser.stopTimers()
-    }
-    
-    static func resumeGame() {
-        if User.currentUser.isNewUser == false {
-            User.currentUser.applyAllPowers()
-        }
-        
-        User.currentUser.friendLoyaltyDidChange()
     }
     
     static func restartGame() {
@@ -627,6 +617,7 @@ struct Percentage: Codable {
 
 extension User {
     static var allPossibleFriends: [Friend] = [
+        Friend.tutorialFriend,
         Friend.dyatlov,
         Friend.legasov,
         Friend.fomin,

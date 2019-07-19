@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 /**
  Display chat history with a Friend.
@@ -307,6 +308,21 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             // Calculate the addition / removal time for thinking and message
             let messageAdditionTime = totalDelay
             let thinkingAdditionTime = messageAdditionTime - message.delay + 0.6
+            
+            // Schedule notification if required
+            if message.direction == .incoming {
+                let content = UNMutableNotificationContent()
+                content.title = self.friend.shortName
+                content.body = message.text
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: messageAdditionTime, repeats: false)
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                let notificationCenter = UNUserNotificationCenter.current()
+                notificationCenter.add(request, withCompletionHandler: { (error) in
+                    if error != nil {
+                        print("Something went wrong.")
+                    }
+                })
+            }
             
             let thinkingAdditionTimer = Timer(timeInterval: thinkingAdditionTime, repeats: false) { (_) in
                 // Do not add the thinking cell if the message if the first OutgoingMessage
