@@ -343,6 +343,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 user.makeNewFriend(friend: friend)
                 friendTableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
                 friendTableView.endUpdates()
+                user.friendLoyaltyDidChange()
             case .userLevelIncreasedTo(let level):
                 newLevel = level
                 performSegue(withIdentifier: "ConfirmLevelUp", sender: nil)
@@ -433,7 +434,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "ShowTutorial" {
             let chatViewController = segue.destination as! ChatViewController
             chatViewController.user = user
-            chatViewController.friend = user.friendWithLastName(Friend.tutorialFriend.lastName)
+            chatViewController.friend = user.friendWithLastName(Friend.wife.lastName)
             chatViewController.transitioningDelegate = self
             chatViewController.friend.startChat()
         }

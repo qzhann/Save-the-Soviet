@@ -25,6 +25,7 @@ class Power: Codable {
         return !upgrades.isEmpty
     }
     var type: PowerType
+    var friendLastName: String?
     var strength: Int
     var effectInterval: Double?
     var timer: Timer?
@@ -38,6 +39,7 @@ class Power: Codable {
         case coinsNeeded
         case upgrades
         case type
+        case friendLastName
         case strength
         case effectInterval
     }
@@ -50,6 +52,7 @@ class Power: Codable {
         try container.encode(coinsNeeded, forKey: .coinsNeeded)
         try container.encode(upgrades, forKey: .upgrades)
         try container.encode(type, forKey: .type)
+        try container.encode(friendLastName, forKey: .friendLastName)
         try container.encode(strength, forKey: .strength)
         try container.encode(effectInterval, forKey: .effectInterval)
     }
@@ -62,6 +65,7 @@ class Power: Codable {
         coinsNeeded = try container.decode(Int.self, forKey: .coinsNeeded)
         upgrades = try container.decode(Array<PowerUpgrade>.self, forKey: .upgrades)
         type = try container.decode(PowerType.self, forKey: .type)
+        friendLastName = try container.decode(String?.self, forKey: .friendLastName)
         strength = try container.decode(Int.self, forKey: .strength)
         effectInterval = try container.decode(Double?.self, forKey: .effectInterval)
     }
@@ -71,7 +75,7 @@ class Power: Codable {
      Initializes a fully functional power. Power instances initialized using this initializer should support upgrading.
      - Important: The max power in the series of power upgrades should have a nil value for coinsNeeded, while any other power in the upgrade series should have a non-nil value for coinsNeeded.
      */
-    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil, upgrades: [PowerUpgrade] = []) {
+    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, forFriendWithLastName friendLastName: String? = nil, strength: Int, every interval: Double? = nil, upgrades: [PowerUpgrade] = []) {
         self.name = name
         self.imageName = imageName
         self.description = description
@@ -80,6 +84,10 @@ class Power: Codable {
         self.type = type
         self.strength = strength
         self.effectInterval = interval
+        self.friendLastName = friendLastName
+        
+        // If the type is friend loyalty, the power must provide a last name.
+        assert(type != .friendLoyalty || friendLastName != nil)
     }
     
     /// Initialize a copy of another power.
@@ -92,6 +100,7 @@ class Power: Codable {
         self.type = other.type
         self.strength = other.strength
         self.effectInterval = other.effectInterval
+        self.friendLastName = other.friendLastName
     }
     
     
@@ -121,9 +130,9 @@ class Power: Codable {
 
     // MARK: - Static properties
     static var testPowers: [Power] = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 13.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 12.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: [])
     ]
     
     static var testPowerCopies: [Power] = [
@@ -176,10 +185,11 @@ struct PowerUpgrade: Codable {
     var description: String
     var coinsNeeded: Int
     var type: PowerType
+    var friendLastName: String?
     var strength: Int
     var effectInterval: Double?
     
-    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, strength: Int, every interval: Double? = nil) {
+    init(name: String, imageName: String, description: String, coinsNeeded: Int = 0, affecting type: PowerType, forFriendWithLastName friendLastName: String? = nil, strength: Int, every interval: Double? = nil) {
         self.name = name
         self.imageName = imageName
         self.description = description
@@ -187,6 +197,9 @@ struct PowerUpgrade: Codable {
         self.type = type
         self.strength = strength
         self.effectInterval = interval
+        
+        // If the type is friend loyalty, the powerUpgrade must provide a last name.
+        assert(type != .friendLoyalty || friendLastName != nil)
     }
 }
 

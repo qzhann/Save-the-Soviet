@@ -280,6 +280,14 @@ class User: Codable {
     func upgradePower(_ power: Power) {
         coins -= power.coinsNeeded
         power.upgrade()
+        // If the power changes friend loyalty, apply the power on the friend, otherwise apply the power on the user.
+        if power.type == .friendLoyalty, let lastName = power.friendLastName, let friend = self.friendWithLastName(lastName) {
+            friend.apply(power: power, to: self, and: friend)
+        } else {
+            self.applyPower(power)
+        }
+        
+        
         applyPower(power)
     }
     
@@ -369,7 +377,7 @@ class User: Codable {
             startChatForFriend(friendWithLastName(Friend.akimov.lastName))
             startChatForFriend(friendWithLastName(Friend.fomin.lastName))
             startChatForFriend(friendWithLastName(Friend.quizFriend.lastName))
-            startChatForFriend(friendWithLastName(Friend.tutorialFriend.lastName))
+            startChatForFriend(friendWithLastName(Friend.wife.lastName))
         case 2:
             startChatForFriend(friendWithLastName(Friend.dyatlov.lastName))
             startChatForFriend(friendWithLastName(Friend.legasov.lastName))
@@ -429,11 +437,11 @@ class User: Codable {
     // MARK: - Static properties
     
     /// currentUser will be modified during the game.
-    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.wife], powers: Power.testPowers)
     
-    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: [Friend.wife], powers: Power.testPowers)
     
-    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: User.allPossibleFriends, powers: Power.testPowers)
+    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.wife], powers: Power.testPowers)
     
     
     // MARK: - Static methods
@@ -617,7 +625,7 @@ struct Percentage: Codable {
 
 extension User {
     static var allPossibleFriends: [Friend] = [
-        Friend.tutorialFriend,
+        Friend.wife,
         Friend.dyatlov,
         Friend.legasov,
         Friend.fomin,

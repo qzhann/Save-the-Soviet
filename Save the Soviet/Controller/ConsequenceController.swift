@@ -68,8 +68,7 @@ struct ConsequenceController {
             if let chatViewController = chatViewController {
                 chatViewController.delayedConsequenceHandlingDelegate.delayedConsequences.append(consequence)
                 chatViewController.newFriend = friend
-                friend.startChat()
-                user.friendLoyaltyDidChange()
+                friend.startChat() 
                 chatViewController.performSegue(withIdentifier: "ConfirmNewFriend", sender: nil)
             }
         case .executeFriend(let friend):
@@ -95,6 +94,7 @@ struct ConsequenceController {
         case .upgradePower(let power):
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)
+            
         case .startQuizOfCategory(let category):
             chatViewController?.quizQuestionCategory = category
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
