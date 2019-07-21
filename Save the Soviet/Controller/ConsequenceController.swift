@@ -94,12 +94,16 @@ struct ConsequenceController {
         case .upgradePower(let power):
             guard canHandle(consequence) == true else { return }
             user.upgradePower(power)
-            
         case .startQuizOfCategory(let category):
             chatViewController?.quizQuestionCategory = category
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         case .setChatStartOption(let option):
             chatViewController?.friend.chatStartOption = option
+        case .upgradeAndStartChatForFriendWithLastName(let lastName):
+            if let friend = user.friendWithLastName(lastName) {
+                friend.upgrade()
+                friend.startChat()
+            }
         case .startGame:
             if let chatViewController = chatViewController {
                 chatViewController.startGame()

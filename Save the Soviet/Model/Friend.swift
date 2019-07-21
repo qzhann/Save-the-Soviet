@@ -420,6 +420,8 @@ class Friend: Equatable, Codable {
         
         hasNewMessage = chatHistory.count - displayedMessageCount != 0
         
+        guard displayedMessageCount < chatHistory.count else { return }
+        
         // Update the chat history
         for messageIndex in displayedMessageCount ..< chatHistory.count {
             let message = chatHistory[messageIndex]
@@ -540,6 +542,7 @@ class Friend: Equatable, Codable {
         }
     }
     
+    /// Level-based upgrade, called when the upgrade is strictly related the the level up of the user, or when the friend is the tutorial friend.
     func upgradeToLevel(_ level: Int) {
         // Check for available upgrade
         guard let upgrade = upgrades[level] else { return }
@@ -564,78 +567,164 @@ class Friend: Equatable, Codable {
         upgrades.removeValue(forKey: level)
     }
     
+    /// Non-level based upgrade, called when the .upgradeAndStartChatForFriendWithLastName() consequence is being handled.
+    func upgrade() {
+        // Check for available upgrade
+        guard let upgrade = upgrades.first?.value else { return }
+        
+        // Upgrade
+        if let shortTitle = upgrade.shortTitle {
+            self.shortTitle = shortTitle
+        }
+        
+        if let fullTitle = upgrade.fullTitle {
+            self.fullTitle = fullTitle
+        }
+        
+        if let description = upgrade.description {
+            self.description = description
+        }
+        
+        if let chatStartOption = upgrade.chatStartOption {
+            self.chatStartOption = chatStartOption
+        }
+        
+        upgrades.removeValue(forKey: upgrades.first!.key)
+    }
+    
     
     // MARK: - Static properties
     
-    /// Wife is the tutorial friend, who also introduces the user to the game features.
-    static var wife = Friend(lastName: "Wife", shortTitle: "My", fullTitle: "My", imageName: "Gorbachev", description: "I hope my man does the right thing, always.", loyalty: Percentage(progress: 98), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
+    /// Old party member is the tutorial friend, who also introduces the user to the game features.
+    static var oldPartyMember = Friend(lastName: "Old Party Member", shortTitle: "", fullTitle: "", imageName: "Gorbachev", description: "I have faith in communism.", loyalty: Percentage(progress: 98), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
         powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Wife", strength: 100)
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
+                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Old Party Member", strength: 100)
             ]),
             Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
                 PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
             ]),
             Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
+            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
             ])
         ],
         upgrades: [
+            // Level based upgrade
             1: FriendUpgrade(chatStartOption: .sendIncomingMessage(
                 IncomingMessage(texts: "How was your first day?", responses: [
                     OutgoingMessage(description: "It's fine.", texts: "It's fine.", "I haven't really found anything I need to deal with.", responseMessageId: 101),
                     OutgoingMessage(text: "It's alright.", responseMessageId: 101),
                     OutgoingMessage(text: "Nothing happened.", responseMessageId: 101, levelRestriction: 2)
                 ])
-                ))
+            )),
+            
+            // Non-level based upgrade
+            101: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "How was the talk?", responses: [OutgoingMessage.leaveChat])))
         ],
         startChatUsing: .sendIncomingMessage(
-            IncomingMessage(texts: "My Darling...", "Congratulations on becoming the president of the Soviet Union.", "But...", responses: [OutgoingMessage(text: "Yes?", responseMessageId: 3)])
+            IncomingMessage(texts: "Congratulations on becoming the president of the Soviet Union, comerade Gorbachev.", responses: [OutgoingMessage(text: "Thank you comerade.", responseMessageId: 3)])   // FIXME: Change response to 1
         ),
         allPossibleMessages:[
             // Tutorial messages.
-            1: IncomingMessage(texts: "Although you are the ultimate leader, not every one is 100% loyal to you.", "You must keep in mind that your support is determined by the average loyalty of everyone working for you.", "Promise me you will remember what I said, darling.", "Because The Union will collapse if people no longer support you.", responses: [
+            1: IncomingMessage(texts: "Although you are the ultimate leader, not every one is 100% loyal to you.", "Your support is determined by the average loyalty of everyone working for you.", "Promise me you will keep this in mind, comerade Gorbachev.", "Because The Union will collapse if people no longer support you.", responses: [
                 OutgoingMessage(text: "I promise.", responseMessageId: 2),
                 OutgoingMessage(text: "I know.", responseMessageId: 2)
             ]),
-            2: IncomingMessage(texts: "My honey, now the country depends on you.", "Remember to turn on notifications so you won't miss anything important.", responses: [
+            2: IncomingMessage(texts: "Now the country depends on you.", "Remember to turn on notifications so you won't miss anything important.", responses: [
                 OutgoingMessage(text: "I will.", responseMessageId: 3, consequences: [.askForNotificationPermission]),
                 OutgoingMessage(text: "Nope.", responseMessageId: 3, consequences: [.askForNotificationPermission])
             ]),
-            3: IncomingMessage(texts: "Good luck at Moscow my darling.", responses: [
+            3: IncomingMessage(texts: "Good luck.", responses: [
                 OutgoingMessage(description: "Start Game", consequences: [.startGame])
             ]),
             
-            // Level 1 messages.
+            // Introduction.
             101: IncomingMessage(texts: "Have you talked to the minsters yet?", responses: [
                 OutgoingMessage(text: "Not yet", responseMessageId: 102)
             ]),
             102: IncomingMessage(texts: "They should come to your office at any minute.", "Be prepared.", responses: [
-                OutgoingMessage(description: "(Talk to Minister of Energy)", consequences: [.setChatStartOption(.promptUserWith([OutgoingMessage(description: "(Talk to Chairman of KGB)", consequences: [.makeNewFriend(Friend.chebrikov)])])), .makeNewFriend(Friend.shcherbina)])
+                OutgoingMessage(description: "(Talk to Minister of Energy)", consequences: [.makeNewFriend(Friend.shcherbina), .setChatStartOption(.promptUserWith([OutgoingMessage(description: "(Talk to Chairman of KGB)", consequences: [.makeNewFriend(Friend.chebrikov), .setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "The ministers should give you a good amount of information.", "Talk to them when you are ready.")))])])),
+                    ])
             ])
             
             
         ]
     )
     
-    static var shcherbina = Friend(lastName: "Shcherbina", shortTitle: "Minister", fullTitle: "Minister of Energy", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10), powers: Power.testPowers1,
-                                   upgrades: [:],
-                                   startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-                                    OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-                                    OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-                                    OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
-                                    ])),
-                                   allPossibleMessages: Friend.allTestMessages
+    /// Minister of energy.
+    static var shcherbina = Friend(lastName: "Shcherbina", shortTitle: "Minister", fullTitle: "Minister of Energy", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
+        powers: [
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
+                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
+                ]),
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
+                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
+                ]),
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
+                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
+                ])
+        ],
+        upgrades: [:],
+        startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", responses: [
+                OutgoingMessage(text: "Who are you?", responseMessageId: 101, consequences: [.changeUserLevelBy(-1)]),
+                OutgoingMessage(text: "Introduce yourself.", responseMessageId: 101),
+            ])),
+        allPossibleMessages: [
+            // Introduction.
+            101: IncomingMessage(texts: "I am Boris Shcherbina, Minister of Energy and Oil.", "The energy production of the country has been steadily increasing over the years", "Electricity is available in regions wider than ever", "Thanks to the nuclear power plants we built in recent years", responses: [
+                OutgoingMessage(description: "(Talk about energy production.)", texts: "How did we increase energy production over the years?", responseMessageId: 102),
+                OutgoingMessage(description: "(Talk about nuclear power plant.)", texts: "Give me a brief report on the nuclear power plants in the country.", responseMessageId: 103, consequences: [.changeUserLevelBy(10)])
+            ]),
+            102: IncomingMessage(texts: "We have built dams on main streams of rivers", "They were huge projects with thousands of people working day and night on the contruction sites", responses: [
+                OutgoingMessage(description: "(Keep listening)", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "(Stop listening)", responseMessageId: 103, levelRestriction: 3)
+            ]),
+            103: IncomingMessage(texts: "We have built several nuclear power plants in the Union", "Several of them are RBMK reactors, whose core technologies are devised purely by Soviet scientists.", responses: [
+                OutgoingMessage(text: "How safe are these reactors?", responseMessageId: 104, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
+            ]),
+            104: IncomingMessage(texts: "All the reactors have gone through rigorous safety tests before they are put into work.", "No accident ever happened to these reactors since they were built.", responses: [
+                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
+            ]),
+            105: IncomingMessage(texts: "Thank you president Gorbachev.", consequences: [.changeFriendLoyaltyBy(10)], responses: [
+                OutgoingMessage.leaveChat
+            ]),
+            
+            
+        ]
     )
     
-    static var chebrikov = Friend(lastName: "Chebrikov", shortTitle: "Chairman", fullTitle: "Chairman of KGB", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10), powers: Power.testPowers1,
-                                   upgrades: [:],
-                                   startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-                                    OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-                                    OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1),
-                                    OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, consequences: [.changeUserLevelBy(5)])
-                                    ])),
-                                   allPossibleMessages: Friend.allTestMessages
+    /// Chairman of KGB.
+    static var chebrikov = Friend(lastName: "Chebrikov", shortTitle: "Chairman", fullTitle: "Chairman of KGB", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
+        powers: [],
+        upgrades: [:],
+        startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", responses: [
+            OutgoingMessage(text: "Who are you?", responseMessageId: 101, consequences: [.changeUserLevelBy(-1)]),
+            OutgoingMessage(text: "Introduce yourself.", responseMessageId: 101),
+            ])),
+        allPossibleMessages: [
+            // Introduction.
+            101: IncomingMessage(texts: "I am Boris Shcherbina, Minister of Energy and Oil.", "The energy production of the country has been steadily increasing over the years", "Electricity is available in regions wider than ever", "Thanks to the nuclear power plants we built in recent years", responses: [
+                OutgoingMessage(description: "(Talk about energy production.)", texts: "How did we increase energy production over the years?", responseMessageId: 105),
+                OutgoingMessage(description: "(Talk about nuclear power plant.)", texts: "Give me a brief report on the nuclear power plants in the country.", responseMessageId: 105, consequences: [.changeUserLevelBy(10)])
+                ]),
+            102: IncomingMessage(texts: "We have built dams on main streams of rivers", "They were huge projects with thousands of people working day and night on the contruction sites", responses: [
+                OutgoingMessage(description: "(Keep listening)", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "(Stop listening)", responseMessageId: 103, levelRestriction: 3)
+                ]),
+            103: IncomingMessage(texts: "We have built several nuclear power plants in the Union", "Several of them are RBMK reactors, whose core technologies are devised purely by Soviet scientists.", responses: [
+                OutgoingMessage(text: "How safe are these reactors?", responseMessageId: 104, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
+                ]),
+            104: IncomingMessage(texts: "All the reactors have gone through rigorous safety tests before they are put into work.", "No accident ever happened to these reactors since they were built.", responses: [
+                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
+                ]),
+            105: IncomingMessage(texts: "Thank you president Gorbachev.", consequences: [.changeFriendLoyaltyBy(10), .upgradeAndStartChatForFriendWithLastName("Old Party Member")], responses: [
+                OutgoingMessage.leaveChat
+                ]),
+            
+            
+            ]
     )
     
     static var dyatlov = Friend(lastName: "Dyatlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10), powers: Power.testPowers1,

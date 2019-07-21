@@ -694,10 +694,10 @@
                                 </connections>
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E01-JN-Eiq">
-                                <rect key="frame" x="147.66666666666666" y="776" width="85" height="20"/>
+                                <rect key="frame" x="147.66666666666666" y="776" width="95" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="7eU-bQ-zMJ"/>
-                                    <constraint firstAttribute="width" constant="85" id="GU1-Bi-oHZ"/>
+                                    <constraint firstAttribute="width" constant="95" id="GU1-Bi-oHZ"/>
                                 </constraints>
                                 <connections>
                                     <segue destination="OAE-lv-sex" kind="embed" identifier="EmbedLoyaltyProgressChangeIndicator" id="BJe-rM-oFY"/>
@@ -1876,17 +1876,17 @@
             <objects>
                 <viewController id="j8z-Pp-RWu" customClass="LevelProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="P1z-nB-5cp">
-                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
+                        <rect key="frame" x="0.0" y="0.0" width="80" height="20"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="LevelIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="7fd-th-QSg">
-                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
+                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="7fd-th-QSg" secondAttribute="height" multiplier="1:1" id="UKo-as-f6U"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNj-aV-Z2p">
-                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
+                                <rect key="frame" x="20" y="2" width="60" height="18"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.5162040591" green="0.14010855559999999" blue="0.1530394554" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -1919,17 +1919,17 @@
             <objects>
                 <viewController id="OAE-lv-sex" customClass="SupportLoyaltyProgressChangeIndicatorViewController" customModule="Save_the_Soviet" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5pd-S2-33k">
-                        <rect key="frame" x="0.0" y="0.0" width="120" height="11.666666666666666"/>
+                        <rect key="frame" x="0.0" y="0.0" width="120.33333333333333" height="14"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="252" verticalHuggingPriority="251" image="SupportLoyaltyIncrease" translatesAutoresizingMaskIntoConstraints="NO" id="FCw-7H-TJj">
-                                <rect key="frame" x="0.0" y="0.0" width="11.666666666666666" height="11.666666666666666"/>
+                                <rect key="frame" x="0.0" y="0.0" width="14" height="14"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="FCw-7H-TJj" secondAttribute="height" multiplier="1:1" id="YO0-0U-HAd"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWL-VU-YtM">
-                                <rect key="frame" x="11.666666666666664" y="-2.3333333333333339" width="108.33333333333334" height="18.333333333333332"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loyalty + 10%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWL-VU-YtM">
+                                <rect key="frame" x="13.999999999999993" y="-1" width="106.33333333333331" height="18"/>
                                 <fontDescription key="fontDescription" name="AvenirNextCondensed-Bold" family="Avenir Next Condensed" pointSize="13"/>
                                 <color key="textColor" red="0.1077675298" green="0.30285480619999999" blue="0.50178319220000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -2019,10 +2019,10 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="DXw-HQ-mLw"/>
-        <segue reference="QqD-p7-kd8"/>
-        <segue reference="4kp-yA-NKo"/>
+        <segue reference="YfK-30-jtg"/>
+        <segue reference="zJq-xZ-mBz"/>
         <segue reference="l15-Rp-P4R"/>
         <segue reference="SX1-TE-efx"/>
-        <segue reference="VMY-bb-P8k"/>
+        <segue reference="dcs-tn-K6x"/>
     </inferredMetricsTieBreakers>
 </document>

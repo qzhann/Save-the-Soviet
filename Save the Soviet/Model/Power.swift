@@ -119,6 +119,7 @@ class Power: Codable {
         self.description = nextLevel.description
         self.coinsNeeded = nextLevel.coinsNeeded
         self.type = nextLevel.type
+        self.friendLastName = nextLevel.friendLastName
         self.strength = nextLevel.strength
         self.effectInterval = nextLevel.effectInterval
         self.upgrades = newUpgrades
@@ -129,6 +130,7 @@ class Power: Codable {
     }
 
     // MARK: - Static properties
+    
     static var testPowers: [Power] = [
         Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
         Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
@@ -194,6 +196,7 @@ struct PowerUpgrade: Codable {
         self.imageName = imageName
         self.description = description
         self.coinsNeeded = coinsNeeded
+        self.friendLastName = friendLastName
         self.type = type
         self.strength = strength
         self.effectInterval = interval

@@ -434,7 +434,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         } else if segue.identifier == "ShowTutorial" {
             let chatViewController = segue.destination as! ChatViewController
             chatViewController.user = user
-            chatViewController.friend = user.friendWithLastName(Friend.wife.lastName)
+            chatViewController.friend = user.friendWithLastName(Friend.oldPartyMember.lastName)
             chatViewController.transitioningDelegate = self
             chatViewController.friend.startChat()
         }

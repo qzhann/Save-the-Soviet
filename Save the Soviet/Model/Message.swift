@@ -168,6 +168,9 @@ struct OutgoingMessage: Codable {
         self.consequences = consequences
     }
     
+    // MARK: - Static properties
+    
+    static var leaveChat = OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
 }
 
 // MARK: -
@@ -185,6 +188,7 @@ enum Consequence: Codable {
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory)
     case setChatStartOption(ChatStartOption)
+    case upgradeAndStartChatForFriendWithLastName(String)
     case userLevelIncreasedTo(Int)
     case startGame
     case askForNotificationPermission
@@ -203,6 +207,7 @@ enum Consequence: Codable {
         case upgradePower
         case startQuizOfCategory
         case setChatStartOption
+        case upgradeAndStartChatForFriendWithLastName
         case userLevelIncreasedTo
         case startGame
         case askForNotificationPermission
@@ -233,6 +238,8 @@ enum Consequence: Codable {
             try container.encode(category, forKey: .startQuizOfCategory)
         case .setChatStartOption(let option):
             try container.encode(option, forKey: .setChatStartOption)
+        case .upgradeAndStartChatForFriendWithLastName(let lastName):
+            try container.encode(lastName, forKey: .upgradeAndStartChatForFriendWithLastName)
         case .userLevelIncreasedTo(let level):
             try container.encode(level, forKey: .userLevelIncreasedTo)
         case .startGame:
@@ -264,6 +271,8 @@ enum Consequence: Codable {
             self = .upgradePower(power)
         } else if let option = try? container.decode(ChatStartOption.self, forKey: .setChatStartOption) {
             self = .setChatStartOption(option)
+        } else if let lastName = try? container.decode(String.self, forKey: .upgradeAndStartChatForFriendWithLastName) {
+            self = .upgradeAndStartChatForFriendWithLastName(lastName)
         } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {
             self = .startQuizOfCategory(category)
         } else if let level = try? container.decode(Int.self, forKey: .userLevelIncreasedTo) {
