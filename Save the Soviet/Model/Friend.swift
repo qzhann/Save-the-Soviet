@@ -386,7 +386,7 @@ class Friend: Equatable, Codable {
     func sendIncomingMessage(_ message: IncomingMessage) {
         chatEndingState = .notEnded
         chatHistory.append(contentsOf: message.chatMessages)
-        chatDelegate?.didAddIncomingMessageWith(responses: nil, consequences: message.consequences)
+        chatDelegate?.didAddIncomingMessageWith(responses: message.responses, consequences: message.consequences)
     }
     
     /// Starts chat using the corresponding start chat option. This is called during user's initialization and by ConsequenceController.
@@ -609,17 +609,20 @@ class Friend: Equatable, Codable {
             ])
         ],
         upgrades: [
+            // Non-level based upgrade
+            101: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "How was the talk with them?", responses: [
+                    OutgoingMessage(text: "Successful", responseMessageId: 103, consequences: [.changeUserLevelBy(5)]),
+                    OutgoingMessage(text: "Smooth", responseMessageId: 103, consequences: [.changeUserLevelBy(5)])
+            ]))),
+            
             // Level based upgrade
             1: FriendUpgrade(chatStartOption: .sendIncomingMessage(
                 IncomingMessage(texts: "How was your first day?", responses: [
                     OutgoingMessage(description: "It's fine.", texts: "It's fine.", "I haven't really found anything I need to deal with.", responseMessageId: 101),
                     OutgoingMessage(text: "It's alright.", responseMessageId: 101),
                     OutgoingMessage(text: "Nothing happened.", responseMessageId: 101, levelRestriction: 2)
-                ])
-            )),
-            
-            // Non-level based upgrade
-            101: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "How was the talk?", responses: [OutgoingMessage.leaveChat])))
+                    ])
+                )),
         ],
         startChatUsing: .sendIncomingMessage(
             IncomingMessage(texts: "Congratulations on becoming the president of the Soviet Union, comerade Gorbachev.", responses: [OutgoingMessage(text: "Thank you comerade.", responseMessageId: 3)])   // FIXME: Change response to 1
@@ -639,14 +642,26 @@ class Friend: Equatable, Codable {
             ]),
             
             // Introduction.
-            101: IncomingMessage(texts: "Have you talked to the minsters yet?", responses: [
-                OutgoingMessage(text: "Not yet", responseMessageId: 102)
+            101: IncomingMessage(texts: "Have you talked to the ministers yet?", responses: [
+                OutgoingMessage(text: "Not yet", responseMessageId: 102)    // FIXME: Change to 102
             ]),
             102: IncomingMessage(texts: "They should come to your office at any minute.", "Be prepared.", responses: [
-                OutgoingMessage(description: "(Talk to Minister of Energy)", consequences: [.makeNewFriend(Friend.shcherbina), .setChatStartOption(.promptUserWith([OutgoingMessage(description: "(Talk to Chairman of KGB)", consequences: [.makeNewFriend(Friend.chebrikov), .setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "The ministers should give you a good amount of information.", "Talk to them when you are ready.")))])])),
+                OutgoingMessage(description: "(Talk to Minister of Energy)", consequences: [.makeNewFriend(Friend.shcherbina), .setChatStartOption(.promptUserWith([OutgoingMessage(description: "(Talk to Chairman of KGB)", consequences: [.makeNewFriend(Friend.chebrikov), .setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "The ministers should give you a good amount of information.", "Talk to them when you are ready.", responses: [
+                        OutgoingMessage(text: "OK", responseMessageId: nil)
+                    ])))])])),
                     ])
-            ])
-            
+            ]),
+            103: IncomingMessage(texts: "Well", "Let's see if you remembered the important details.", responses: [
+                OutgoingMessage(text: "Go Ahead", responseMessageId: nil, levelRestriction: nil, consequences: [.startQuizOfCategory(.facts), .setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "Not bad.", "I'm sure that the Minister of Energy and Oil Boris Shcherbina told you a lot about our nuclear reactors.", "Let's see how much you know about them.", responses: [
+                    OutgoingMessage(text: "Fire away", responseMessageId: nil, consequences: [.startQuizOfCategory(.nuclear), .setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "Well, I guess there's plenty of stuff you must know as the president of USSR, comerade Gorbachev.", "You should certainly talk more with the Ministers", consequences: [.upgradeAndStartChatForFriendWithLastName("Shcherbina"), .upgradeAndStartChatForFriendWithLastName("Chebrikov")], responses: [
+                        OutgoingMessage(description: "Certainly", texts: "Certainly", "Thank you for all the help, comerade.", responseMessageId: 104, consequences: [.changeUserLevelBy(10)]),
+                        OutgoingMessage(description: "Thank you", texts: "Thank you, comerade.", "There's plenty I need to learn even as the president.", responseMessageId: 104, consequences: [.changeUserLevelBy(15)]),
+                        ])))])
+                ])))])
+            ]),
+            104: IncomingMessage(texts: "I have faith in you, comerade Gorbachev.", "Our country needs a leader like you.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+                OutgoingMessage(description: "Leave Chat", texts: "I will not let anyone down.", responseMessageId: nil, consequences: [.endChatFrom(.outgoing)])
+            ]),
             
         ]
     )
@@ -664,7 +679,10 @@ class Friend: Equatable, Codable {
                 PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
                 ])
         ],
-        upgrades: [:],
+        upgrades: [
+            // Non-level based upgrades
+            101: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "Yo")))
+        ],
         startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", responses: [
                 OutgoingMessage(text: "Who are you?", responseMessageId: 101, consequences: [.changeUserLevelBy(-1)]),
                 OutgoingMessage(text: "Introduce yourself.", responseMessageId: 101),
@@ -696,35 +714,36 @@ class Friend: Equatable, Codable {
     
     /// Chairman of KGB.
     static var chebrikov = Friend(lastName: "Chebrikov", shortTitle: "Chairman", fullTitle: "Chairman of KGB", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
-        powers: [],
+        powers: [
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
+                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
+                ]),
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
+                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
+                ]),
+            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
+                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
+                ])
+        ],
         upgrades: [:],
-        startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", responses: [
-            OutgoingMessage(text: "Who are you?", responseMessageId: 101, consequences: [.changeUserLevelBy(-1)]),
-            OutgoingMessage(text: "Introduce yourself.", responseMessageId: 101),
-            ])),
+        startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "President Gorbachev", "KGB pledges loyalty to you.", responses: [
+            OutgoingMessage(description: "Certainly.", texts: "Certainly.","I hope you and your colleges could protect our country from danger and instability.", responseMessageId: 101),
+            OutgoingMessage(description: "Thank you, comerade.", texts: "Thank you, comerade.", "Now give me a brief about KGB.", responseMessageId: 101)
+        ])),
         allPossibleMessages: [
             // Introduction.
-            101: IncomingMessage(texts: "I am Boris Shcherbina, Minister of Energy and Oil.", "The energy production of the country has been steadily increasing over the years", "Electricity is available in regions wider than ever", "Thanks to the nuclear power plants we built in recent years", responses: [
-                OutgoingMessage(description: "(Talk about energy production.)", texts: "How did we increase energy production over the years?", responseMessageId: 105),
-                OutgoingMessage(description: "(Talk about nuclear power plant.)", texts: "Give me a brief report on the nuclear power plants in the country.", responseMessageId: 105, consequences: [.changeUserLevelBy(10)])
-                ]),
-            102: IncomingMessage(texts: "We have built dams on main streams of rivers", "They were huge projects with thousands of people working day and night on the contruction sites", responses: [
-                OutgoingMessage(description: "(Keep listening)", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
-                OutgoingMessage(description: "(Stop listening)", responseMessageId: 103, levelRestriction: 3)
-                ]),
-            103: IncomingMessage(texts: "We have built several nuclear power plants in the Union", "Several of them are RBMK reactors, whose core technologies are devised purely by Soviet scientists.", responses: [
-                OutgoingMessage(text: "How safe are these reactors?", responseMessageId: 104, consequences: [.changeUserLevelBy(10)]),
-                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
-                ]),
-            104: IncomingMessage(texts: "All the reactors have gone through rigorous safety tests before they are put into work.", "No accident ever happened to these reactors since they were built.", responses: [
-                OutgoingMessage(description: "Good", texts: "Good", "You have done a good job serving your contry, Comerade Shcherbina.", responseMessageId: 105)
-                ]),
-            105: IncomingMessage(texts: "Thank you president Gorbachev.", consequences: [.changeFriendLoyaltyBy(10), .upgradeAndStartChatForFriendWithLastName("Old Party Member")], responses: [
-                OutgoingMessage.leaveChat
-                ]),
-            
-            
-            ]
+            101: IncomingMessage(texts: "KGB is the main security agency for our country", "We ensure the leadership of the CCCP, the integrity of USSR", "The country is safe as long as KGB still operates.", responses: [
+                OutgoingMessage(description: "(Reply seriously)", texts: "Comerade Chebrikov", "I hope KGB works up to your standards.", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "(Reply with humor)", consequences: [], levelRestriction: 3)
+            ]),
+            102: IncomingMessage(texts: "Certainly.", "KGB is the main security agency for our country", "We ensure the leadership of the CCCP, the integrity of USSR", "The country is safe as long as KGB still operates.", responses: [
+                OutgoingMessage(description: "(Reply seriously)", texts: "Comerade Chebrikov", "I hope KGB works up to your standards.", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
+                OutgoingMessage(description: "(Reply with humor)", consequences: [], levelRestriction: 3)
+            ]),
+            103: IncomingMessage(texts: "Certainly, president Gorbachev.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+                OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Old Party Member"))
+            ]),
+        ]
     )
     
     static var dyatlov = Friend(lastName: "Dyatlov", shortTitle: "Engineer", fullTitle: "Deputy Chief Engineer", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 2), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10), powers: Power.testPowers1,

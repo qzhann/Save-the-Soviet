@@ -169,7 +169,15 @@ struct OutgoingMessage: Codable {
     }
     
     // MARK: - Static properties
+    static func startQuizInCategory(_ category: QuizQuestionCategory, withDescription description: String) -> OutgoingMessage {
+        return OutgoingMessage(description: description, consequences: [.startQuizOfCategory(category)])
+    }
     
+    static func leaveChatWith(consequences: Consequence...) -> OutgoingMessage {
+        var allConsequences = consequences
+        allConsequences.append(.endChatFrom(.outgoing))
+        return OutgoingMessage(description: "Leave Chat", consequences: allConsequences)
+    }
     static var leaveChat = OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
 }
 

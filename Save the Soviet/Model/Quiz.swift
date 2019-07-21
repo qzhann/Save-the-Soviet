@@ -91,19 +91,15 @@ class Quiz: Codable {
 enum QuizQuestionCategory: String, CaseIterable, Codable {
     /// Factutal questions
     case facts = "Facts"
-    /// Historic questions
-    case history = "History"
     /// Nuclear questions
     case nuclear = "Nuclear"
     /// Crisis handling questions
     case crisis = "Crisis"
-    /// Questions that are in the form of making decisions.
-    case decision = "Decision"
     /// Questions from all categories, generated randomly
     case all = "All"
     
     static var random: QuizQuestionCategory {
-        return [.facts, .history, .nuclear, .crisis, .decision].randomElement()!
+        return [.facts, .nuclear, .crisis].randomElement()!
     }
 }
 
@@ -129,11 +125,11 @@ struct QuizQuestion: Codable {
     var correctAnswer: String
     /// Experience that will be added to user level if question is answered correctly
     var addExperience: Int {
-        return (11 - level) * 5
+        return (11 - level)
     }
     /// Experience that will be subtracted from user level if question is answered wrongly
     var minusExperience: Int {
-        return level * 2
+        return level
     }
     /// The time for the user to respond
     var responseTime: Int
@@ -156,25 +152,31 @@ struct QuizQuestion: Codable {
     
     static var allPossibleQuizQuestions: [Int: [QuizQuestionCategory: [QuizQuestion]]] = [
         1: [
-            .facts: [QuizQuestion.testQuizQuestion],
-            .history: [QuizQuestion.testQuizQuestion],
-            .nuclear: [QuizQuestion.testQuizQuestion],
+            .facts: [
+                QuizQuestion(level: 1, category: .facts, text: "Which title corresponds to the job of Boris Shcherbina?", answers: ["Minister of Energy", "Minister of Oil", "Head of Energy Department", "Minister of Energy and Oil"], correctAnswer: "Minister of Energy and Oil", responseTime: 5),
+                QuizQuestion(level: 1, category: .facts, text: "The core technology in RBMK nuclear reactor is devised by whom?", answers: ["Boris Shcherbina", "Soviet Scientists", "American Scientists", "German Scientists",], correctAnswer: "Soviet Scientists", responseTime: 5),
+                QuizQuestion(level: 1, category: .facts, text: "What happened to the energy production in USSR in the last few years?", answers: ["Increased Drastically", "Increased Steadily", "Decreased Drastically", "No Change"], correctAnswer: "Increased Steadily", responseTime: 5),
+                QuizQuestion(level: 1, category: .facts, text: "What does Minister Shcherbina say about the safety of RBMK reactors?", answers: ["Very safe", "Unsure", "Dangerous", "Moderate"], correctAnswer: "Very safe", responseTime: 5),
+                QuizQuestion(level: 1, category: .facts, text: "How is your support calculated?", answers: ["Averages loyalty of everyone", "Calculated independently", "Proportional to the level progress", "Randomized"], correctAnswer: "Averages loyalty of everyone", responseTime: 8)
+            ],
+            .nuclear: [
+                QuizQuestion(level: 1, category: .nuclear, text: "How many nuclear power plants does Soviet Union have?", answers: ["5", "10", "20", "30"], correctAnswer: "20", responseTime: 5),
+                QuizQuestion(level: 1, category: .nuclear, text: "Which nuclear power plant is the oldest?", answers: ["Armenian Plant", "Leningrad Plant", "F-1", "Kola Plant"], correctAnswer: "F-1", responseTime: 5),
+                QuizQuestion(level: 1, category: .nuclear, text: "What type of reactors are constructed in Vladimir Llyich Lenin Nuclear Power Plant?", answers: ["RBMK-1000", "RBMK-2000", "RBMK-3000", "RBMK-1989"], correctAnswer: "RBMK-1000", responseTime: 5),
+                QuizQuestion(level: 1, category: .nuclear, text: "Did any accident occur in any nuclear power plants in USSR?", answers: ["Yes, and we addressed all of them safely.", "Yes, and we covered all of them up.", "No, because they are all really safe.", "No, because regulations prevented them."], correctAnswer: "Yes, and we covered all of them up.", responseTime: 5),
+                QuizQuestion(level: 1, category: .nuclear, text: "The nuclear power plant in the city of Pripyat is also known as?", answers: ["Chernobyl", "RBMK-1000", "Kursk", "F-1"], correctAnswer: "Chernobyl", responseTime: 5),
+            ],
             .crisis: [QuizQuestion.testQuizQuestion],
-            .decision: [QuizQuestion.testQuizQuestion],
         ],
         2: [
             .facts: [QuizQuestion.testQuizQuestion],
-            .history: [QuizQuestion.testQuizQuestion],
             .nuclear: [QuizQuestion.testQuizQuestion],
             .crisis: [QuizQuestion.testQuizQuestion],
-            .decision: [QuizQuestion.testQuizQuestion],
         ],
         3: [
             .facts: [QuizQuestion.testQuizQuestion],
-            .history: [QuizQuestion.testQuizQuestion],
             .nuclear: [QuizQuestion.testQuizQuestion],
             .crisis: [QuizQuestion.testQuizQuestion],
-            .decision: [QuizQuestion.testQuizQuestion],
         ],
     ]
 }

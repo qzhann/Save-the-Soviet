@@ -37,10 +37,6 @@ struct ConsequenceController {
     
     func canHandle(_ consequence: Consequence) -> Bool {
         switch consequence {
-        case .changeUserLevelBy(let change):
-            return user.level.progress + change >= 0
-        case .changeUserSupportBy(let change):
-            return user.support.progress + change >= 0
         case .changeFriendLoyaltyBy(let change):
             if let chatViewController = chatViewController {
                 return chatViewController.friend.loyalty.progress + change >= 0
@@ -113,7 +109,6 @@ struct ConsequenceController {
             center.requestAuthorization(options: [.alert, .sound]) { (granted, error) in
                 if error != nil { print("Something went wrong.") }
             }
-        // FIXME:
         default:
             break
         }

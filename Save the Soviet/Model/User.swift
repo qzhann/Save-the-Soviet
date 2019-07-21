@@ -220,6 +220,7 @@ class User: Codable {
         for friend in friends {
             friend.changeLoyaltyBy(progress: progress)
         }
+        friendLoyaltyDidChange()
         
         // Visualize the change
         visualizationDelegate?.visualizeConsequence(.changeUserSupportBy(progress))
@@ -364,8 +365,7 @@ class User: Codable {
         friend?.startChat()
     }
     
-    // FIXME: Incomplete implementation
-    /// Trigger chat events
+    /// Trigger chat events based on level.
     private func triggerChatEventsForLevel(_ level: Int) {
         
         // Upgrade friends and record the highest level number
