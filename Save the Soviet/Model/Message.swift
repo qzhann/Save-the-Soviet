@@ -50,7 +50,7 @@ class ChatMessage: Equatable, CustomStringConvertible, Codable {
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.delay = 1.2 + Double(text.count) / 20
+        self.delay = /*1.2 + Double(text.count) / 20*/ 1  // FIXME:
     }
     
     
@@ -169,8 +169,10 @@ struct OutgoingMessage: Codable {
     }
     
     // MARK: - Static properties
-    static func startQuizInCategory(_ category: QuizQuestionCategory, withDescription description: String) -> OutgoingMessage {
-        return OutgoingMessage(description: description, consequences: [.startQuizOfCategory(category)])
+    static func startQuizInCategory(_ category: QuizQuestionCategory, withDescription description: String, consequences: [Consequence] = []) -> OutgoingMessage {
+        var allConsequences = consequences
+        allConsequences.append(.startQuizOfCategory(category))
+        return OutgoingMessage(description: description, consequences: allConsequences)
     }
     
     static func leaveChatWith(consequences: Consequence...) -> OutgoingMessage {
@@ -196,6 +198,7 @@ enum Consequence: Codable {
     case upgradePower(Power)
     case startQuizOfCategory(QuizQuestionCategory)
     case setChatStartOption(ChatStartOption)
+    case upgradeFriendWithLastName(String)
     case upgradeAndStartChatForFriendWithLastName(String)
     case userLevelIncreasedTo(Int)
     case startGame
@@ -215,6 +218,7 @@ enum Consequence: Codable {
         case upgradePower
         case startQuizOfCategory
         case setChatStartOption
+        case upgradeFriendWithLastName
         case upgradeAndStartChatForFriendWithLastName
         case userLevelIncreasedTo
         case startGame
@@ -246,6 +250,8 @@ enum Consequence: Codable {
             try container.encode(category, forKey: .startQuizOfCategory)
         case .setChatStartOption(let option):
             try container.encode(option, forKey: .setChatStartOption)
+        case .upgradeFriendWithLastName(let lastName):
+            try container.encode(lastName, forKey: .upgradeFriendWithLastName)
         case .upgradeAndStartChatForFriendWithLastName(let lastName):
             try container.encode(lastName, forKey: .upgradeAndStartChatForFriendWithLastName)
         case .userLevelIncreasedTo(let level):
@@ -279,6 +285,8 @@ enum Consequence: Codable {
             self = .upgradePower(power)
         } else if let option = try? container.decode(ChatStartOption.self, forKey: .setChatStartOption) {
             self = .setChatStartOption(option)
+        } else if let lastName = try? container.decode(String.self, forKey: .upgradeFriendWithLastName) {
+            self = .upgradeFriendWithLastName(lastName)
         } else if let lastName = try? container.decode(String.self, forKey: .upgradeAndStartChatForFriendWithLastName) {
             self = .upgradeAndStartChatForFriendWithLastName(lastName)
         } else if let category = try? container.decode(QuizQuestionCategory.self, forKey: .startQuizOfCategory) {

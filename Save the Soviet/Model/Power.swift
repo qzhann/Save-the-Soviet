@@ -132,9 +132,15 @@ class Power: Codable {
     // MARK: - Static properties
     
     static var testPowers: [Power] = [
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: []),
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 150, affecting: .other, strength: 0, upgrades: [])
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
+            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
+            ]),
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
+            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
+            ]),
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
+            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
+            ])
     ]
     
     static var testPowerCopies: [Power] = [

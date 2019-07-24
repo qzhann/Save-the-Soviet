@@ -196,6 +196,9 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         updateProgressViewsAndLabels()
         handleNewLevel()
         handleDelayedConsequences()
+        if user.support.progress == user.support.maximumProgress {
+            win = true
+        }
         handleRestartGame()
     }
     

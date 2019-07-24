@@ -379,9 +379,9 @@ class User: Codable {
         case 2:
             break
         case 3:
-            break
+            startChatForFriend(friendWithLastName(Friend.fomin.lastName))
         case 4:
-            break
+            startChatForFriend(friendWithLastName(Friend.shcherbina.lastName))
         case 5:
             break
         case 6:
@@ -622,10 +622,8 @@ struct Percentage: Codable {
 extension User {
     static var allPossibleFriends: [Friend] = [
         Friend.oldPartyMember,
-        Friend.dyatlov,
         Friend.legasov,
         Friend.fomin,
         Friend.akimov,
-        Friend.quizFriend
     ]
 }

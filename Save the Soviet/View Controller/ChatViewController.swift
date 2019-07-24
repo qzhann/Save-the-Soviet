@@ -245,11 +245,14 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
         
+        self.chatController.chatEndingState = .notEnded
+        self.friend.chatEndingState = .notEnded
+        
         // Handle responses and consequences
         let promptUserTimer = Timer.scheduledTimer(withTimeInterval: totalDelay, repeats: false) { (_) in
             // Note that we don't want to automatically end chat. This is handled as a consequence
             
-            // For incoming messages, we handle the consequence when the first chat message instance is displayed on screen.
+            // For incoming messages, we handle the consequence after the last message instance is displayed on screen.
             if let consequences = consequences {
                 self.handleConsequences(consequences)
             }
@@ -267,6 +270,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         // Update ChatTableView using the added messages
         let totalDelay = updateChatWithDelay()
+        
+        self.chatController.chatEndingState = .notEnded
+        self.friend.chatEndingState = .notEnded
         
         // For outgoing messages, we handle the consequence as soon as the user makes the choice.
         if let consequences = consequences {

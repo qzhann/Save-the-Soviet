@@ -95,6 +95,10 @@ struct ConsequenceController {
             chatViewController?.performSegue(withIdentifier: "ShowQuiz", sender: nil)
         case .setChatStartOption(let option):
             chatViewController?.friend.chatStartOption = option
+        case .upgradeFriendWithLastName(let lastName):
+            if let friend = user.friendWithLastName(lastName) {
+                friend.upgrade()
+            }
         case .upgradeAndStartChatForFriendWithLastName(let lastName):
             if let friend = user.friendWithLastName(lastName) {
                 friend.upgrade()
