@@ -433,11 +433,11 @@ class User: Codable {
     // MARK: - Static properties
     
     /// currentUser will be modified during the game.
-    static var currentUser = User(sampleUserNamed: "currentUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.oldPartyMember], powers: Power.testPowers)
+    static var currentUser = User(sampleUserNamed: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 50, friends: [Friend.oldPartyMember], powers: Power.userPowers)
     
-    static var newUser = User(sampleUserNamed: "newUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 100, friends: [Friend.oldPartyMember], powers: Power.testPowers)
+    static var newUser = User(sampleUserNamed: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: true, level: Level(progress: 0), coins: 50, friends: [Friend.oldPartyMember], powers: Power.userPowers)
     
-    static var sampleUser = User(sampleUserNamed: "sampleUser", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 100, friends: [Friend.oldPartyMember], powers: Power.testPowers)
+    static var sampleUser = User(sampleUserNamed: "President Gorbachev", description: "What we need is Star Peace, not Star Wars.", imageName: "Gorbachev", isNewUser: false, level: Level(progress: 0), coins: 50, friends: [Friend.oldPartyMember], powers: Power.userPowers)
     
     
     // MARK: - Static methods

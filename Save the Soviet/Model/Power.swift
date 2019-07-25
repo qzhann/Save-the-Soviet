@@ -129,62 +129,82 @@ class Power: Codable {
         timer?.invalidate()
     }
 
+    
     // MARK: - Static properties
     
-    static var testPowers: [Power] = [
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
-            ]),
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
-            ]),
-        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
-            ])
+    static var levelBoosters = Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
+        PowerUpgrade(name: "Level Booster 1", imageName: "LevelBooster1", description: "Add 1 to level progress every minute.", coinsNeeded: 5, affecting: .userLevel, strength: 1, every: 1.minute),
+        PowerUpgrade(name: "Level Booster 2", imageName: "LevelBooster2", description: "Add 5 to level progress every minute.", coinsNeeded: 10, affecting: .userLevel, strength: 5, every: 1.minute),
+        PowerUpgrade(name: "Level Booster 3", imageName: "LevelBooster3", description: "Add 10 to level progress every minute.", affecting: .userLevel, strength: 10, every: 1.minute)
+    ])
+    
+    static var supportBooster = Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 100, affecting: .userSupport, strength: 0, upgrades: [
+        PowerUpgrade(name: "Support Booster 1", imageName: "SupportBooster1", description: "Add 1 to your support every 5 min.", coinsNeeded: 200, affecting: .userLevel, strength: 1, every: 5.minute),
+        PowerUpgrade(name: "Support Booster 2", imageName: "SupportBooster2", description: "Add 1 to your support every 2 min.", coinsNeeded: 0, affecting: .userLevel, strength: 1, every: 2.minute),
+    ])
+    
+    static var coinGenerator = Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
+        PowerUpgrade(name: "Coin Generator 1", imageName: "CoinGenerator1", description: "Add 1 coin every 1 minute.", coinsNeeded: 5, affecting: .userCoins, strength: 1, every: 1.minute),
+        PowerUpgrade(name: "Coin Generator 2", imageName: "CoinGenerator2", description: "Add 1 coin every 20 seconds.", coinsNeeded: 20, affecting: .userCoins, strength: 1, every: 20.second),
+        PowerUpgrade(name: "Coin Generator 3", imageName: "CoinGenerator3", description: "Add 5 coins every 30 seconds.", coinsNeeded: 0, affecting: .userCoins, strength: 5, every: 30.second)
+    ])
+    
+    static func loyaltyBoosterForFriendWithLastName(_ lastName: String) -> Power {
+        return Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .friendLoyalty, forFriendWithLastName: lastName, strength: 0, upgrades: [
+                PowerUpgrade(name: "Loyalty Booster 1", imageName: "SupportBooster1", description: "Add 1 to loyalty every 5 min.", coinsNeeded: 25, affecting: .friendLoyalty, forFriendWithLastName: lastName, strength: 1, every: 5.minute),
+                PowerUpgrade(name: "Loyalty Booster 2", imageName: "SupportBooster2", description: "Add 1 to loyalty every 2 min.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: lastName, strength: 1, every: 2.minute)
+        ])
+    }
+    
+    static func maximizer(for type: PowerType, friendLastName: String? = nil) -> Power {
+        assert(type != .friendLoyalty || friendLastName != nil)
+        var powerName = ""
+        var powerDescription = ""
+        var imageName = ""
+        var powerStrength = 100
+        switch type {
+        case .userLevel:
+            powerName = "Maximum Level"
+            powerDescription = "You have reached maximum level."
+            imageName = "MaximumLevel"
+            powerStrength = 1000
+        case .userSupport:
+            powerName = "Maximum Support"
+            powerDescription = "A ruler with 100% support is immortal."
+            imageName = "MaximumSupport"
+            powerStrength = 100
+        case .friendLoyalty:
+            powerName = "Maximum Loyalty"
+            powerDescription = "No doubt, only loyalty."
+            imageName = "MaximumSupport"
+            powerStrength = 100
+        default:
+            break
+        }
+        
+        return Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1000, affecting: .other, forFriendWithLastName: friendLastName, strength: 0, upgrades: [
+            PowerUpgrade(name: powerName, imageName: imageName, description: powerDescription, coinsNeeded: 0, affecting: type, forFriendWithLastName: friendLastName, strength: powerStrength)
+        ])
+    }
+
+    static var userPowers: [Power] = [
+        Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .userLevel, strength: 1, upgrades: [
+            PowerUpgrade(name: "Level Booster 1", imageName: "LevelBooster1", description: "Add 1 to level progress every minute.", coinsNeeded: 5, affecting: .userLevel, strength: 1, every: 1.minute),
+            PowerUpgrade(name: "Level Booster 2", imageName: "LevelBooster2", description: "Add 5 to level progress every minute.", coinsNeeded: 10, affecting: .userLevel, strength: 5, every: 1.minute),
+            PowerUpgrade(name: "Level Booster 3", imageName: "LevelBooster3", description: "Add 10 to level progress every minute.", affecting: .userLevel, strength: 10, every: 1.minute)
+        ]),
+        Power(copyOf: Power.supportBooster),
+        Power(copyOf: Power.coinGenerator)
     ]
     
-    static var testPowerCopies: [Power] = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .userSupport, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .userLevel, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .userLevel, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
+    static func powersForFriendWithLastName(_ lastName: String) -> [Power] {
+        return [
+            Power(copyOf: Power.levelBoosters),
+            Power(copyOf: Power.loyaltyBoosterForFriendWithLastName(lastName)),
+            Power(copyOf: Power.maximizer(for: .friendLoyalty, friendLastName: lastName))
+        ]
+    }
     
-    static var testPowers1 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    
-    static var testPowers2 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    static var testPowers3 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    static var testPowers4 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    static var testPowers5 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    static var testPowers6 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
-    static var testPowers7 = [
-        Power(name: "Supporter", imageName: "HeartPowerLevel3", description: "1% increase in support every 5 sec.", affecting: .other, strength: -1, every: 10.second),
-        Power(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level +5 every 10 seconds.", coinsNeeded: 30, affecting: .other, strength: 5, every: 7.second, upgrades: [PowerUpgrade(name: "Lucky Dog", imageName: "GiftPowerLevel3", description: "Level progress +10 every 10 seconds.", affecting: .other, strength: 10, every: 10.second)]),
-        Power(name: "???", imageName: "Dog", description: "???????????????", affecting: .other, strength: 5, every: 5.second)
-    ]
 }
 
 struct PowerUpgrade: Codable {

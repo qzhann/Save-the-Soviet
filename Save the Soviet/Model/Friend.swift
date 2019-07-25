@@ -605,18 +605,8 @@ class Friend: Equatable, Codable {
     // MARK: - Static properties
     
     /// Old party member is the tutorial friend, who also introduces the user to the game features.
-    static var oldPartyMember = Friend(lastName: "Old Party Member", shortTitle: "", fullTitle: "", imageName: "Gorbachev", description: "I have faith in communism.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Old Party Member", strength: 100)
-            ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-            ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 100)
-            ])
-        ],
+    static var oldPartyMember = Friend(lastName: "Old Party Member", shortTitle: "", fullTitle: "", imageName: "OldPartyMember", description: "I have faith in communism.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
+        powers: Power.powersForFriendWithLastName("Old Party Member"),
         levelUpgrades: [
             1: FriendUpgrade(chatStartOption: .sendIncomingMessage(
                 IncomingMessage(texts: "How was your first day in office?", responses: [
@@ -753,18 +743,8 @@ class Friend: Equatable, Codable {
     )
     
     /// Minister of energy.
-    static var shcherbina = Friend(lastName: "Shcherbina", shortTitle: "Minister", fullTitle: "Minister of Energy", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-                ])
-        ],
+    static var shcherbina = Friend(lastName: "Shcherbina", shortTitle: "Minister", fullTitle: "Minister of Energy", imageName: "Shcherbina", description: "USSR is the strongest nation.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
+        powers: Power.powersForFriendWithLastName("Shcherbina"),
         levelUpgrades: [
             4: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "My president, I have good news and bad news.", responses: [
                 OutgoingMessage(description: "(Good news first)", texts: "Tell me the good news first.", responseMessageId: nil, levelRestriction: 10),
@@ -839,9 +819,10 @@ class Friend: Equatable, Codable {
                 OutgoingMessage(description: "Chernobyl's reactor exploded.", texts: "Chernobyl's reactor exploded. There was nothing left.", responseMessageId: 502)
             ]),
             502: IncomingMessage(texts: "What can I do for you, president Gorbachev?", responses: [
-                OutgoingMessage(description: "Nothing.", texts: "Nothing.", "Everything is over.", "We can't undo history.", responseMessageId: nil, consequences: [.changeUserLevelBy(-50), .setChatStartOption(.promptUserWith([OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Chebrikov"))]))]),
+                OutgoingMessage(description: "Nothing.", texts: "Nothing.", "Everything is over.", "We can't undo history.", responseMessageId: 582, consequences: [.changeUserLevelBy(-50)]),
                 OutgoingMessage(description: "Anything.", texts: "Anything.", "This is a complete disaster for the entire mankind.", "And we have to face it together.", responseMessageId: 503)
             ]),
+            582: IncomingMessage(texts: "I am sorry, president Gorbachev.", consequences: [.upgradeAndStartChatForFriendWithLastName("Chebrikov"), .setChatStartOption(.promptUserWith([OutgoingMessage.leaveChat]))]),
             503: IncomingMessage(texts: "We should start dealing with the crisis now, my president.", "I am willing to take on the responsibility.", consequences: [.changeFriendLoyaltyBy(20)], responses: [
                 OutgoingMessage(description: "Thank you, comerade.", texts: "Thank you, comerade.", "What should we do then?", responseMessageId: 504, consequences: [.changeFriendLoyaltyBy(10)])
             ]),
@@ -867,7 +848,7 @@ class Friend: Equatable, Codable {
                OutgoingMessage(text: "Have we done the right thing?", responseMessageId: 511),
             ]),
             510: IncomingMessage(texts: "My President...", "The lava exploded when it met the underground water.", "There was nothing we could do.", "I failed your trust, president Gorbachev.", responses: [
-                OutgoingMessage(description: "It was my choice.", texts: "It was my choice.", "Do not blame everything on yourself, comerade.", "Go home and take a good rest. You have done your job.", responseMessageId: nil, consequences: [.setChatStartOption(.promptUserWith([OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Chebrikov"))]))])
+                OutgoingMessage(description: "It was my choice.", texts: "It was my choice.", "Do not blame everything on yourself, comerade.", "Go home and take a good rest. You have done your job.", responseMessageId: 582)
             ]),
             511: IncomingMessage(texts: "Yes!", "The temprature of the lava has been reducing steadily, my President.", "All miners, workers, and engineers are receiving professional medical treatment right now.", "It was a job well done.", responses: [
                 OutgoingMessage(text: "Anything else we need to do?", responseMessageId: 512)
@@ -882,18 +863,8 @@ class Friend: Equatable, Codable {
     )
     
     /// Chairman of KGB.
-    static var chebrikov = Friend(lastName: "Chebrikov", shortTitle: "Chairman", fullTitle: "Chairman of KGB", imageName: "Dyatlov", description: "I hate Fomin.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-            ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-            ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-            ])
-        ],
+    static var chebrikov = Friend(lastName: "Chebrikov", shortTitle: "Chairman", fullTitle: "Chairman of KGB", imageName: "Chebrikov", description: "Safety is relative, information is definite.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
+        powers: Power.powersForFriendWithLastName("Chebrikov"),
         levelUpgrades: [
             :
         ],
@@ -925,16 +896,7 @@ class Friend: Equatable, Codable {
     
     /// Chernobyl chief engineer.
     static var fomin = Friend(lastName: "Fomin", shortTitle: "Engineer", fullTitle: "Chernobyl Chief Engineer", imageName: "Fomin", description: "Promotion is on the way.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-            PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-            ]),
-          Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-            ]),
-          Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-            PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-        ])],
+        powers: Power.powersForFriendWithLastName("Fomin"),
         levelUpgrades: [
         3: FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "President Gorbachev...", "A regional power station in Kiev went offline unexpectedly", "Since many factories rely heavily on electricity ", "we might have to delay the safety test until after midnight in order to sustain power supply", responses: [
             OutgoingMessage(text: "Do what you think is right", responseMessageId: 301, consequences: [.changeUserLevelBy(5)]),
@@ -972,7 +934,7 @@ class Friend: Equatable, Codable {
             
             // Explanation for water tank
             401: IncomingMessage(texts: "President Gorbachev", "Everything is under control.", "There was an explosion in the one of the water tanks in the reactor's facility", "but the reactor core is perfectly safe", "A group of engineers at Chernobyl had things in control, firefighters are sent to quickly distinguish the fire, and everything should be back to normal within a week.", responses: [
-                OutgoingMessage(text: "Let me talk with the firefighers", responseMessageId: nil, consequences: [.changeUserLevelBy(5), .makeNewFriend(Friend.fireFighter)]),
+                OutgoingMessage(text: "Let me talk with the firefighers", responseMessageId: nil, consequences: [.changeUserLevelBy(5), .makeNewFriend(Friend.firefighter)]),
                 OutgoingMessage(text: "Let me talk with the engineers", responseMessageId: nil, consequences: [.changeUserLevelBy(5), .makeNewFriend(Friend.akimov)]),
                 OutgoingMessage(description: "Don't let me down.",  texts: "Don't let me down.", "Solve this problem as quickly as you can.", responseMessageId: 404),
             ]),
@@ -984,16 +946,7 @@ class Friend: Equatable, Codable {
     )
     
     static var legasov = Friend(lastName: "Legasov", shortTitle: "Scientist", fullTitle: "Nuclear Expert", imageName: "Legasov", description: "Science is the truth.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(10),
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-        ])],
+        powers: Power.powersForFriendWithLastName("Legasov"),
         levelUpgrades: [:],
         nonLevelUpgrades: [],
         startChatUsing: .promptUserWith([
@@ -1009,24 +962,15 @@ class Friend: Equatable, Codable {
                OutgoingMessage(description: "Keep an eye on any updates.", texts: "Keep an eye on any updates, and report anything urgent to me immediately.", responseMessageId: 103, consequences: [.changeUserLevelBy(5)]),
                OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Fomin"))
             ]),
-            103: IncomingMessage(texts: "Yes, president.", responses: [
+            103: IncomingMessage(texts: "Yes, president Gorbachev.", responses: [
                OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Fomin"))
             ]),
         ]
     )
     
     // Firefighter
-    static var fireFighter = Friend(lastName: "Ignatenko", shortTitle: "Firefighter", fullTitle: "Firefighter", imageName: "Akimov", description: "Love my life.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-        ])],
+    static var firefighter = Friend(lastName: "Ignatenko", shortTitle: "Firefighter", fullTitle: "Firefighter", imageName: "Firefighter", description: "Love my life.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
+        powers: Power.powersForFriendWithLastName("Ignatenko"),
         levelUpgrades: [:],
         nonLevelUpgrades: [],
         startChatUsing: .promptUserWith([
@@ -1034,7 +978,7 @@ class Friend: Equatable, Codable {
         ]),
         allPossibleMessages: [
             101: IncomingMessage(texts: "President Gorbachev", "We have been trying to put out the fire in Chernobyl nuclear power plant", "There is fire on the roof, around reactor 4, and the fire is getting smaller than it was.", "Some of us saw dark-colored rocks on the ground, smoking hot. These rocks seem to have been emitted by the explosion from the reactor structures.", responses: [
-                OutgoingMessage(text: "Anything other information?", responseMessageId: 102),
+                OutgoingMessage(text: "Any other information?", responseMessageId: 102),
                 OutgoingMessage(description: "Thank you, comerade Ignatenko.", texts: "Thank you, comerade Ignatenko.", "People will remember your bravery and valor tonight.", "Is there anything else you want to tell me?", responseMessageId: 102, consequences: [.changeFriendLoyaltyBy(10)]),
             ]),
             102: IncomingMessage(texts: "Shift Leader of Chernobyl Nuclear Power Plant Akimov sounded really scared when he called the fire department", "Maybe president Gorbachev could ask him what happened inside the control room?", consequences: [.makeNewFriend(Friend.akimov), .setChatStartOption(.promptUserWith([
@@ -1047,16 +991,7 @@ class Friend: Equatable, Codable {
     
     // Shift leader Akimov
     static var akimov = Friend(lastName: "Akimov", shortTitle: "Engineer", fullTitle: "Chernobyl Shift Leader", imageName: "Akimov", description: "Love being a engineer.", loyalty: Percentage(progress: 50), chatHistory: [], displayedMessageCount: 0, executionRestriction: .level(7),
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-        ])],
+        powers: Power.powersForFriendWithLastName("Akimov"),
         levelUpgrades: [:],
         nonLevelUpgrades: [],
         startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "President Gorbachev", "I am Chernobyl Nuclear Power Plant Unit 4 Shift Leader Akimov", responses: [
@@ -1096,18 +1031,8 @@ class Friend: Equatable, Codable {
     
     
     
-    static var americanAmbassador = Friend(lastName: "US Ambassador", shortTitle: "", fullTitle: "", imageName: "Akimov", description: "One nation, under god.", loyalty: Percentage(progress: 0), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
-        powers: [
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 50, affecting: .userLevel, strength: 1, upgrades: [
-                PowerUpgrade(name: "Maximum Loyalty", imageName: "MaximumLoyalty", description: "No doubt, only loyalty.", coinsNeeded: 0, affecting: .friendLoyalty, forFriendWithLastName: "Shcherbina", strength: 100)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 1, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Patreon", imageName: "Patreon", description: "Gives you 1 coin every minute.", affecting: .userCoins, strength: 1, every: 1.minute)
-                ]),
-            Power(name: "???", imageName: "?", description: "????????????????????", coinsNeeded: 10, affecting: .other, strength: 0, upgrades: [
-                PowerUpgrade(name: "Level Booster", imageName: "LevelBooster", description: "Add 1 to your level progress every minute.", affecting: .userLevel, strength: 1, every: 1.minute)
-                ])
-        ],
+    static var americanAmbassador = Friend(lastName: "US Ambassador", shortTitle: "", fullTitle: "", imageName: "AmericanAmbassador", description: "One nation, under god.", loyalty: Percentage(progress: 0), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
+        powers: Power.powersForFriendWithLastName("US Ambassador"),
         levelUpgrades: [:],
         nonLevelUpgrades: [],
         startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "President Gorbachev, not sure if you are aware of this yet", "but our satellite information has shocked many government officals in America over the last night.", consequences: [.changeUserLevelBy(-10)], responses: [
@@ -1125,27 +1050,4 @@ class Friend: Equatable, Codable {
             1003: IncomingMessage(texts: "President Gorbachev, what is society without living people?", "What is socialism then, without societies?", "I'm afraid that there will no longer be a Soviet Union of Socialist Republic.", "Because all your republics will have been long dead due to your flawed nuclear power plants.", consequences: [.changeUserSupportBy(-100), .endChatFrom(.incoming)])
         
         ])
-    
-    static var allTestMessages: [Int: IncomingMessage] = [
-        0: IncomingMessage(texts: "My President...", "Congratulations on becoming the new leader.", "Our country needs someone like you to guide us forward", "I will serve you with all of my loyalty.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
-            OutgoingMessage(text: "Who are you?", responseMessageId: 1, consequences: [.changeUserLevelBy(-5)]),
-            OutgoingMessage(text: "Introduce yourself.", responseMessageId: 1, consequences: [.changeFriendLoyaltyBy(5)]),
-            OutgoingMessage(text: "Serve your country, not me.", responseMessageId: 2, levelRestriction: 8, consequences: [.changeUserLevelBy(5)])
-            ]),
-        1: IncomingMessage(texts: "I work at the Chernobyl nuclear power plant", "this is my first year here", "I have to say that I really enjoy the job", responses: [
-            OutgoingMessage(description: "Good", texts: "Good.", "I will check on your work later on", "It is an honor working on the job you have now", "people depend on your work", responseMessageId: 2),
-            OutgoingMessage(description: "Wonderful", texts: "Wonderful.", responseMessageId: nil, consequences: [.setChatStartOption(.sendIncomingMessage(IncomingMessage(texts: "Good job.", consequences: [.endChatFrom(.incoming)], responses: nil)))]),
-            OutgoingMessage(description: "OK", texts: "OK.", "Keep it up.", responseMessageId: 3, consequences: [.changeFriendLoyaltyBy(-1)]),
-            ]),
-        2: IncomingMessage(texts: "Thank you, president Gorbachev.", consequences: [.changeUserSupportBy(1), .changeFriendLoyaltyBy(2)], responses: [
-            OutgoingMessage(description: "Leave Chat", consequences: [.endChatFrom(.outgoing)])
-            ]),
-        3: IncomingMessage(texts: "Certainly... Thank you president Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil),
-        
-        
-        
-        
-        
-        100: IncomingMessage(texts: "Good luck President Gorbachev.", consequences: [.endChatFrom(.incoming)], responses: nil)
-    ]
 }
