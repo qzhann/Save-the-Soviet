@@ -50,7 +50,7 @@ class ChatMessage: Equatable, CustomStringConvertible, Codable {
     init(text: String, direction: MessageDirection) {
         self.text = text.count <= 3 ? "  \(text)  " : text
         self.direction = direction
-        self.delay = /*1.2 + Double(text.count) / 20*/ 1  // FIXME:
+        self.delay = 1.2 + Double(text.count) / 20
     }
     
     

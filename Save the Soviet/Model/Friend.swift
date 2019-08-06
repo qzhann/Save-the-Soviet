@@ -682,6 +682,60 @@ class Friend: Equatable, Codable {
             FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
             FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
             FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
+            FriendUpgrade(chatStartOption: .promptUserWith([OutgoingMessage.startQuizInCategory(.all, withDescription: "Start Challenge", consequences: [.upgradeFriendWithLastName("Old Party Member")])])),
 
         ],
         startChatUsing: .sendIncomingMessage(
@@ -882,13 +936,16 @@ class Friend: Equatable, Codable {
             // Introduction.
             101: IncomingMessage(texts: "KGB is the main security agency for our country", "We ensure the leadership of the CCCP, the integrity of USSR", "The country is safe as long as KGB still operates.", responses: [
                 OutgoingMessage(description: "(Reply seriously)", texts: "Comerade Chebrikov", "I hope KGB works up to your standards.", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
-                OutgoingMessage(description: "(Reply with humor)", consequences: [], levelRestriction: 3)
+                OutgoingMessage(description: "(Reply with humor)", texts: "People say that KGB would do anything for security, even arresting your own people", "you know, \"just in case he's an American spy\"", "Though I have to admit that KGB does a good job protecting our country.", responseMessageId: 104, levelRestriction: 3, consequences: [.changeFriendLoyaltyBy(5)]),
             ]),
             102: IncomingMessage(texts: "Certainly.", "KGB is the main security agency for our country", "We ensure the leadership of the CCCP, the integrity of USSR", "The country is safe as long as KGB still operates.", responses: [
                 OutgoingMessage(description: "(Reply seriously)", texts: "Comerade Chebrikov", "I hope KGB works up to your standards.", responseMessageId: 103, consequences: [.changeUserLevelBy(10)]),
                 OutgoingMessage(description: "(Reply with humor)", consequences: [], levelRestriction: 3)
             ]),
             103: IncomingMessage(texts: "Certainly, president Gorbachev.", consequences: [.changeFriendLoyaltyBy(5)], responses: [
+                OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Old Party Member"))
+            ]),
+            104: IncomingMessage(texts: "Certainly, president Gorbachev.", "I shall take the rumors as a compliment to KGB's high standards of work.", consequences: [], responses: [
                 OutgoingMessage.leaveChatWith(consequences: .upgradeAndStartChatForFriendWithLastName("Old Party Member"))
             ]),
         ]
@@ -929,8 +986,9 @@ class Friend: Equatable, Codable {
             ]),
             
             // Delay of test
-            301: IncomingMessage(texts: "Understood.", "I will report back to you immediately once the test is completed.", consequences: [.changeFriendLoyaltyBy(5), .endChatFrom(.incoming), .upgradeAndStartChatForFriendWithLastName("Shcherbina")]
-            ),
+            301: IncomingMessage(texts: "Understood.", "I will report back to you immediately once the test is completed.", consequences: [.changeFriendLoyaltyBy(5), .upgradeAndStartChatForFriendWithLastName("Shcherbina")], responses: [
+                OutgoingMessage.leaveChatWith(consequences: .makeNewFriend(Friend.gameDeveloper))
+            ]),
             
             // Explanation for water tank
             401: IncomingMessage(texts: "President Gorbachev", "Everything is under control.", "There was an explosion in the one of the water tanks in the reactor's facility", "but the reactor core is perfectly safe", "A group of engineers at Chernobyl had things in control, firefighters are sent to quickly distinguish the fire, and everything should be back to normal within a week.", responses: [
@@ -1028,9 +1086,6 @@ class Friend: Equatable, Codable {
         ]
     )
     
-    
-    
-    
     static var americanAmbassador = Friend(lastName: "US Ambassador", shortTitle: "", fullTitle: "", imageName: "AmericanAmbassador", description: "One nation, under god.", loyalty: Percentage(progress: 0), chatHistory: [], displayedMessageCount: 0, executionRestriction: .never,
         powers: Power.powersForFriendWithLastName("US Ambassador"),
         levelUpgrades: [:],
@@ -1049,5 +1104,37 @@ class Friend: Equatable, Codable {
         ]),
             1003: IncomingMessage(texts: "President Gorbachev, what is society without living people?", "What is socialism then, without societies?", "I'm afraid that there will no longer be a Soviet Union of Socialist Republic.", "Because all your republics will have been long dead due to your flawed nuclear power plants.", consequences: [.changeUserSupportBy(-100), .endChatFrom(.incoming)])
         
+        ])
+    
+    static var gameDeveloper = Friend(lastName: "Game Developer", shortTitle: "", fullTitle: "", imageName: "GameDeveloper", description: "The coolest game developer of all time.", loyalty: Percentage(progress: 100), chatHistory: [], displayedMessageCount: 0, executionRestriction: .none,
+        powers: Power.powersForFriendWithLastName("Game Developer"),
+        levelUpgrades: [:],
+        nonLevelUpgrades: [
+            FriendUpgrade(chatStartOption: .sendIncomingMessage(IncomingMessage(texts: "Or that your level increases when you do the right thing", "but these \"truths\" are not always... real.", consequences: [.changeUserLevelBy(-50)], responses: [
+                OutgoingMessage(description: "Stop playing tricks!", texts: "Stop playing tricks!", "I swear you will be in prison for your lifetime if you don't undo what you have done.", responseMessageId: 105)
+            ]))),
+        ],
+        startChatUsing: .sendIncomingMessage(IncomingMessage(texts: "President Gorbachev", "How are you doing so far?", responses: [
+            OutgoingMessage(text: "All good", responseMessageId: 101),
+            OutgoingMessage(text: "Who are you?", responseMessageId: 102),
+            OutgoingMessage(text: "I enjoyed being president.", responseMessageId: 103)
+        ])),
+        allPossibleMessages: [
+            101: IncomingMessage(texts: "Good, good.", "I hope you enjoyed it.", "In this world, there are still certain \"truth\" we believe in.", "President Gorbachev, you probably also believe in some of them.", responses: [
+                OutgoingMessage(text: "What are you talking about?", responseMessageId: 104),
+                OutgoingMessage(description: "Who are you?", texts: "Who are you?", "What are you talking about?", responseMessageId: 102)
+            ]),
+            102: IncomingMessage(texts: "That is not important.", "President Gorbachev, you probably believe that the loyalty increases when you choose a good response", consequences: [.changeFriendLoyaltyBy(-50), .upgradeAndStartChatForFriendWithLastName("Game Developer")], responses: nil),
+            103: IncomingMessage(texts: "That is great.", "In this world, there are still certain \"rules\" we believe in.", "President Gorbachev, you probably also believe in some of them.", responses: [
+                OutgoingMessage(text: "What are you talking about?", responseMessageId: 104),
+                OutgoingMessage(description: "Who are you?", texts: "Who are you?", "What are you talking about?", responseMessageId: 102)
+            ]),
+            
+            104: IncomingMessage(texts: "President Gorbachev, you probably believe that the loyalty increases when you choose a good response", "but these \"truths\" are not always... real.", consequences: [.changeFriendLoyaltyBy(-50), .upgradeAndStartChatForFriendWithLastName("Game Developer")], responses: nil),
+            105: IncomingMessage(texts: "Certainly, certainly...", consequences: [.changeUserLevelBy(50)], responses: [
+                OutgoingMessage(text: "Now leave.", responseMessageId: 106, consequences: [.changeFriendLoyaltyBy(50)]),
+            ]),
+            106: IncomingMessage(texts: "Before I leave, President Gorbachev", "If you ever feel that your life is somewhat incomplete or limited", "or if you want to talk to more people in the Soviet Union", "I can help you define your own truth.", "Find me at savethesoviet@gmail.com.", consequences: [.endChatFrom(.incoming)])
+            
         ])
 }

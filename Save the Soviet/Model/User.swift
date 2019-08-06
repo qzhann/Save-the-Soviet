@@ -463,8 +463,8 @@ class User: Codable {
             currentUser = User(copyOf: User.newUser)
         }
         
-        // FIXME: To debug as a new user, build the app twice in a row quickly. To debug as continuing user, build the app, then enter background.
-        try? FileManager().removeItem(at: archiveURL)
+        // FIXME: Dubugging purposes
+        // try? FileManager().removeItem(at: archiveURL)
     }
     
     static func clearFile() {
