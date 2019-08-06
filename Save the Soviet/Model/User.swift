@@ -288,9 +288,6 @@ class User: Codable {
         } else {
             self.applyPower(power)
         }
-        
-        
-        applyPower(power)
     }
     
     /// Apply all powers, called when the user is initialized from file, or when the new user starts game.

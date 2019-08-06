@@ -187,7 +187,6 @@ struct QuizQuestion: Codable {
             QuizQuestion(level: level, category: .nuclear, text: "How many nuclear power plants does Soviet Union have?", answers: ["5", "10", "20", "30"], correctAnswer: "20"),
             QuizQuestion(level: level, category: .nuclear, text: "Which nuclear power plant is the oldest?", answers: ["Armenian Plant", "Leningrad Plant", "F-1", "Kola Plant"], correctAnswer: "F-1"),
             QuizQuestion(level: level, category: .nuclear, text: "What type of reactors are constructed in Vladimir Llyich Lenin Nuclear Power Plant?", answers: ["RBMK-1000", "RBMK-2000", "RBMK-3000", "RBMK-1989"], correctAnswer: "RBMK-1000"),
-            QuizQuestion(level: level, category: .nuclear, text: "Did any accident occur in any nuclear power plants in USSR?", answers: ["Yes, and we addressed all of them safely.", "Yes, and we covered all of them up.", "No, because they are all really safe.", "No, because regulations prevented them."], correctAnswer: "Yes, and we covered all of them up."),
             QuizQuestion(level: level, category: .nuclear, text: "The nuclear power plant in the city of Pripyat is also known as?", answers: ["Chernobyl", "RBMK-1000", "Kursk", "F-1"], correctAnswer: "Chernobyl"),
         ]
     }
